@@ -1,6 +1,7 @@
 #ifndef __SQUARES_H__
 #define __SQUARES_H__
 #include <string>
+#include "response.h"
 
 using std::string;
 
