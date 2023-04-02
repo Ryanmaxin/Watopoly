@@ -1,0 +1,18 @@
+#ifndef __DICE_H__
+#define __DICE_H__
+#include <string>
+#include "square.h"
+#include "player.h"
+
+using std::string;
+
+class Dice {
+    int die1;
+    int die2;
+    int doubles_rolled;
+    public:
+        int rollDice();
+        bool isDoubles();
+        bool threeDoubles();
+};
+#endif
