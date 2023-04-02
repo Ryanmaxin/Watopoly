@@ -43,14 +43,25 @@ vector<unique_ptr<Square>>& Board::get_locations() {
 vector<unique_ptr<Player>> Board::get_players() {
     return players;
 }
+Player* Board::getCurrentPlayer() {
+    return players[current_player_id].get();
+}
+
+Square* Board::stringToProperty(string property) {
+    for (size_t i; i < 40; ++i) {
+        if (locations[i]->getName() == property) {
+            return locations[i].get();
+        }
+    }
+}
 
 void Board::bankruptcy(unique_ptr<Player> giving, unique_ptr<Player> receiving) {
+    for (auto property: giving->getProperties()) {
+        //Note: receiver may be nullptr. In this case, property is going back to bank.
+        giving->transferProperty(property,receiving.get());
+    }
     if (receiving != nullptr) {
-        //Owes money to another player
-        for (auto property: giving->getProperties()) {
-            // transferAsset(giving, receiving, g_prop, g_money, r_prop, r_money)
-            receiving->addProperty(property);
-        }
+        //Additional logic needed when owing assets to another player.
         receiving->addBalance(giving->getBalance());
         for (auto mon: giving->getOwnedMonopolies()) {
             if (mon.second == true) {
@@ -58,16 +69,12 @@ void Board::bankruptcy(unique_ptr<Player> giving, unique_ptr<Player> receiving) 
             }
         }
     }
-    if (receiving == nullptr) {
-        //Owes monet to the bank
-    }
     //Cleanup, 
     for (auto mon: giving->getOwnedMonopolies()) {
         if (mon.second == true) {
             giving->SetOwnedMonopoly(mon.first, false);
         }
     }
-    giving->clearProperties(bool no_owner);
     giving->setBalance(0);
     giving->teleport(0);
 

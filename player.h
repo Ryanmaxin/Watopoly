@@ -24,6 +24,8 @@ class Player {
         void clearProperties();
         //Append property to end of owned_properties. Change owner or property to this player! (VERY IMPORTANT)
         void addProperty(Square*);
+        //Transfer ownership of this property. Must change both Square.owner and player.owned_properties
+        void transferProperty(Square* property, Player* receiver);
         //Just return owned_properties
         vector<Square*> getProperties();
         //Replace balance with new_balance
@@ -34,6 +36,7 @@ class Player {
         int getBalance();
         void SetOwnedMonopoly(Monopoly m, bool does_own);
         map<Monopoly, bool> getOwnedMonopolies();
+        bool doesOwnProperty(Square*);
 
 };
 #endif

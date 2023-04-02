@@ -9,6 +9,7 @@
 
 using std::vector;
 using std::unique_ptr;
+using std::pair;
 
 class Board {
     //Must be smart pointers, i can explain.
@@ -29,10 +30,12 @@ class Board {
         vector<unique_ptr<Square>>& get_locations();
         vector<unique_ptr<Player>> get_players();
         int getCurrentRoll();
+        Player* getCurrentPlayer();
         void bankruptcy(unique_ptr<Player> giving, unique_ptr<Player> receiving);
         bool transferAsset(unique_ptr<Player> giving, unique_ptr<Player> receiving);
         Response moveCurrentPlayer();
         void nextTurn();
+        Square* stringToProperty(string property);
 };
 
 #endif
