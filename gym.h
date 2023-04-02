@@ -1,5 +1,5 @@
-#ifndef GYM_H
-#define GYM_H
+#ifndef __GYM_H__
+#define __GYM_H__
 #include <string>
 #include "ownableproperty.h"
 #include "board.h"

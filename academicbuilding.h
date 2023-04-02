@@ -2,7 +2,7 @@
 #define __ACADEMICBUILDING_H__
 #include <string>
 #include "ownableproperty.h"
-#include "monopoly.h"
+#include "enumerations.h"
 
 using std::string;
 
@@ -10,7 +10,7 @@ class AcademicBuilding: public OwnableProperty {
     Monopoly set;
     int num_improvements;
     public:
-        AcademicBuilding(Monopoly s);
+        AcademicBuilding(string name, Monopoly s);
         int getRent() override;
         Monopoly getSet();
 };
