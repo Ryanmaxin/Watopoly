@@ -11,9 +11,11 @@ using std::map;
 class Player {
     int cur_pos;
     int balance;
+    bool isInJail;
     vector<Square*> owned_properties;
     map<Monopoly, bool> owned_monopolies;
     public:
+        Player(string name, char token);
         int getCurrentPosition();
         bool ownsMonopoly(Monopoly monopoly);
         //Add num_spaces to cur_pos
@@ -23,6 +25,7 @@ class Player {
         //Remove all owned_properties. No need to delete them
         void clearProperties();
         //Append property to end of owned_properties. Change owner or property to this player! (VERY IMPORTANT)
+        //Invariant: this will only be called on an unowned (but ownable) property. IE property.owner = nullptr
         void addProperty(Square*);
         //Transfer ownership of this property. Must change both Square.owner and player.owned_properties
         void transferProperty(Square* property, Player* receiver);
@@ -37,6 +40,8 @@ class Player {
         void SetOwnedMonopoly(Monopoly m, bool does_own);
         map<Monopoly, bool> getOwnedMonopolies();
         bool doesOwnProperty(Square*);
+        void setIsInJail(bool is_in_jail)
+        bool isInJail();
 
 };
 #endif
