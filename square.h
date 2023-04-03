@@ -2,14 +2,16 @@
 #define __SQUARES_H__
 #include <string>
 #include "enumerations.h"
+#include "player.h"
 
 using std::string;
 
 class Square {
-    string name;
+    protected:
+        string name;
     public:
         Square(string n);
-        virtual Action actionOnLand() = 0;
+        virtual Action actionOnLand(Player* player) = 0;
         string getName();
 };
 #endif
