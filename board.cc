@@ -88,7 +88,16 @@ void Board::bankruptcy() {
     //Remove the player
     players.erase(players.begin() + current_player_id);
     #ifdef VISUALISATION
-        cout << curr_player->getName() << "Went Bankrupt to " << ((receiving==nullptr)?"Bank": receiving->getName()); 
+        cout << curr_player->getName() << "Went Bankrupt to " << ((receiving==nullptr)?"Bank": receiving->getName()) << endl;
+    #endif
+}
+
+void Board::goToJail() {
+    Player* player = getCurrentPlayer();
+    player->teleport(DC_TIMS_LINE);
+    player->setIsInJail(true);
+    #ifdef VISUALISATION
+        cout << curr_player->getName() << "Was sent to DC TIMS LINE " << endl;
     #endif
 }
 
@@ -97,8 +106,8 @@ void Board::nextTurn() {
 }
 
 void Board::purchaseCurrentProperty() {
-    Player* player = players[current_player_id].get();
-    Square* property = locations[player->getCurrentPosition()].get();
+    Player* player = getCurrentPlayer();
+    Square* property = getCurrentSquare();
 
     OwnableProperty* ownable = dynamic_cast<OwnableProperty*>(property);
     int price = ownable->getPrice();
@@ -107,15 +116,21 @@ void Board::purchaseCurrentProperty() {
 }
 
 Action Board::moveCurrentPlayer() {
-    int roll = dice.rollDice();
-    unique_ptr<Player>& curr_player = players[current_player_id];
-    curr_player->move(roll);
-    int curr_position = curr_player->getCurrentPosition();
-    #ifdef VISUALISATION
-        cout << curr_player->getName() << "Moved to " << locations[curr_position]->getName() << endl; 
-    #endif
-    Action res = locations[curr_position]->actionOnLand();
-    return res;
+    Player* player = getCurrentPlayer();
+    if (!player->isInJail()) {
+        int roll = dice.rollDice();
+        curr_player->move(roll);
+        int curr_square = getCurrentSquare();
+        #ifdef VISUALISATION
+            cout << curr_player->getName() << "Moved to " << curr_square->getName() << endl; 
+        #endif
+        Action res = curr_square->actionOnLand();
+        return res;
+    }
+    else {
+        //Player has 3 choices: pay $50, roll for doubles or use a roll up the rim
+        return Action::InJail;
+    }
 }
 
 void Board::initSquares() {

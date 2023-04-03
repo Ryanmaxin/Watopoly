@@ -4,7 +4,6 @@
 #include "square.h"
 #include "player.h"
 #include "dice.h"
-#include "response.h"
 #include "memory"
 
 using std::vector;
@@ -43,6 +42,7 @@ class Board {
         //If bankruptcy just occured, do not call nextTurn, as current_player_id will now refer to the next player automatically.
         void nextTurn();
         //Says if the player needs to move again. For use by Controller
+        //Doesn't actually move the player
         bool moveAgain();
         void goToJail();
 };

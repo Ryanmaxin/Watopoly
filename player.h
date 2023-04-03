@@ -11,9 +11,11 @@ using std::map;
 class Player {
     int cur_pos;
     int balance;
+    bool isInJail;
     vector<Square*> owned_properties;
     map<Monopoly, bool> owned_monopolies;
     public:
+        Player(string name, char token);
         int getCurrentPosition();
         bool ownsMonopoly(Monopoly monopoly);
         //Add num_spaces to cur_pos
@@ -38,6 +40,8 @@ class Player {
         void SetOwnedMonopoly(Monopoly m, bool does_own);
         map<Monopoly, bool> getOwnedMonopolies();
         bool doesOwnProperty(Square*);
+        void setIsInJail(bool is_in_jail)
+        bool isInJail();
 
 };
 #endif
