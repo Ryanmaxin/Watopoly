@@ -11,14 +11,14 @@ using std::map;
 class Player {
     int cur_pos;
     int balance;
-    bool isInJail;
+    bool in_jail;
     vector<Square*> owned_properties;
     map<Monopoly, bool> owned_monopolies;
     public:
         Player(string name, char token);
         int getCurrentPosition();
         bool ownsMonopoly(Monopoly monopoly);
-        //Add num_spaces to cur_pos
+        //Add num_spaces to cur_pos. Please make sure to do it modulo 39 so we stay in index bounds
         void move(int num_spaces);
         //Set cur_pos to square_index
         void teleport(int square_index);
@@ -40,8 +40,10 @@ class Player {
         void SetOwnedMonopoly(Monopoly m, bool does_own);
         map<Monopoly, bool> getOwnedMonopolies();
         bool doesOwnProperty(Square*);
-        void setIsInJail(bool is_in_jail)
+        void setIsInJail(bool in_jail);
         bool isInJail();
+        //Value of all assets (balance, printed price of buildings, and improvements)
+        int getNetWorth();
 
 };
 #endif

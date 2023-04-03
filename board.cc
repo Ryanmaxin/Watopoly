@@ -117,14 +117,17 @@ void Board::purchaseCurrentProperty() {
 
 Action Board::moveCurrentPlayer() {
     Player* player = getCurrentPlayer();
-    if (!player->isInJail()) {
+    if (!(player->isInJail())) {
         int roll = dice.rollDice();
-        curr_player->move(roll);
-        int curr_square = getCurrentSquare();
+        player->move(roll);
+        Square* curr_square = getCurrentSquare();
         #ifdef VISUALISATION
             cout << curr_player->getName() << "Moved to " << curr_square->getName() << endl; 
         #endif
-        Action res = curr_square->actionOnLand();
+        Action res = curr_square->actionOnLand(player);
+        if (res == Action::ChainMove) {
+            res = curr_square->actionOnLand(player);
+        }
         return res;
     }
     else {
