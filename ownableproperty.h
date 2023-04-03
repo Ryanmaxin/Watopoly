@@ -8,9 +8,11 @@ using std::string;
 
 class OwnableProperty: public Square {
     Player* owner;
+    int price;
     public:
         OwnableProperty(string n);
         virtual int getRent() = 0;
         Player* getOwner();
+        int getPrice();
 };
 #endif

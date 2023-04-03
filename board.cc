@@ -19,9 +19,6 @@ using std::pair;
 using std::cout;
 using std::endl;
 
-Response Board::interact(Player& player) {
-
-}
 void Board::init(vector<pair<string,char>> player_names) {
     //Clear previous state.
     locations.clear();
@@ -37,14 +34,17 @@ void Board::init(vector<pair<string,char>> player_names) {
     initSquares();
 
 }
-vector<unique_ptr<Square>>& Board::get_locations() {
+vector<unique_ptr<Square>>& Board::getLocations() {
     return locations;
 }
-vector<unique_ptr<Player>> Board::get_players() {
+vector<unique_ptr<Player>> Board::getPlayers() {
     return players;
 }
 Player* Board::getCurrentPlayer() {
     return players[current_player_id].get();
+}
+Square* Board::getCurrentSquare() {
+    return locations[getCurrentPlayer()->getCurrentPosition()].get();
 }
 
 Square* Board::stringToProperty(string property) {
@@ -53,12 +53,20 @@ Square* Board::stringToProperty(string property) {
             return locations[i].get();
         }
     }
+    //If no property found
+    return nullptr;
+}
+bool Board::moveAgain() {
+    return (dice.isDoubles());
 }
 
-void Board::bankruptcy(unique_ptr<Player> giving, unique_ptr<Player> receiving) {
+void Board::bankruptcy() {
+    Player* giving = getCurrentPlayer();
+    OwnableProperty* curr_prop = dynamic_cast<OwnableProperty*>(getCurrentSquare());
+    Player* receiving = curr_prop->getOwner();
     for (auto property: giving->getProperties()) {
         //Note: receiver may be nullptr. In this case, property is going back to bank.
-        giving->transferProperty(property,receiving.get());
+        giving->transferProperty(property,receiving);
     }
     if (receiving != nullptr) {
         //Additional logic needed when owing assets to another player.
@@ -77,10 +85,28 @@ void Board::bankruptcy(unique_ptr<Player> giving, unique_ptr<Player> receiving) 
     }
     giving->setBalance(0);
     giving->teleport(0);
-
+    //Remove the player
+    players.erase(players.begin() + current_player_id);
+    #ifdef VISUALISATION
+        cout << curr_player->getName() << "Went Bankrupt to " << ((receiving==nullptr)?"Bank": receiving->getName()); 
+    #endif
 }
 
-Response Board::moveCurrentPlayer() {
+void Board::nextTurn() {
+    current_player_id += 1;
+}
+
+void Board::purchaseCurrentProperty() {
+    Player* player = players[current_player_id].get();
+    Square* property = locations[player->getCurrentPosition()].get();
+
+    OwnableProperty* ownable = dynamic_cast<OwnableProperty*>(property);
+    int price = ownable->getPrice();
+    player->addProperty(property);
+    player->addBalance(-1*price);
+}
+
+Action Board::moveCurrentPlayer() {
     int roll = dice.rollDice();
     unique_ptr<Player>& curr_player = players[current_player_id];
     curr_player->move(roll);
@@ -88,7 +114,7 @@ Response Board::moveCurrentPlayer() {
     #ifdef VISUALISATION
         cout << curr_player->getName() << "Moved to " << locations[curr_position]->getName() << endl; 
     #endif
-    Response res = locations[curr_position]->actionOnLand();
+    Action res = locations[curr_position]->actionOnLand();
     return res;
 }
 

@@ -21,21 +21,30 @@ class Board {
     Dice dice;
     void initSquares();
     public:
-        Response interact(Player& player);
         //Init sets up the board. Every time you start a game this should be called.
         //Should be called from within Controller.
         //Takes in a vector of std::pairs, one index for each player in the game
         //The string will be the name, char will be the token chosen.
         void init(vector<pair<string,char>> player_names);
-        vector<unique_ptr<Square>>& get_locations();
-        vector<unique_ptr<Player>> get_players();
-        int getCurrentRoll();
+        vector<unique_ptr<Square>>& getLocations();
+        vector<unique_ptr<Player>> getPlayers();
         Player* getCurrentPlayer();
-        void bankruptcy(unique_ptr<Player> giving, unique_ptr<Player> receiving);
+        //Return the square the current player is standing on
+        Square* getCurrentSquare();
+        //Invariant: a player can only go bankrupt when it is their turn
+        void bankruptcy();
         bool transferAsset(unique_ptr<Player> giving, unique_ptr<Player> receiving);
-        Response moveCurrentPlayer();
+        Action moveCurrentPlayer();
         void nextTurn();
+        //Returns a pointer to the property, if it exists
         Square* stringToProperty(string property);
+        //You will have to do validation checking if player has enough money, etc
+        void purchaseCurrentProperty();
+        //If bankruptcy just occured, do not call nextTurn, as current_player_id will now refer to the next player automatically.
+        void nextTurn();
+        //Says if the player needs to move again. For use by Controller
+        bool moveAgain();
+        void goToJail();
 };
 
 #endif

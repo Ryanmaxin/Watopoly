@@ -23,6 +23,7 @@ class Player {
         //Remove all owned_properties. No need to delete them
         void clearProperties();
         //Append property to end of owned_properties. Change owner or property to this player! (VERY IMPORTANT)
+        //Invariant: this will only be called on an unowned (but ownable) property. IE property.owner = nullptr
         void addProperty(Square*);
         //Transfer ownership of this property. Must change both Square.owner and player.owned_properties
         void transferProperty(Square* property, Player* receiver);

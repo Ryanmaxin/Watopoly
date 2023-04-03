@@ -3,6 +3,7 @@
 #include <string>
 #include "square.h"
 #include "player.h"
+#include "gym.h"
 
 using std::string;
 
