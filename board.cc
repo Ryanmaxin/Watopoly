@@ -19,7 +19,7 @@ using std::pair;
 using std::cout;
 using std::endl;
 
-void Board::init(vector<pair<string,char>> player_names) {
+void Board::init(vector<pair<string,char>> player_info) {
     //Clear previous state.
     locations.clear();
     players.clear();
@@ -27,8 +27,8 @@ void Board::init(vector<pair<string,char>> player_names) {
     current_roll = 0;
 
     //Initialize players vector
-    for (auto name: player_names) {
-        players.push_back(make_unique<Player>(name.first,name.second));
+    for (auto player: player_info) {
+        players.push_back(make_unique<Player>(player.first,player.second));
     }
     //Initialize squares
     initSquares();
