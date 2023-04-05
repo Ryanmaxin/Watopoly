@@ -1,11 +1,17 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
 
+#include "square.h"
+#include "enumerations.h"
+
 #include <vector>
 #include <map>
 #include "enumerations.h"
 #include "square.h"
 
+using std::map;
+
+using std::vector;
 using std::map;
 
 class Player {
