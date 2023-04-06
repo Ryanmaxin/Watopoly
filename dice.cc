@@ -26,7 +26,7 @@ int Dice::rollDie1() {
 	return die1;
 }
 
-int rollDie2() {
+int Dice::rollDie2() {
     std::vector<int> v = { 1, 2, 3, 4, 5, 6 };
     // use a time-based seed for the default seed value
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
