@@ -55,21 +55,9 @@ string Player::declareBankruptcy() {
         //Declare bankruptcy to another player
         receiving = cp->getOwner();
         receiving->balance += balance;
-        for (auto mon: owned_monopolies) {
-            if (mon.second == true) {
-                receiving->owned_monopolies[mon.first] = true;
-            }
-        }
     }
     for (auto property: owned_properties) {
             transferProperty(property,receiving);
-    }
-    
-    //Cleanup, 
-    for (auto mon: owned_monopolies) {
-        if (mon.second == true) {
-            owned_monopolies[mon.first] = false;
-        }
     }
     balance = 0;
     teleport(0);
@@ -89,10 +77,6 @@ string Player::buy() {
         balance = balance - price;
         AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(ownable);
         Monopoly set = academic->getSet();
-        if (academic != nullptr && ownsMonopoly(set)) {
-            //Not worth it? We should discuss
-            owned_monopolies[set] = true;
-        }
         oss << name << ": Successfully purchased " << price << " (Have " << balance << ")";
         std::string context = oss.str();
         return context;
@@ -115,4 +99,4 @@ void Player::addBalance(int money) {
 }
 
 //Can't check like this, the purpose of this function is to find the monopolies in owned_properties
-bool Player::ownsMonopoly(Monopoly monopoly) { return owned_monopolies[monopoly]; }
+bool Player::ownsMonopoly(Monopoly monopoly) { }
