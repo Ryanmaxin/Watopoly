@@ -3,21 +3,16 @@
 
 #include <vector>
 #include <map>
+#include <string>
 
 #include "enumerations.h"
 #include "square.h"
 #include "board.h"
 #include "response.h"
 
-#include <vector>
-#include <map>
-#include <string>
-
 using std::map;
 using std::string;
-
 using std::vector;
-using std::map;
 
 class Player {
     string name;
@@ -55,4 +50,5 @@ class Player {
         int getNetWorth();
 
 };
+
 #endif
