@@ -12,12 +12,4 @@ struct MoveResponse {
     MoveResponse(Action a, string c): action{a},context{c} {};
 };
 
-struct CommandResponse {
-    bool is_valid;
-    InvalidReason reason;
-    CommandResponse(bool v, InvalidReason r): is_valid{v},reason{r} {};
-};
-
-
-
 #endif

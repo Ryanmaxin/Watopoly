@@ -22,8 +22,8 @@ class Player {
     int balance;
     int num_roll_up_rims;
 
-    bool in_jail;
-    int num_turns_in_jail;
+    bool in_tims_line;
+    int num_turns_in_tims_line;
 
     Board& board;
     Square* current_square;
@@ -34,14 +34,26 @@ class Player {
     void transferProperty(OwnableProperty* property, Player* receiving);
     
     bool ownsMonopoly(Monopoly monopoly);
+    int getNetWorth();
     public:
         Player(string name, char token, Board& attached_to, int bal = 1500, int rur = 0, int pos = 0, bool in_jail = false, int num_turns_in_jail = 0);
 
         MoveResponse move(int num_spaces);
 
-        CommandResponse declareBankruptcy();
-        CommandResponse buyProperty();
-        CommandResponse goToTims();
+        string declareBankruptcy();
+        string buy();
+        string auction();
+        string goToTims();
+        string offerTrade(string name, string give, string receive);
+        string improve(string property, string buysell);
+        string Mortgage(string property);
+        string unMortgage(string property);
+        string payTuition(bool pay300);
+        string useRollUp();
+        string payFifty();
+        string raiseFunds();
+
+
 
         int getBalance();
         void setBalance(int new_balance);
@@ -53,7 +65,6 @@ class Player {
         map<Monopoly, bool> getOwnedMonopolies();
         bool doesOwnProperty(Square*);
         //Value of all assets (balance, printed price of buildings, and improvements)
-        int getNetWorth();
 
 };
 

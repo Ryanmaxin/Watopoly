@@ -33,16 +33,15 @@ Square* Board::getSquare(int index) {
     return squares[index].get();
 }
 
-//Might not be necessary
-// Square* Board::stringToProperty(string property) {
-//     for (size_t i; i < 40; ++i) {
-//         if (locations[i]->getName() == property) {
-//             return locations[i].get();
-//         }
-//     }
-//     //If no property found
-//     return nullptr;
-// }
+Square* Board::stringToProperty(string property) {
+    for (size_t i; i < 40; ++i) {
+        if (squares[i]->getName() == property) {
+            return squares[i].get();
+        }
+    }
+    //If no property found
+    return nullptr;
+}
 
 void Board::initSquares() {
     

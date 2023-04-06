@@ -14,8 +14,8 @@ class Dice {
     int doubles_rolled;
     int rollDie1();
     int rollDie2();
-    Dice();
     public:
+        Dice();
         int rollDice();
         bool isDoubles();
         bool threeDoubles();
