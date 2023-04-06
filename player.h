@@ -28,7 +28,6 @@ class Player {
     Board& board;
     Square* current_square;
     vector<OwnableProperty*> owned_properties;
-    map<Monopoly, bool> owned_monopolies;
     
     void teleport(int square_index);
     void transferProperty(OwnableProperty* property, Player* receiving);
