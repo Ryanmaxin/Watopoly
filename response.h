@@ -8,8 +8,8 @@ using std::string;
 
 struct MoveResponse {
     Action action;
-    Square* landed_on;
-    MoveResponse(Action a, Square* l): action{a},landed_on{l} {};
+    string context;
+    MoveResponse(Action a, string c): action{a},context{c} {};
 };
 
 struct CommandResponse {

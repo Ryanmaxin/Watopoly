@@ -2,13 +2,13 @@
 #define __UNOWNABLEPROPERTY_H__
 #include <string>
 #include "square.h"
+#include "response.h"
 
 using std::string;
 
 class UnownableProperty: public Square {
-    Action goToTims(Player* player);
     public:
         UnownableProperty(string n);
-        Action actionOnLand(Player* player) override;
+        MoveResponse actionOnLand(Player& player) override;
 };
 #endif

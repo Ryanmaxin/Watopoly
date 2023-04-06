@@ -1,6 +1,9 @@
 #include "player.h"
 #include "response.h"
 #include "academicbuilding.h"
+#include <sstream>
+
+using std::ostringstream;
 
 Player::Player(string name, char token, Board& attached_to, int bal = 0, int rur = 0, int pos = 0, bool in_jail = false, int num_turns_in_jail = 0):
 name{name},token{token},board{attached_to},balance{bal},num_roll_up_rims{rur},position{pos},in_jail{false},num_turns_in_jail{num_turns_in_jail} {
@@ -16,7 +19,10 @@ MoveResponse Player::move(int num_spaces) {
     }
     else {
         //Player has 3 choices: pay $50, roll for doubles or use a roll up the rim
-        return {Action::InJail, current_square};
+        ostringstream oss;
+        oss << "In Tims line (" << num_turns_in_jail << "turn(s)";
+        std::string context = oss.str();
+        return {Action::InJail, context};
     }
 }
 
@@ -89,9 +95,19 @@ CommandResponse Player::buyProperty() {
     }
 }
 
-CommandResponse Player::goToJail() {
+CommandResponse Player::goToTims() {
     teleport(DC_TIMS_LINE);
     in_jail = true;
+}
+
+int Player::getBalance() {
+    return balance;
+}
+void Player::setBalance(int new_balance) {
+    balance = new_balance;
+}
+void Player::addBalance(int money) {
+    balance += money;
 }
 
 //Can't check like this, the purpose of this function is to find the monopolies in owned_properties

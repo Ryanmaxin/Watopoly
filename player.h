@@ -41,7 +41,13 @@ class Player {
 
         CommandResponse declareBankruptcy();
         CommandResponse buyProperty();
-        CommandResponse goToJail();
+        CommandResponse goToTims();
+
+        int getBalance();
+        void setBalance(int new_balance);
+        void addBalance(int money);
+
+        string getName();
 
         void SetOwnedMonopoly(Monopoly m, bool does_own);
         map<Monopoly, bool> getOwnedMonopolies();
