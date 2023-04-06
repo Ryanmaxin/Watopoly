@@ -2,7 +2,6 @@
 #define __CONTROLLER_H__
 
 #include "board.h"
-#include "playerinfo.h"
 
 #include <string>
 #include <vector>
@@ -15,8 +14,7 @@ class Controller {
     vector<Player> players;
     Dice dice;
     int current_player_id;
-    //Isha: populate vector of PlayerInfo from user input
-    void initPlayers(vector<PlayerInfo> pi);
+    
     void nextTurn();
     void load(string filename);
     public:
