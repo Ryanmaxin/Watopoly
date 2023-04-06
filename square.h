@@ -3,6 +3,7 @@
 #include <string>
 #include "enumerations.h"
 #include "player.h"
+#include "response.h"
 
 using std::string;
 
@@ -11,7 +12,7 @@ class Square {
         string name;
     public:
         Square(string n);
-        virtual Action actionOnLand(Player* player) = 0;
+        virtual MoveResponse actionOnLand(Player& player) = 0;
         string getName();
 };
 #endif

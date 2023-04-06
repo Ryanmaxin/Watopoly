@@ -1,47 +1,50 @@
 #ifndef __PLAYER_H__
 #define __PLAYER_H__
 
-#include <vector>
-#include <map>
 #include "enumerations.h"
 #include "square.h"
+#include "board.h"
+#include "response.h"
+
+#include <vector>
+#include <map>
+#include <string>
 
 using std::map;
+using std::string;
 
 class Player {
-    int cur_pos;
+    string name;
+    char token;
+
+    int position;
     int balance;
+    int num_roll_up_rims;
+
     bool in_jail;
-    vector<Square*> owned_properties;
+    int num_turns_in_jail;
+
+    Board& board;
+    Square* current_square;
+    vector<OwnableProperty*> owned_properties;
     map<Monopoly, bool> owned_monopolies;
+    
+    void teleport(int square_index);
+    void transferProperty(OwnableProperty* property, Player* receiving);
+    
+    bool ownsMonopoly(Monopoly monopoly);
     public:
-        Player(string name, char token);
-        int getCurrentPosition();
-        bool ownsMonopoly(Monopoly monopoly);
-        //Add num_spaces to cur_pos. Please make sure to do it modulo 39 so we stay in index bounds
-        void move(int num_spaces);
-        //Set cur_pos to square_index
-        void teleport(int square_index);
-        //Remove all owned_properties. No need to delete them
-        void clearProperties();
-        //Append property to end of owned_properties. Change owner or property to this player! (VERY IMPORTANT)
-        //Invariant: this will only be called on an unowned (but ownable) property. IE property.owner = nullptr
-        void addProperty(Square*);
-        //Transfer ownership of this property. Must change both Square.owner and player.owned_properties
-        void transferProperty(Square* property, Player* receiver);
-        //Just return owned_properties
-        vector<Square*> getProperties();
-        //Replace balance with new_balance
-        void setBalance(int new_balance);
-        //Add (+=) increment to balance. May be negative OR positive increase
-        void addBalance(int increment);
-        //Return balance
-        int getBalance();
+        Player(string name, char token, Board& attached_to, int bal = 1500, int rur = 0, int pos = 0, bool in_jail = false, int num_turns_in_jail = 0);
+
+        MoveResponse move(int num_spaces);
+
+        CommandResponse declareBankruptcy();
+        CommandResponse buyProperty();
+        CommandResponse goToJail();
+
         void SetOwnedMonopoly(Monopoly m, bool does_own);
         map<Monopoly, bool> getOwnedMonopolies();
         bool doesOwnProperty(Square*);
-        void setIsInJail(bool in_jail);
-        bool isInJail();
         //Value of all assets (balance, printed price of buildings, and improvements)
         int getNetWorth();
 
