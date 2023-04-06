@@ -6,12 +6,12 @@
 using std::ostringstream;
 
 Player::Player(string name, char token, Board& attached_to, int bal = 0, int rur = 0, int pos = 0, bool in_jail = false, int num_turns_in_jail = 0):
-name{name},token{token},board{attached_to},balance{bal},num_roll_up_rims{rur},position{pos},in_jail{false},num_turns_in_jail{num_turns_in_jail} {
+name{name},token{token},board{attached_to},balance{bal},num_roll_up_rims{rur},position{pos},in_tims_line{false},num_turns_in_tims_line{num_turns_in_tims_line} {
     current_square = attached_to.getSquare(position);
 }
 
 MoveResponse Player::move(int num_spaces) {
-    if (!(in_jail)) {
+    if (!(in_tims_line)) {
         position = (position + num_spaces)%39;
         current_square = board.getSquare(position);
         MoveResponse res = current_square->actionOnLand(*this);
@@ -20,7 +20,7 @@ MoveResponse Player::move(int num_spaces) {
     else {
         //Player has 3 choices: pay $50, roll for doubles or use a roll up the rim
         ostringstream oss;
-        oss << "In Tims line (" << num_turns_in_jail << "turn(s)";
+        oss << "In Tims line (" << num_turns_in_tims_line << "turn(s)";
         std::string context = oss.str();
         return {Action::InJail, context};
     }
@@ -44,7 +44,7 @@ void Player::transferProperty(OwnableProperty* property, Player* receiving) {
     }
 }
 
-CommandResponse Player::declareBankruptcy() {
+string Player::declareBankruptcy() {
     OwnableProperty* cp = dynamic_cast<OwnableProperty*>(current_square);
     Player* receiving;
     if (cp == nullptr) {
@@ -73,16 +73,18 @@ CommandResponse Player::declareBankruptcy() {
     }
     balance = 0;
     teleport(0);
-    return {true, InvalidReason::NotInvalid};
+    return "";
 }
 
-CommandResponse Player::buyProperty() {
+string Player::buy() {
+    ostringstream oss;
     OwnableProperty* ownable = dynamic_cast<OwnableProperty*>(current_square);
     int price = ownable->getPrice();
     if (balance < price) {
-        return {false, InvalidReason::NotEnoughMoney};
-    }
-    else {
+        oss << name << ": Can't afford property price of " << price << " (Have " << balance << ")";
+        std::string context = oss.str();
+        return context;
+    } else {
         owned_properties.push_back(ownable);
         balance = balance - price;
         AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(ownable);
@@ -91,13 +93,15 @@ CommandResponse Player::buyProperty() {
             //Not worth it? We should discuss
             owned_monopolies[set] = true;
         }
-        return {true, InvalidReason::NotInvalid};
+        oss << name << ": Successfully purchased " << price << " (Have " << balance << ")";
+        std::string context = oss.str();
+        return context;
     }
 }
 
-CommandResponse Player::goToTims() {
+string Player::goToTims() {
     teleport(DC_TIMS_LINE);
-    in_jail = true;
+    in_tims_line = true;
 }
 
 int Player::getBalance() {
