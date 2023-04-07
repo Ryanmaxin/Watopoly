@@ -151,4 +151,4 @@ void Controller::nextTurn() {
         }
     }
 
-//receiveproperty->getNumImprovements() > 0
+
