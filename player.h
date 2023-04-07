@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <iostream>
 
 #include "enumerations.h"
 #include "square.h"
@@ -13,6 +14,7 @@
 using std::map;
 using std::string;
 using std::vector;
+using std::ostream;
 
 class Player {
     string name;
@@ -20,7 +22,7 @@ class Player {
 
     int position;
     int balance;
-    int num_roll_up_rims;
+    bool owns_roll_up;
 
     bool in_tims_line;
     int num_turns_in_tims_line;
@@ -32,9 +34,8 @@ class Player {
     void transferProperty(OwnableProperty* property, Player* receiving);
     
     bool ownsMonopoly(Monopoly monopoly);
-    int getNetWorth();
     public:
-        Player(string name, char token, Board& attached_to, int bal = 1500, int rur = 0, int pos = 0, bool in_jail = false, int num_turns_in_jail = 0);
+        Player(string name, char token, Board& attached_to, int bal = 1500, bool rur = false, int pos = 0, bool in_jail = false, int num_turns_in_jail = 0);
 
         MoveResponse move(int num_spaces);
         void teleport(int square_index);
@@ -44,12 +45,11 @@ class Player {
         string raiseFunds();
 
         //Choices for Action::BuyOrAuction
-        string buy();
-        string auction();
+        MoveResponse buy();
+        MoveResponse auction();
 
         //Choices for Action::TuitionChoice
-        string payFlatTuition();
-        string payPercentageTuition();
+        MoveResponse payTuition(int amount);
 
         //Choices for Action::InJail
         string useRollUp();
@@ -66,13 +66,12 @@ class Player {
         string unMortgage(string property);
 
         //Getter-Setter methods
-        int getBalance();
+        int getBalance() const;
         void setBalance(int new_balance);
         void addBalance(int money);
         //The sum of current balance + price of all owned properties + price of all owned improvements
-        int getNetWorth();
-
-        string getName();
+        int getNetWorth() const;
+        string getName() const;
 
         // buyProperty would deal with deducting the cost of the 
         // property from the player's balance, set the property's owner to the player, 
@@ -94,12 +93,13 @@ class Player {
         bool doesOwnProperty(Square* property);
 
         //Stateless functions
-        bool ownsProperty(Square* property);
-        bool ownsMonopoly(Monopoly set);
-        int numberOfOwnedGyms();
-        int numberOfOwnedResidences();
+        bool ownsProperty(Square* property) const;
+        bool ownsMonopoly(Monopoly set) const;
+        int numberOfOwnedGyms() const;
+        int numberOfOwnedResidences() const;
+        
         //Value of all assets (balance, printed price of buildings, and improvements)
-
+        friend ostream& operator<<(ostream& out, const Player& player);
 };
 
 #endif

@@ -13,7 +13,8 @@ Monopoly AcademicBuilding::getSet() {return set;}
 
 int AcademicBuilding::getTuition() {return rent_vector[num_improvements];}
 
-int AcademicBuilding::getImprovementCost() {return improvement_cost;}
+int AcademicBuilding::getImprovementCost() const {return improvement_cost;}
+int AcademicBuilding::getNumberOfImprovements() const {return num_improvements;}
 
 string AcademicBuilding::specificContext(Player& player) {
     ostringstream oss;
