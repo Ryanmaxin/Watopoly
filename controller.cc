@@ -1,5 +1,7 @@
 #include "controller.h"
 #include "player.h"
+#include "enumerations.h"
+
 #include <vector>
 #include <iostream>
 #include <string>
@@ -43,45 +45,49 @@ void Controller::playMonopoly() {
     //Game starts being actually played here
     current_player_id = 0;
     while (true) {
+
         //Each loop is a players turn
-
-
         Player& p = players[current_player_id];
-        int roll = dice.roll();
-        MoveResponse res = p.move(roll);
-
-        if (res.action == Action::BuyProperty) {
-            cout << "You landed on an unowned property, " << res.sq->getName() << ", that costs " << res.sq->getPrice() << "." << endl;
-            cout << "Do you want to buy it? (yes/auction): ";
-            string choice;
-            cin >> choice;
-            if (choice == "yes") {
-                p.buyProperty();
-            } else if (choice == "auction") {
-                p.auctionProperty();
-            } else {
-                cout << "Invalid choice. Please enter 'yes' or 'auction'." << endl;
+        cout << "Player " << p.getName() << "'s turn" << endl;
+        do {
+            int roll = dice.roll();
+            MoveResponse res = p.move(roll);
+            if (res.action == Action::BuyOrAuction) {
+                string choice;
+                cin >> choice;
+                if (choice == "buy") {
+                    ChoiceResponse cr = p.buyProperty();
+                    if (cr.checkstatus) cout << cr.context << endl;
+                    else cout << cr.context << endl; continue;
+                } else if (choice == "auction") {
+                    p.auctionProperty();
+                } else {
+                    cout << "Invalid choice. Please enter 'yes' or 'auction'." << endl;
+                }
             }
-        }
-        else if (res.action == Action::GoToTims) {
+            else if (res.action == Action::GoToTims) {
             p.goToTims();
         }
-        else if (res.action == Action::DeclareBankruptcy) {
-            cout << "You have declared bankruptcy!" << endl;
-            string message = p.declareBankruptcy();
-            cout << message << endl;
-            // removing the bankrupt player from the game
-            players.erase(players.begin() + current_player_id);
-            if (players.size() == 1) {
-                // this is when 1 player is left (when the game is over)
+            else if (res.action == Action::DeclareBankruptcy) {
+                cout << "You have declared bankruptcy!" << endl;
+                string message = p.declareBankruptcy();
+                cout << message << endl;
+                // removing the bankrupt player from the game
+                players.erase(players.begin() + current_player_id);
+                if (players.size() == 1) {
+                    // this is when 1 player is left (when the game is over)
+                    break;
+                }
+                MoveResponse bankruptcyResponse{Action::DeclareBankruptcy, message};
+                //nextTurn();
+                continue;
+            }
+            if (dice.threeDoubles()) {
+                cout << p.goToTims() << endl;
                 break;
             }
-            MoveResponse bankruptcyResponse{Action::DeclareBankruptcy, message};
-            //nextTurn();
-            continue;
-        }
-
-        cout << "Player " << p.getName() << "'s turn" << endl;
+        } while (dice.isDoubles());
+        
         while (true) {
             bool isvalidtrade = false;
             string cmd;
@@ -114,20 +120,14 @@ void Controller::playMonopoly() {
                 string res = p.unMortgage(property); 
                 cout << res << endl;
             }
-            else if (res.action == Action::ImproveProperty) {
-                string theproperty;
-                cin >> theproperty;
-
-                string theimprovement;
-                cin >> theimprovement;
-
+            else if (cmd == "improve") {
+                //else if (res.action == Action::ImproveProperty) {
+                string theproperty, theimprovement;
+                cin >> theproperty >> theimprovement;
                 if (theimprovement == "buy" || theimprovement == "sell") {
                     string message = p.improve(theproperty, theimprovement);
                     cout << message << endl;
-                }
-                else {
-                    cout << "Invalid improvement type. Enter buy or sell" << endl;
-                }
+                } else cout << p.getName() << ": Invalid improvement type. Enter buy or sell" << endl;
             }
             else if (cmd == "bankrupt") {
                 string message = players[current_player_id].declareBankruptcy();
