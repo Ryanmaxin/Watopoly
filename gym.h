@@ -7,10 +7,12 @@
 using std::string;
 
 class Gym: public OwnableProperty {
+    Dice dice;
+    int getTuition() override;
     public:
-        int getCurrentRoll(); //Add as friend for board
-        Gym();
-        int getRent() override;
+        Gym(string name, int p);
+
+        string specificContext(Player& player) override;
 };
 #endif
 

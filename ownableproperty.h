@@ -11,17 +11,19 @@ using std::string;
 using std::vector;
 
 class OwnableProperty: public Square {
-    Player* owner;
-    int price;
-    // vector<int> rent_vector;
+    protected:
+        Player* owner;
+        int price;
+        virtual int getTuition() = 0;
     public:
         OwnableProperty(string n, int p);
 
-        virtual int getRent() = 0;
+        MoveResponse actionOnLand(Player& player);
+
+        virtual string specificContext(Player& player) = 0;
 
         Player* getOwner();
         void setOwner(Player* new_owner);
-        
         int getPrice();
 };
 #endif
