@@ -52,9 +52,7 @@ class Player {
         MoveResponse payTuition(int amount);
 
         //Choices for Action::InJail
-        string useRollUp();
-        string payFifty();
-        string rollForDoubles();
+        string payOutOfJail(bool use_roll_up);
 
         //Called by SLC and Go To Tims properties. Also called when player rolls doubles 3 times.
         string goToTims();
