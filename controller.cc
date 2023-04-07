@@ -44,23 +44,27 @@ void Controller::playMonopoly() {
     current_player_id = 0;
     while (true) {
         //Each loop is a players turn
+
+
         Player& p = players[current_player_id];
-        //int roll = rollDice();
-        MoveResponse res = p.move(rollDice());
+        int roll = dice.roll();
+        MoveResponse res = p.move(roll);
 
         if (res.action == Action::BuyProperty) {
             cout << "You landed on an unowned property, " << res.sq->getName() << ", that costs " << res.sq->getPrice() << "." << endl;
-            cout << "Do you want to buy it? (yes/no): ";
+            cout << "Do you want to buy it? (yes/auction): ";
             string choice;
             cin >> choice;
             if (choice == "yes") {
                 p.buyProperty();
+            } else if (choice == "auction") {
+                p.auctionProperty();
+            } else {
+                cout << "Invalid choice. Please enter 'yes' or 'auction'." << endl;
             }
         }
         else if (res.action == Action::GoToTims) {
-            //cout << "You have been sent to DC Tims Line!" << endl;
             p.goToTims();
-            //nextTurn();
         }
         else if (res.action == Action::DeclareBankruptcy) {
             cout << "You have declared bankruptcy!" << endl;
@@ -88,38 +92,63 @@ void Controller::playMonopoly() {
             break;
             }
             if (cmd == "trade") {
-            string name, give, receive;
-            cin >> name;
-            cin >> give;
-            cin >> receive;
-            string message = p.offerTrade(name, give, receive);
-            cout << message << endl;
+                string name, give, receive;
+                cin >> name;
+                cin >> give;
+                cin >> receive;
+                
+                string message = p.offerTrade(name, give, receive);
+                cout << message << endl;
             }
-            if (cmd == "mortgage") {
-            string property;
-            cin >> property;
-            string message = p.Mortgage(property);
-            cout << message << endl;
-            }
-            if (cmd == "unmortgage") {
+            else if (cmd == "mortgage") {
                 string property;
                 cin >> property;
-                string res = current_player->unMortgage(property);
+                
+                string message = p.Mortgage(property);
+                cout << message << endl;
+            }
+            else if (cmd == "unmortgage") {
+                string property;
+                cin >> property;
+
+                string res = p.unMortgage(property); 
                 cout << res << endl;
             }
-        }
+            else if (res.action == Action::ImproveProperty) {
+                string theproperty;
+                cin >> theproperty;
 
+                string theimprovement;
+                cin >> theimprovement;
+
+                if (theimprovement == "buy" || theimprovement == "sell") {
+                    string message = p.improve(theproperty, theimprovement);
+                    cout << message << endl;
+                }
+                else {
+                    cout << "Invalid improvement type. Enter buy or sell" << endl;
+                }
             }
-            //This loop covers the cmd menu, such as trade, mortage, save.
-            //Keep looping until 'next' command
-            //At some point...
-            if (cmd == "next") {
-                nextTurn();
-                break;
+            else if (cmd == "bankrupt") {
+                string message = players[current_player_id].declareBankruptcy();
+                cout << message << endl;
+                break; 
+            }
+            else if (command == "all") {
+                if (p.checkinTuition()) {
+                    cout << "You cannot use the 'all' command while deciding how to pay tuition." << endl;
+                } else {
+                    for (int i = 0; i < numPlayers; ++i) {
+                        cout << "Player " << i + 1 << ":" << endl;
+                        players[i].displayAssets();
+                        cout << endl;
+                    }
+                }
             }
         }
     }
-}
+    }
+
 
 void Controller::nextTurn() {
     // when user inputs "next", this "nextTurn" function is called
@@ -131,24 +160,24 @@ void Controller::nextTurn() {
 
 
 
-    for (auto receiveproperty : current_player->getOwnedProperties()) {
-        if (receiveproperty->getName() == give) {
-            owns_property = true;
-            break;
-        }
-    }
+    //for (auto receiveproperty : current_player->getOwnedProperties()) {
+      //  if (receiveproperty->getName() == give) {
+       //     owns_property = true;
+       //     break;
+       // }
+    //}
 
 
-    if (!owns_property) {
-        cout << "Ivalid, you do not own the property " << give << "." << endl;
-        continue;
-    }
+   // if (!owns_property) {
+   //     cout << "Ivalid, you do not own the property " << give << "." << endl;
+    //    continue;
+   // }
     
-    for (auto receiveproperty : current_player->getOwnedProperties()) {
-        if (receiveproperty->getName() == give) {
-            has_improvement = true;
-            break;
-        }
-    }
+    //for (auto receiveproperty : current_player->getOwnedProperties()) {
+       // if (receiveproperty->getName() == give) {
+        //    has_improvement = true;
+        //    break;
+        //}
+    //}
 
 

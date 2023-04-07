@@ -116,3 +116,10 @@ void Player::addBalance(int money) {
 
 //Can't check like this, the purpose of this function is to find the monopolies in owned_properties
 bool Player::ownsMonopoly(Monopoly monopoly) { return owned_monopolies[monopoly]; }
+
+// for the asset function, something like: 
+//     void displayAssets() const {
+       // cout << "Assets for player " << name << ":" << endl;
+        //cout << "Cash: " << cash << endl;
+        //cout << "Properties:" << endl;
+        //for (const auto& prop : properties) {

@@ -28,7 +28,6 @@ class Player {
     Board& board;
     Square* current_square;
     vector<OwnableProperty*> owned_properties;
-    map<Monopoly, bool> owned_monopolies;
     
     void teleport(int square_index);
     void transferProperty(OwnableProperty* property, Player* receiving);
@@ -60,6 +59,25 @@ class Player {
         void addBalance(int money);
 
         string getName();
+
+        // buyProperty would deal with deducting the cost of the 
+        // property from the player's balance, set the property's owner to the player, 
+        // and add the property to the player's list of owned properties
+        
+        void buyProperty(Square* sq);
+
+        // auctionProperty deals with the auction and setting it, called in controller.cc when
+        // player/user decides to auction a property instead of saying "yes"
+        // for buying
+        void auctionProperty(Square* sq, std::vector<Player*> players);
+
+        // this function should print like the 
+        // Value of all assets (balance, printed price of buildings, and improvements)
+        void displayAssets() const;
+
+        // checkinTuition
+        bool checkinTuition() const;
+
 
         void SetOwnedMonopoly(Monopoly m, bool does_own);
         map<Monopoly, bool> getOwnedMonopolies();
