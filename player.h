@@ -74,6 +74,25 @@ class Player {
 
         string getName();
 
+        // buyProperty would deal with deducting the cost of the 
+        // property from the player's balance, set the property's owner to the player, 
+        // and add the property to the player's list of owned properties
+        
+        void buyProperty(Square* sq);
+
+        // auctionProperty deals with the auction and setting it, called in controller.cc when
+        // player/user decides to auction a property instead of saying "yes"
+        // for buying
+        void auctionProperty(Square* sq, std::vector<Player*> players);
+
+        // this function should print like the 
+        // Value of all assets (balance, printed price of buildings, and improvements)
+        void displayAssets() const;
+
+        // checkinTuition
+        bool checkinTuition() const;
+        bool doesOwnProperty(Square* property);
+
         //Stateless functions
         bool ownsProperty(Square* property);
         bool ownsMonopoly(Monopoly set);
