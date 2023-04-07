@@ -19,6 +19,7 @@ class Dice {
         int rollDice();
         bool isDoubles();
         bool threeDoubles();
+        std::pair<int,int> getFaceValues();
 };
 
 #endif
