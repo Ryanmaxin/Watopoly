@@ -21,7 +21,8 @@ class AcademicBuilding: public OwnableProperty {
         string specificContext(Player& p) override;
 
         int getTuition() override;
-        int getImprovementCost();
+        int getImprovementCost() const ;
+        int getNumberOfImprovements() const;
         Monopoly getSet();
 };
 #endif
