@@ -39,32 +39,43 @@ class Player {
         MoveResponse move(int num_spaces);
         void teleport(int square_index);
 
+        //Choices for Action::CantPayTuition
         string declareBankruptcy();
+        string raiseFunds();
+
+        //Choices for Action::BuyOrAuction
         string buy();
         string auction();
+
+        //Choices for Action::TuitionChoice
+        string payFlatTuition();
+        string payPercentageTuition();
+
+        //Choices for Action::InJail
+        string useRollUp();
+        string payFifty();
+        string rollForDoubles();
+
+        //Called by SLC and Go To Tims properties. Also called when player rolls doubles 3 times.
         string goToTims();
+
+        //Regular commands
         string offerTrade(string name, string give, string receive);
         string improve(string property, string buysell);
         string Mortgage(string property);
         string unMortgage(string property);
-        string payTuition(bool pay300);
-        string useRollUp();
-        string payFifty();
-        string raiseFunds();
 
-
-
+        //Getter-Setter methods
         int getBalance();
         void setBalance(int new_balance);
         void addBalance(int money);
-
+        //The sum of current balance + price of all owned properties + price of all owned improvements
         int getNetWorth();
 
         string getName();
 
-        bool doesOwnProperty(Square* property);
-
         //Stateless functions
+        bool ownsProperty(Square* property);
         bool ownsMonopoly(Monopoly set);
         int numberOfOwnedGyms();
         int numberOfOwnedResidences();
