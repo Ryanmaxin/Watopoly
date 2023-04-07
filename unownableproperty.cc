@@ -53,70 +53,57 @@ MoveResponse UnownableProperty::actionOnLand(Player& player) {
         std::mt19937 rng(dev());
         std::uniform_int_distribution<std::mt19937::result_type> SLCRoll(1,24); // distribution in range [1, 24]
         int spaces = 0;
-        if (SLCRoll(rng) <= 3) {
-            spaces = -3;
-        }
-        else if (SLCRoll(rng) <= 7) {
-            spaces = -2;
-        }
-        else if (SLCRoll(rng) <= 11) {
-            spaces = -1;
-        }
-        else if (SLCRoll(rng) <= 14) {
-            spaces = 1;
-        }
-        else if (SLCRoll(rng) <= 18) {
-            spaces = 2;
-        }
-        else if (SLCRoll(rng) >= 22) {
-            spaces = 3;
+        if (SLCRoll(rng) <=22) {
+            if (SLCRoll(rng) <= 3) spaces = -3;
+            else if (SLCRoll(rng) <= 7) spaces = -2;
+            else if (SLCRoll(rng) <= 11) spaces = -1;
+            else if (SLCRoll(rng) <= 14) spaces = 1;
+            else if (SLCRoll(rng) <= 18) spaces = 2;
+            else if (SLCRoll(rng) <= 22) spaces = 3;
+            MoveResponse res = player.move(spaces);
+            action = res.action;
+            if (spaces > 0) {
+                oss << player.getName() << ": Sent forwards " << spaces << "space(s) by SLC" << "\n" << res.context;
+            }
+            else {
+                oss << player.getName() << ": Sent backwards " << spaces*-1 << "space(s) by SLC" << "\n" << res.context;
+            }
         }
         else if (SLCRoll(rng) <= 23) {
-            return goToTims(player);
+            string res = player.goToTims();
+            oss << player.getName() << ": Sent to DC Tims Line by SLC" << "\n" << res;
+            action = Action::NoAction;
         }
         else if (SLCRoll(rng) <= 24) {
-            player->teleport(COLLECT_OSAP);
-            player->addBalance(200);
-            return Action::NoAction;
+            player.teleport(COLLECT_OSAP);
+            player.addBalance(200);
+            oss << player.getName() << ": Sent to Collect OSAP by SLC" << "\n" << player.getName() << ": Collected $200 from OSAP";
+            action = Action::NoAction;
         }
-        player->move(spaces);
-        return Action::ChainMove;
     }
     else if (name == "NeedlesHall") {
         std::random_device dev;
         std::mt19937 rng(dev());
         std::uniform_int_distribution<std::mt19937::result_type> SLCRoll(1,18); // distribution in range [1, 18]
         int change = 0;
-        if (SLCRoll(rng) == 1) {
-            change = -200;
-        }
-        else if (SLCRoll(rng) <= 3) {
-            change = -100;
-        }
-        else if (SLCRoll(rng) <= 6) {
-            change = -50;
-        }
-        else if (SLCRoll(rng) <= 12) {
-            change = 25;
-        }
-        else if (SLCRoll(rng) <= 15) {
-            change = 50;
-        }
-        else if (SLCRoll(rng) <= 17) {
-            change = 100;
-        }
-        else if (SLCRoll(rng) <= 18) {
-            change = 200;
-        }
-        if (player->getBalance() < (change * -1)) {
-            return Action::CantAfford;
+        if (SLCRoll(rng) == 1) change = -200;
+        else if (SLCRoll(rng) <= 3) change = -100;
+        else if (SLCRoll(rng) <= 6) change = -50;
+        else if (SLCRoll(rng) <= 12) change = 25;
+        else if (SLCRoll(rng) <= 15) change = 50;
+        else if (SLCRoll(rng) <= 17) change = 100;
+        else if (SLCRoll(rng) <= 18) change = 200;
+        if (player.getBalance() < (change * -1)) {
+            action = Action::CantAfford;
+            oss << player.getName() << ": Can't afford Needles Hall fee of " << change * -1 << "(have $" << player.getBalance() << ")";
         }
         else {
-            player->addBalance(change);
-            return Action::NoAction;
+            player.addBalance(change);
+            oss << player.getName() << ": Paid Needles Hall fee of " << change * -1;
+            action = Action::NoAction;
         }
     }
-    std::string context = oss.str();
+    string context = oss.str();
     return {action, context};
 
 }

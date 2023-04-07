@@ -6,10 +6,10 @@
 using std::string;
 
 class Residence: public OwnableProperty {
-    int num_owned;
+    int getTuition() override;
     public:
-        Residence();
-        int getRent() override;
-        int getNumOwned();
+        Residence(string name, int p);
+        
+        string specificContext(Player& player) override;
 };
 #endif

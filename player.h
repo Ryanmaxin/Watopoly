@@ -29,7 +29,6 @@ class Player {
     Square* current_square;
     vector<OwnableProperty*> owned_properties;
     
-    void teleport(int square_index);
     void transferProperty(OwnableProperty* property, Player* receiving);
     
     bool ownsMonopoly(Monopoly monopoly);
@@ -38,6 +37,7 @@ class Player {
         Player(string name, char token, Board& attached_to, int bal = 1500, int rur = 0, int pos = 0, bool in_jail = false, int num_turns_in_jail = 0);
 
         MoveResponse move(int num_spaces);
+        void teleport(int square_index);
 
         string declareBankruptcy();
         string buy();
@@ -58,11 +58,16 @@ class Player {
         void setBalance(int new_balance);
         void addBalance(int money);
 
+        int getNetWorth();
+
         string getName();
 
-        void SetOwnedMonopoly(Monopoly m, bool does_own);
-        map<Monopoly, bool> getOwnedMonopolies();
-        bool doesOwnProperty(Square*);
+        bool doesOwnProperty(Square* property);
+
+        //Stateless functions
+        bool ownsMonopoly(Monopoly set);
+        int numberOfOwnedGyms();
+        int numberOfOwnedResidences();
         //Value of all assets (balance, printed price of buildings, and improvements)
 
 };
