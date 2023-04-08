@@ -4,13 +4,15 @@
 #include <vector>
 #include "observer.h"
 
+using namespace std;
+
 class Subject {
 public:
-    void attach(Observer* ob);
-    void detach(Observer* ob);
+    void attach(Observer* obs);
+    void detach(Observer* obs);
     void notifyObservers(Player &p);
 private:
-    std::vector<Observer*> the_observers;
+    vector<Observer*> the_observers;
 };
 
 #endif
