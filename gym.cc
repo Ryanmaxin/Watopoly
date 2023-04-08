@@ -1,5 +1,6 @@
 #include "gym.h"
 #include "player.h"
+
 #include <string>
 #include <sstream>
 
@@ -17,7 +18,9 @@ int Gym::getTuition() {
 
 string Gym::specificContext(Player& player) {
     ostringstream oss;
+
     int num_gyms = owner->numberOfOwnedGyms();
+
     std::pair<int,int> face_values = dice.getFaceValues();
     int multiplier = 4;
     if (num_gyms == 2) multiplier = 10;

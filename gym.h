@@ -6,7 +6,7 @@
 #include "ownableproperty.h"
 #include "dice.h"
 
-using std::string;
+using std::string
 
 class Gym: public OwnableProperty {
     Dice dice;
@@ -16,5 +16,5 @@ class Gym: public OwnableProperty {
 
         string specificContext(Player& player) override;
 };
-#endif
 
+#endif

@@ -33,6 +33,7 @@ class Board {
         //Returns a pointer to the property, if it exists
         Square* stringToProperty(string property);
         //You will have to do validation checking if player has enough money, etc
+        Monopoly stringToMonopoly(string monopoly);
 };
 
 #endif

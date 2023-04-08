@@ -1,5 +1,6 @@
 #ifndef __SQUARES_H__
 #define __SQUARES_H__
+
 #include <string>
 
 class Player;
