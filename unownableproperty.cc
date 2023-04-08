@@ -9,7 +9,7 @@ using std::endl;
 
 UnownableProperty::UnownableProperty(string n): Square {n} {};
 
-MoveResponse UnownableProperty::actionOnLand(Player& player) {
+MoveResponse UnownableProperty::actionOnLand(Player& player, bool regenerate) {
     ostringstream oss;
     Action action;
 
@@ -39,7 +39,7 @@ MoveResponse UnownableProperty::actionOnLand(Player& player) {
     }
     else if (name == "CoopFee") {
         if (player.getBalance() < 150) {
-            action = Action::CantAfford;
+            action = Action::CantPayTuition;
             oss << player.getName() << ": Can't afford coop fee of $150 (have " << player.getBalance() << ")";
         }
         else {
@@ -82,19 +82,25 @@ MoveResponse UnownableProperty::actionOnLand(Player& player) {
         }
     }
     else if (name == "NeedlesHall") {
-        std::random_device dev;
-        std::mt19937 rng(dev());
-        std::uniform_int_distribution<std::mt19937::result_type> SLCRoll(1,18); // distribution in range [1, 18]
         int change = 0;
-        if (SLCRoll(rng) == 1) change = -200;
-        else if (SLCRoll(rng) <= 3) change = -100;
-        else if (SLCRoll(rng) <= 6) change = -50;
-        else if (SLCRoll(rng) <= 12) change = 25;
-        else if (SLCRoll(rng) <= 15) change = 50;
-        else if (SLCRoll(rng) <= 17) change = 100;
-        else if (SLCRoll(rng) <= 18) change = 200;
+        if (regenerate) {
+            std::random_device dev;
+            std::mt19937 rng(dev());
+            std::uniform_int_distribution<std::mt19937::result_type> SLCRoll(1,18); // distribution in range [1, 18]
+            if (SLCRoll(rng) == 1) change = -200;
+            else if (SLCRoll(rng) <= 3) change = -100;
+            else if (SLCRoll(rng) <= 6) change = -50;
+            else if (SLCRoll(rng) <= 12) change = 25;
+            else if (SLCRoll(rng) <= 15) change = 50;
+            else if (SLCRoll(rng) <= 17) change = 100;
+            else if (SLCRoll(rng) <= 18) change = 200;
+            last_slc_roll = change;
+        } 
+        else {
+            change = last_slc_roll;
+        }
         if (player.getBalance() < (change * -1)) {
-            action = Action::CantAfford;
+            action = Action::CantPayTuition;
             oss << player.getName() << ": Can't afford Needles Hall fee of " << change * -1 << "(have $" << player.getBalance() << ")";
         }
         else {

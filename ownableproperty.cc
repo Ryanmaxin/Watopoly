@@ -12,7 +12,7 @@ using std::ostringstream;
 using std::endl;
 
 OwnableProperty::OwnableProperty(string n, int p):
-Square{n}, owner{nullptr},price{p} {}
+Square{n}, owner{nullptr},price{p}, is_mortaged{false} {}
 
 Player* OwnableProperty::getOwner() {
     return owner;
@@ -24,14 +24,25 @@ int OwnableProperty::getPrice() {
     return price;
 }
 
-MoveResponse OwnableProperty::actionOnLand(Player& player) {
+void OwnableProperty::setMortgage(bool val) {
+    is_mortaged = val;
+}
+
+bool OwnableProperty::isMortgaged() {
+    return is_mortaged;
+}
+
+MoveResponse OwnableProperty::actionOnLand(Player& player, bool regenerate = true) {
     ostringstream oss;
     Action action;
     if (owner) {
         if (owner == &player) {
             action = Action::NoAction;
             oss << player.getName() << ": Landed on your own property";
-            }
+        }
+        else if (is_mortaged) {
+            oss << player.getName() << ": No tuition due because the property is mortgaged";
+        }
         else {
             int tuition = getTuition();
             oss << specificContext(player) << "\n";
@@ -49,17 +60,17 @@ MoveResponse OwnableProperty::actionOnLand(Player& player) {
         }
     } 
     else {
+
+        
         int price = getPrice();
-        if (player.getBalance() < price) {
-            action = Action::CantAfford;
-            oss << player.getName() << ": Can't afford $" << price << " to buy " << name << "(have $" << player.getBalance() << ")";
-            oss << endl << player.getName() << "choices: {raisefunds} {auction} ";
-        }
-        else {
-            action = Action::BuyOrAuction;
-            oss << player.getName() << ": " << name << " available for purchase for " << price << "(have $" << player.getBalance() << ")";
-            oss << endl << player.getName() << "choices: {buy} {auction} ";
-        }
+        // if (player.getBalance() < price) {
+        //     action = Action::CantAfford;
+        //     oss << player.getName() << ": Can't afford $" << price << " to buy " << name << "(have $" << player.getBalance() << ")";
+        //     oss << endl << player.getName() << "choices: {raisefunds} {auction} ";
+        // }
+        action = Action::BuyOrAuction;
+        oss << player.getName() << ": " << name << " available for purchase for " << price << "(have $" << player.getBalance() << ")";
+        oss << endl << player.getName() << "choices: {buy} {auction} ";
     }
     
     string context = oss.str();
