@@ -14,23 +14,14 @@ class Controller {
     vector<Player> players;
     Dice dice;
     int current_player_id;
-    
+    bool player_bankrupted;
+
     void nextTurn();
+    bool command(string cmd, Player& p);
+    bool move(Player& p);
     void load(string filename);
     public:
-        void playMonopoly();
-        // void user_input();
-        // Response move();
-        // void purchase();
-        // void auction();
-        // bool improve();
-        // bool trade();
-        // bool mortgage();
-        // bool unmortgage();
-        // bool bankrupt();
-        // bool assets();
-        // void all();
-        // void save(string the_filename);
+        Player& playMonopoly();
 };
 
 #endif

@@ -33,7 +33,6 @@ class Player {
     
     void transferProperty(OwnableProperty* property, Player* receiving);
     
-    bool ownsMonopoly(Monopoly monopoly);
     public:
         Player(string name, char token, Board& attached_to, int bal = 1500, bool rur = false, int pos = 0, bool in_jail = false, int num_turns_in_jail = 0);
 
@@ -45,11 +44,11 @@ class Player {
         string raiseFunds();
 
         //Choices for Action::BuyOrAuction
-        MoveResponse buy();
-        MoveResponse auction();
+        ChoiceResponse buy();
+        // MoveResponse auction();
 
         //Choices for Action::TuitionChoice
-        MoveResponse payTuition(int amount);
+        ChoiceResponse payTuition(int amount);
 
         //Choices for Action::InJail
         string payOutOfJail(bool use_roll_up);
