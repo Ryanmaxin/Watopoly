@@ -412,26 +412,3 @@ void Controller::commenceAuction(Player& p, int current_player_id, OwnableProper
 
 }
 
-
-
-    //for (auto receiveproperty : current_player->getOwnedProperties()) {
-      //  if (receiveproperty->getName() == give) {
-       //     owns_property = true;
-       //     break;
-       // }
-    //}
-
-
-   // if (!owns_property) {
-   //     cout << "Ivalid, you do not own the property " << give << "." << endl;
-    //    continue;
-   // }
-    
-    //for (auto receiveproperty : current_player->getOwnedProperties()) {
-       // if (receiveproperty->getName() == give) {
-        //    has_improvement = true;
-        //    break;
-        //}
-    //}
-
-
