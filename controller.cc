@@ -410,3 +410,10 @@ void Controller::commenceAuction(Player& p, int current_player_id, OwnableProper
 
 }
 
+bool Controller::validPlayer(string name, char token) {
+    for (auto player: players) {
+        if (player.getName == name) return false;
+        if (player.getToken == token) return false;
+    }
+    return true;
+}

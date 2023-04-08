@@ -465,6 +465,7 @@ string Player::improve(string property, bool buy) {
     }
     else {
         oss << name << ": " << property << " is not a valid ownable property";
-    }
-    
+    }    
 }
+
+char Player::getToken() const { return token; }
