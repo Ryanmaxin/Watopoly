@@ -10,7 +10,7 @@
 
 Dice::Dice() : doubles_rolled{0} {}
 
-int roll( std::vector<int> const & v ) {
+int Dice::rollInternal( std::vector<int> const & v ) {
 	//for ( int i : v ) std::cout << i << ' ';
    return v[0];
 }
@@ -22,7 +22,7 @@ int Dice::rollDie1() {
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine rng{seed};
     std::shuffle( v.begin(), v.end(), rng );
-    die1 = roll(v);
+    die1 = rollInternal(v);
 	return die1;
 }
 
@@ -32,7 +32,7 @@ int Dice::rollDie2() {
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine rng{seed};
     std::shuffle( v.begin(), v.end(), rng );
-    die2 = roll(v);
+    die2 = rollInternal(v);
 	return die2;
 }
 
