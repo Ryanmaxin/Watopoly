@@ -20,6 +20,8 @@ class Controller {
     bool command(string cmd, Player& p);
     bool move(Player& p, int roll = 0);
     void load(string filename);
+    bool validPlayer(string name,char token);
+    
     public:
         Player& playMonopoly();
 };

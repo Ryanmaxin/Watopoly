@@ -26,13 +26,21 @@ Player& Controller::playMonopoly() {
         //Get these fields from cin. 
         string player_name;
         char token;
+        bool first_try = true;
+        do {
+            if (first_try) {
+                first_try = false;
+            }
+            else {
+                cout << "This name or token is already in use by another player" << endl;
+            }
+            int player_number = i + 1;
+            cout << "Enter player " << player_number << " name: ";
 
-        int player_number = i + 1;
-        cout << "Enter player " << player_number << " name: ";
-
-        cin >> player_name;
-        cout << "Enter token for " << player_name << ": ";
-        cin >> token;
+            cin >> player_name;
+            cout << "Enter token for " << player_name << ": ";
+            cin >> token;
+        } while (!validPlayer(player_name,token));
 
         players.push_back(Player(player_name, token, board));
     }
@@ -168,7 +176,11 @@ bool Controller::command(string cmd, Player& p) {
         string theproperty, theimprovement;
         cin >> theproperty >> theimprovement;
         if (theimprovement == "buy" || theimprovement == "sell") {
-            string message = p.improve(theproperty, theimprovement);
+            string message = p.improve(theproperty, true);
+            cout << message << endl;
+        }
+        else if (theimprovement == "sell") {
+            string message = p.improve(theproperty, false);
             cout << message << endl;
         } else cout << p.getName() << ": Invalid improve, must use {buy}/{sell}" << endl;
     }
