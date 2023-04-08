@@ -4,10 +4,10 @@
 #include "square.h"
 #include "player.h"
 #include "dice.h"
-#include "memory"
 
-#include <string>
-#include <vector>
+#include <memory>
+// #include <string>
+// #include <vector>
 
 using std::vector;
 using std::unique_ptr;
@@ -29,6 +29,7 @@ class Board {
         //Returns a pointer to the property, if it exists
         Square* stringToProperty(string property);
         //You will have to do validation checking if player has enough money, etc
+        Monopoly stringToMonopoly(string monopoly);
 };
 
 #endif

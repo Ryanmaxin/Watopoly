@@ -1,10 +1,15 @@
 #ifndef __GYM_H__
 #define __GYM_H__
-#include <string>
-#include "ownableproperty.h"
-#include "board.h"
 
-using std::string;
+// #include <string>
+
+// #include "ownableproperty.h"
+// #include "dice.h"
+
+// using std::string;
+
+class OwnableProperty;
+class Dice;
 
 class Gym: public OwnableProperty {
     Dice dice;
@@ -14,5 +19,5 @@ class Gym: public OwnableProperty {
 
         string specificContext(Player& player) override;
 };
-#endif
 
+#endif

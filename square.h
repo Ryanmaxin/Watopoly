@@ -1,6 +1,8 @@
 #ifndef __SQUARES_H__
 #define __SQUARES_H__
-#include <string>
+
+// #include <string>
+
 #include "enumerations.h"
 #include "player.h"
 #include "response.h"

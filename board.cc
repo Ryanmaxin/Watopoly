@@ -98,4 +98,14 @@ void Board::initSquares(string square_data) {
 
     squares.push_back(make_unique<UnownableProperty>);
 }
-    
+
+Monopoly Board::stringToMonopoly(string monopoly) {
+    if (monopoly == "Arts1") return Monopoly::Arts1;
+    else if (monopoly == "Arts2") return Monopoly::Arts2;
+    else if (monopoly == "Eng") return Monopoly::Eng;
+    else if (monopoly == "Health") return Monopoly::Health;
+    else if (monopoly == "Env") return Monopoly::Env;
+    else if (monopoly == "Sci1") return Monopoly::Sci1;
+    else if (monopoly == "Sci2") return Monopoly::Sci2;
+    else return Monopoly::Math;
+}

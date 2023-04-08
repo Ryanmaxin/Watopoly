@@ -1,6 +1,8 @@
 #ifndef __ENUMERATIONS_H__
 #define __ENUMERATIONS_H__
 
+#include <iostream>
+
 enum class Action { NoAction, BuyOrAuction, CantPayTuition, TuitionChoice, InJail };
 
 //Add more here as needed.
