@@ -1,15 +1,12 @@
 #ifndef __GYM_H__
 #define __GYM_H__
 
-// #include <string>
+#include <string>
 
-// #include "ownableproperty.h"
-// #include "dice.h"
+#include "ownableproperty.h"
+#include "dice.h"
 
-// using std::string;
-
-class OwnableProperty;
-class Dice;
+using std::string
 
 class Gym: public OwnableProperty {
     Dice dice;

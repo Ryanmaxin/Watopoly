@@ -1,6 +1,5 @@
 #include "ownableproperty.h"
-#include "square.h"
-
+#include "player.h"
 #include <sstream>
 #include <vector>
 #include <string>

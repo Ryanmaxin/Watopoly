@@ -1,4 +1,6 @@
 #include "unownableproperty.h"
+#include "player.h"
+
 #include <random>
 #include <iostream>
 #include <sstream>

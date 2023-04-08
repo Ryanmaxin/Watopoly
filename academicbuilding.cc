@@ -1,4 +1,5 @@
 #include "academicbuilding.h"
+#include "player.h"
 
 #include <string>
 #include <sstream>

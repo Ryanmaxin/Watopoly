@@ -2,7 +2,6 @@
 #define __UNOWNABLEPROPERTY_H__
 #include <string>
 #include "square.h"
-#include "response.h"
 
 using std::string;
 

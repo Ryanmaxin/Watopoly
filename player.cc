@@ -1,7 +1,4 @@
 #include "player.h"
-#include "response.h"
-#include "academicbuilding.h"
-#include "residence.h"
 
 #include <sstream>
 #include <iostream>

@@ -1,6 +1,4 @@
 #include "controller.h"
-#include "player.h"
-#include "enumerations.h"
 
 #include <vector>
 #include <iostream>
