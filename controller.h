@@ -14,11 +14,11 @@ class Controller {
     vector<Player> players;
     Dice dice;
     int current_player_id;
-    bool player_bankrupted;
-
+    bool game_over = false;
+    void commenceAuction(Player& p, int current_player_id, OwnableProperty* being_auctioned = nullptr);
     void nextTurn();
     bool command(string cmd, Player& p);
-    bool move(Player& p);
+    bool move(Player& p, int roll = 0);
     void load(string filename);
     public:
         Player& playMonopoly();

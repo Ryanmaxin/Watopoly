@@ -36,10 +36,6 @@ Player& Controller::playMonopoly() {
 
         players.push_back(Player(player_name, token, board));
     }
-    
-
-    //players.erase(players.begin() + current_player_id); //<---- use this after bankruptcy to remove current player
-    //Successful bankruptcy should immediately go to the next players turn
 
     //--------------------------------------
     //Game starts being actually played here
@@ -48,7 +44,6 @@ Player& Controller::playMonopoly() {
         //Each loop is a players turn
         Player& p = players[current_player_id];
         cout << "Player " << p.getName() << "'s turn" << endl;
-        player_bankrupted = false;
 
         string cmd;
         cin >> cmd;
@@ -60,7 +55,7 @@ Player& Controller::playMonopoly() {
                     continue;
                 }
                 else if (cmd == "roll") {
-                    move(p);
+                    game_over = move(p);
                     break;
                 }
                 else if (cmd == "next") {
@@ -75,7 +70,30 @@ Player& Controller::playMonopoly() {
                     break;
                 }
             }
+            cout << p.getName() << ": Rolled doubles initially, so must roll again" << endl;
         } while (dice.isDoubles());
+
+        if (game_over) {
+            //Winner Winner Chicken Dinner
+            return players[current_player_id];
+        }
+
+        //Player has completely finished moving now.
+        while (true) {
+            if (command(cmd, p)) {
+                continue;
+            }
+            else if (cmd == "roll") {
+                cout << p.getName() << ": Already moved this turn" << endl;
+            }
+            else if (cmd == "next") {
+                nextTurn();
+                break;
+            }
+            else {
+                cout << p.getName() << ": Invalid command" << endl;
+            }
+        }
     }
 }
 
@@ -123,28 +141,27 @@ bool Controller::command(string cmd, Player& p) {
         if (theimprovement == "buy" || theimprovement == "sell") {
             string message = p.improve(theproperty, theimprovement);
             cout << message << endl;
-        } else cout << p.getName() << ": Invalid improvement type. Enter buy or sell" << endl;
+        } else cout << p.getName() << ": Invalid improve, must use {buy}/{sell}" << endl;
     }
-    // else if (cmd == "bankrupt") {
-    //     string message = players[current_player_id].declareBankruptcy();
-    //     cout << message << endl;
-    //     break; 
-    // }
-    else if (command == "all") {
-        if (p.checkinTuition()) {
-            cout << "You cannot use the 'all' command while deciding how to pay tuition." << endl;
-        } else {
-            for (int i = 0; i < numPlayers; ++i) {
-                cout << "Player " << i + 1 << ":" << endl;
-                players[i].displayAssets();
-                cout << endl;
-            }
+    else if (cmd == "assets") {
+        cout << p << endl;
+    }
+    else if (cmd == "all") {
+        for (auto player : players) {
+            cout << player << endl;
         }
     }
+    else if (cmd == "save") {
+        //To implement
+    }
+    else return false;
+    return true;
 }
 
-bool Controller::move(Player& p) {
-    int roll = dice.roll();
+bool Controller::move(Player& p, int roll) {
+    if (roll == 0) {
+        int roll = dice.roll();
+    }
     MoveResponse res = p.move(roll);
     cout << res.context << endl;
     if (res.action == Action::BuyOrAuction) {
@@ -157,14 +174,14 @@ bool Controller::move(Player& p) {
                 if (cr.is_valid) break;
                 else continue;
             } else if (choice == "auction") {
-                //Figure out auction later
-                p.auctionProperty();
+                commenceAuction(p, current_player_id);
+                break;
             }
-            else if (command(choice)) {
+            else if (command(choice, p)) {
                 continue;
             }
             else if (choice == "next") {
-                cout << p.getName() << ": Must resolve current action before ending turn (resolve with {buy} or {auction})" << endl;
+                cout << p.getName() << ": Must resolve current action before ending turn (resolve with {buy}/{auction})" << endl;
             }
             else {
                 cout << p.getName() << ": Invalid command" << endl;
@@ -176,7 +193,8 @@ bool Controller::move(Player& p) {
             string choice;
             cin >> choice;
             if (choice == "pay") {
-                ChoiceResponse cr = p.payDebts();
+                // MoveResponse res = p.getCurrentSquare()->actionOnLand(p);
+                ChoiceResponse cr = p.payTuition();
                 cout << cr.context << endl;
                 if (cr.is_valid) {
                     break;
@@ -185,9 +203,8 @@ bool Controller::move(Player& p) {
                     continue;
                 }
             } else if (choice == "bankruptcy") {
-                p.declareBankruptcy();
+                cout << p.declareBankruptcy() << endl;
                 players.erase(players.begin() + current_player_id);
-                player_bankrupted = true; 
                 if (players.size() == 1) {
                     return true;
                 }
@@ -196,7 +213,7 @@ bool Controller::move(Player& p) {
                 continue;
             }
             else if (choice == "next") {
-                cout << p.getName() << ": Must resolve current action before ending turn (resolve with {pay} or {bankruptcy})" << endl;
+                cout << p.getName() << ": Must resolve current action before ending turn (resolve with {pay}/{bankruptcy})" << endl;
             }
             else {
                 cout << p.getName() << ": Invalid command" << endl;
@@ -204,44 +221,142 @@ bool Controller::move(Player& p) {
         }
     }
     else if (res.action == Action::InJail) {
-        // while (true) {
-        //     string choice;
-        //     cin >> choice;
-        //     if (choice == "roll") {
-        //         ChoiceResponse cr = p.payDebts();
-        //         cout << cr.context << endl;
-        //         if (cr.is_valid) break;
-        //         else continue;
-        //     } else if (choice == "rollup") {
-        //         p.declareBankruptcy();
-        //         players.erase(players.begin() + current_player_id);
-        //         if (players.size() == 1) {
-        //             return p;
-        //         }
-        //         player_bankrupted = true; 
-        //     } else if (choice == "pay") {
-        //         p.declareBankruptcy();
-        //         players.erase(players.begin() + current_player_id);
-        //         player_bankrupted = true; 
-        //         if (players.size() == 1) {
-        //             return true;
-        //         }
-        //     }
-        //     else if (command(choice,p)) {
-        //         continue;
-        //     }
-        //     else if (choice == "next") {
-        //         cout << p.getName() << ": Must resolve current action before ending turn (resolve with {pay}, {rollup}, or {roll} )" << endl;
-        //     }
-        //     else {
-        //         cout << p.getName() << ": Invalid command" << endl;
-        //     }
-        // }
+        while (true) {
+            string choice;
+            cin >> choice;
+            if (choice == "roll") {
+                int roll = dice.roll();
+                if (dice.isDoubles()) {
+                    bool was_winner = move(p, roll);
+                    if (was_winner) return true;
+                }
+            } 
+            else if (choice == "userollup") {
+                ChoiceResponse cr = p.payOutOfJail(true);
+                cout << cr.context << endl;
+                if (cr.is_valid) {
+                    bool was_winner = move(p);
+                    if (was_winner) return true;
+                }   
+                else continue;
+            } else if (choice == "pay") {
+                ChoiceResponse cr = p.payOutOfJail(false);
+                cout << cr.context << endl;
+                if (cr.is_valid) {
+                    bool was_winner = move(p);
+                    if (was_winner) return true;
+                }   
+                else continue;
+            }
+            else if (command(choice,p)) {
+                continue;
+            }
+            else if (choice == "next") {
+                cout << p.getName() << ": Must resolve current action before ending turn (resolve with {pay}, {userollup}, or {roll} )" << endl;
+            }
+            else {
+                cout << p.getName() << ": Invalid command" << endl;
+            }
+        }
     }
     else if (res.action == Action::TuitionChoice) {
-
+        while (true) {
+            string choice;
+            cin >> choice;
+            int net_worth = p.getNetWorth();
+            int min_cost = std::min(300,net_worth/10);
+            if (choice == "flat") {
+                int net_worth = p.getNetWorth();
+                ChoiceResponse cr = p.payTuition(300);
+                cout << cr.context << endl;
+                if (cr.is_valid) break;
+                else continue;
+            } else if (choice == "percentage") {
+                ChoiceResponse cr = p.payTuition(net_worth/10);
+                cout << cr.context << endl;
+                if (cr.is_valid) break;
+                else continue;
+            }
+            else if (choice == "assets" || choice == "all") {
+                cout << p.getName() << ": Can't check assets while paying tuition" << endl;
+            }
+            else if (command(choice, p)) {
+                continue;
+            }
+            else if (choice == "next") {
+                cout << p.getName() << ": Must resolve current action before ending turn (resolve with {flat}/{percentage}/{bankruptcy})" << endl;
+            }
+            else if (choice == "bankruptcy") {
+                if (p.getBalance() >= min_cost) {
+                    cout << p.getName() << ": Can't declare bankruptcy, have sufficent funds to pay minimum tuition of $" << min_cost << endl;
+                }
+                else {
+                    cout << p.declareBankruptcy() << endl;
+                    players.erase(players.begin() + current_player_id);
+                    if (players.size() == 1) {
+                        return true;
+                    }
+                }
+            }
+            else {
+                cout << p.getName() << ": Invalid command" << endl;
+            }
+        }
     }
     return false;
+}
+
+void Controller::commenceAuction(Player& p, int current_player_id, OwnableProperty* being_auctioned) {
+    if (being_auctioned = nullptr) being_auctioned = dynamic_cast<OwnableProperty*>(p.getCurrentSquare());
+    int turn = current_player_id+1;
+    int current_price = 0;
+    cout << "Auction started for " << being_auctioned->getName() << "(value $" << being_auctioned->getPrice() << ")" << endl; 
+    cout << "Bidding starts at $0 with " << players[turn] << endl;
+    vector<bool> withdrawn(players.size(),false);
+    for (int i = 0; i < players.size(); ++i) {
+        int count = 0;
+        for (auto player: withdrawn) {
+            if (player == true) {
+                ++count;
+            }
+        }
+        if (count >= 2) {
+            //Auction continues...
+            if (!withdrawn[i]) {
+                cout << players[i].getName() << ": Options are {raise}/{withdraw}" << endl;
+                while (true) {
+                    string choice;
+                    cin >> choice;
+                    if (choice == "raise") {
+                        int suggested_price = current_price+=20;
+                        ChoiceResponse res = players[i].offerBid(suggested_price);
+                        cout << res.context << endl;
+                        if (res.is_valid) {
+                            current_price+= suggested_price;
+                            break;
+                        }
+                        else {
+                            continue;
+                        }
+                    }
+                    else if (choice == "withdraw") {
+                        withdrawn[i] = true;
+                        break;
+                    }
+                    else if (command(choice,players[i])) {
+                        continue;
+                    }
+                    else {
+                        cout << players[i].getName() << ": Invalid Command" << endl;
+                    }
+                }
+            }
+        }
+        else {
+            players[i].buy(being_auctioned);
+        }
+    }
+
 }
 
 
