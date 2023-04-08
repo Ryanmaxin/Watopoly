@@ -45,23 +45,26 @@ class Player {
         string raiseFunds();
 
         //Choices for Action::BuyOrAuction
-        MoveResponse buy();
-        MoveResponse auction();
+        ChoiceResponse buy(OwnableProperty * op = nullptr);
+        //MoveResponse auction();
 
         //Choices for Action::TuitionChoice
-        MoveResponse payTuition(int amount);
+        ChoiceResponse payTuition(int amount);
 
         //Choices for Action::InJail
-        string payOutOfJail(bool use_roll_up);
+        ChoiceResponse payOutOfJail(bool use_roll_up);
 
         //Called by SLC and Go To Tims properties. Also called when player rolls doubles 3 times.
         string goToTims();
 
-        //Regular commands
+        //Regular commands (implement)
         string offerTrade(string name, string give, string receive);
         string improve(string property, string buysell);
-        string Mortgage(string property);
+        string Mortgage(string property); // assume property checker in board
         string unMortgage(string property);
+
+         
+        // ChoiceResponse offerBid(int amount);
 
         //Getter-Setter methods
         int getBalance() const;
@@ -75,7 +78,7 @@ class Player {
         // property from the player's balance, set the property's owner to the player, 
         // and add the property to the player's list of owned properties
         
-        void buyProperty(Square* sq);
+        //void buyProperty(Square* sq);
 
         // auctionProperty deals with the auction and setting it, called in controller.cc when
         // player/user decides to auction a property instead of saying "yes"

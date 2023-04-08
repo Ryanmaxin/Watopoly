@@ -7,6 +7,7 @@
 #include <iostream>
 
 using std::ostringstream;
+using std::istringstream;
 using std::cout;
 using std::endl;
 using std::ostream;
@@ -204,3 +205,25 @@ ostream& operator<<(ostream& out, const Player& player) {
         //cout << "Cash: " << cash << endl;
         //cout << "Properties:" << endl;
         //for (const auto& prop : properties) {
+
+string Player::offerTrade(string o_name, string give, string receive) {
+    //assert name, give, receive
+    int g, r;
+    istrigstream iss_g {give};
+    istrigstream iss_r {receive};
+    iss_g >> g;
+    iss_r >> r;
+    if (iss_g && iss_r) { // means both give and receive are integers
+        cout << "Invalid Input" << endl;
+    } else if (iss_g && !iss_r) { // means give is an int and receive is a string
+        balance -= give;
+        transferProperty(receive, name);
+    } else if (!iss_g && iss_r) { // means give is a string and receive is an int
+        transferProperty(give, o_name);
+        balance += receive;
+    } else { // means both give and receive are strings
+        transferProperty(give, o_name);
+        transferProperty(receive, name);
+    }
+}
+
