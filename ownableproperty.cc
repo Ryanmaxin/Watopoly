@@ -11,7 +11,7 @@ using std::ostringstream;
 using std::endl;
 
 OwnableProperty::OwnableProperty(string n, int p):
-Square{n}, owner{nullptr},price{p}, is_mortaged{false} {}
+Square{n}, owner{nullptr}, is_mortaged{false},price{p} {}
 
 Player* OwnableProperty::getOwner() {
     return owner;
@@ -40,6 +40,7 @@ MoveResponse OwnableProperty::actionOnLand(Player& player, bool regenerate) {
             oss << player.getName() << ": Landed on your own property";
         }
         else if (is_mortaged) {
+            action = Action::NoAction;
             oss << player.getName() << ": No tuition due because the property is mortgaged";
         }
         else {

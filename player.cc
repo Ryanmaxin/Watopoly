@@ -10,7 +10,7 @@ using std::endl;
 using std::ostream;
 
 Player::Player(string name, char token, Board* attached_to, int bal, bool rur, int pos, bool in_jail, int num_turns_in_jail):
-name{name},token{token},board{attached_to},balance{bal},owns_roll_up{rur},position{pos},in_tims_line{false},num_turns_in_tims_line{num_turns_in_tims_line} {
+name{name},token{token},position{pos},balance{bal},owns_roll_up{rur},in_tims_line{false},num_turns_in_tims_line{num_turns_in_jail},board{attached_to} {
     current_square = attached_to->getSquare(position);
 }
 
@@ -81,6 +81,9 @@ ChoiceResponse Player::declareBankruptcy() {
         }
         transferProperty(property,receiving);
     }
+    if (tab != 0) {
+        receiving->balance += tab;
+    }
     balance = 0;
     teleport(0);
     string context = oss.str();
@@ -121,8 +124,11 @@ ChoiceResponse Player::settleDebts() {
 }
 
 string Player::goToTims() {
+    ostringstream oss;
     teleport(DC_TIMS_LINE);
     in_tims_line = true;
+    oss << name << ": sent to DC Tims Line";
+    return oss.str();
 }
 
 ChoiceResponse Player::payTuition(int amount) {
@@ -134,7 +140,7 @@ ChoiceResponse Player::payTuition(int amount) {
     }
     else {
         oss << name << ": Paid tuition of $" << amount << endl;
-        balance - 300;
+        balance -= 300;
         action = true;
     }
     string context = oss.str();
@@ -274,7 +280,7 @@ ostream& operator<<(ostream& out, const Player& player) {
         }
     }
     out << "Total net worth: " << player.getNetWorth() << endl;
-
+    return out;
 }
 
 // for the asset function, something like: 
@@ -466,6 +472,7 @@ string Player::improve(string property, bool buy) {
     else {
         oss << name << ": " << property << " is not a valid ownable property";
     }    
+    return oss.str();
 }
 
 char Player::getToken() const { return token; }
