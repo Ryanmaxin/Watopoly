@@ -33,7 +33,6 @@ class Player {
     
     void transferProperty(OwnableProperty* property, Player* receiving);
     
-    bool ownsMonopoly(Monopoly monopoly);
     public:
         Player(string name, char token, Board& attached_to, int bal = 1500, bool rur = false, int pos = 0, bool in_jail = false, int num_turns_in_jail = 0);
 
@@ -42,17 +41,16 @@ class Player {
 
         //Choices for Action::CantPayTuition
         string declareBankruptcy();
-        string raiseFunds();
 
         //Choices for Action::BuyOrAuction
-        MoveResponse buy();
-        MoveResponse auction();
+        ChoiceResponse buy();
+        // MoveResponse auction();
 
         //Choices for Action::TuitionChoice
-        MoveResponse payTuition(int amount);
+        ChoiceResponse payTuition(int amount);
 
         //Choices for Action::InJail
-        string payOutOfJail(bool use_roll_up);
+        ChoiceResponse payOutOfJail(bool use_roll_up);
 
         //Called by SLC and Go To Tims properties. Also called when player rolls doubles 3 times.
         string goToTims();
@@ -70,12 +68,11 @@ class Player {
         //The sum of current balance + price of all owned properties + price of all owned improvements
         int getNetWorth() const;
         string getName() const;
+        Square* getCurrentSquare() const;
 
         // buyProperty would deal with deducting the cost of the 
         // property from the player's balance, set the property's owner to the player, 
         // and add the property to the player's list of owned properties
-        
-        void buyProperty(Square* sq);
 
         // auctionProperty deals with the auction and setting it, called in controller.cc when
         // player/user decides to auction a property instead of saying "yes"
@@ -96,7 +93,7 @@ class Player {
         int numberOfOwnedGyms() const;
         int numberOfOwnedResidences() const;
         
-        //Value of all assets (balance, printed price of buildings, and improvements)
+        //Print all assets (balance, printed price of buildings, and improvements)
         friend ostream& operator<<(ostream& out, const Player& player);
 };
 
