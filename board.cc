@@ -34,7 +34,7 @@ Square* Board::getSquare(int index) {
 }
 
 Square* Board::stringToProperty(string property) {
-    for (size_t i; i < 40; ++i) {
+    for (size_t i = 0; i < 40; ++i) {
         if (squares[i]->getName() == property) {
             return squares[i].get();
         }
