@@ -51,13 +51,14 @@ void Board::initSquares(string square_data) {
             }
             squares.push_back(make_unique<UnownableProperty>(name));
         } else if (type == "a") {
-            string name;
-            int price, imp_cost;
+            string name, set_str;
             Monopoly set;
+            int price, imp_cost;
             vector<int> rent_vector;
 
             iss >> name;
-            iss >> set;
+            iss >> set_str;
+            set = stringToMonopoly(set_str);
             iss >> price;
             iss >> imp_cost;
             
@@ -77,7 +78,7 @@ void Board::initSquares(string square_data) {
             string name;
             int price;
             iss >> name;
-            iss > price;
+            iss >> price;
             squares.push_back(make_unique<Residence>(name, price));
         }
     }
