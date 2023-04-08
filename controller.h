@@ -1,7 +1,7 @@
 #ifndef __CONTROLLER_H__
 #define __CONTROLLER_H__
 
-#include "board.h"
+#include "player.h"
 
 #include <string>
 #include <vector>
