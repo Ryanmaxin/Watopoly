@@ -307,7 +307,6 @@ bool Controller::move(Player& p, int roll) {
             int net_worth = p.getNetWorth();
             int min_cost = std::min(300,net_worth/10);
             if (choice == "flat") {
-                int net_worth = p.getNetWorth();
                 ChoiceResponse cr = p.payTuition(300);
                 cout << cr.context << endl;
                 if (cr.is_valid) break;
@@ -354,7 +353,7 @@ bool Controller::move(Player& p, int roll) {
 }
 
 void Controller::commenceAuction(Player& p, int current_player_id, OwnableProperty* being_auctioned) {
-    if (being_auctioned = nullptr) being_auctioned = dynamic_cast<OwnableProperty*>(p.getCurrentSquare());
+    if (being_auctioned == nullptr) being_auctioned = dynamic_cast<OwnableProperty*>(p.getCurrentSquare());
     int turn = current_player_id+1;
     int current_price = 0;
     cout << "Auction started for " << being_auctioned->getName() << "(value $" << being_auctioned->getPrice() << ")" << endl; 
@@ -408,8 +407,8 @@ void Controller::commenceAuction(Player& p, int current_player_id, OwnableProper
 
 bool Controller::validPlayer(string name, char token) {
     for (auto player: players) {
-        if (player.getName == name) return false;
-        if (player.getToken == token) return false;
+        if (player.getName() == name) return false;
+        if (player.getToken() == token) return false;
     }
     return true;
 }
