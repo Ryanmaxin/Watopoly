@@ -6,10 +6,9 @@
 #include <string>
 #include <iostream>
 
-#include "enumerations.h"
-#include "square.h"
 #include "board.h"
 #include "response.h"
+#include "trade.h"
 
 using std::map;
 using std::string;

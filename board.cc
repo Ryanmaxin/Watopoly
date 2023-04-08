@@ -1,18 +1,4 @@
 #include "board.h"
-#include "player.h"
-#include "memory"
-#include "unownableproperty.h"
-#include "ownableproperty.h"
-#include "gym.h"
-#include "residence.h"
-#include "academicbuilding.h"
-#include "enumerations.h"
-
-#include <iostream>
-#include <vector>
-#include <string>
-#include <fstream>
-#include <sstream>
 
 using std::vector;
 using std::string;
@@ -49,9 +35,9 @@ Square* Board::stringToProperty(string property) {
 
 void Board::initSquares(string square_data) {
     ifstream f { square_data };
-    string s;
+    string line;
     for (int i = 0; i < 40; ++i) {
-        string line = getline(f,s);
+        getline(f,line);
         istringstream iss {line};
         string token;
         bool is_first = true;
@@ -61,10 +47,9 @@ void Board::initSquares(string square_data) {
         if (type == "u") {
             string name, new_token;
             while (iss >> new_token) {
-                name += new_token
+                name += new_token;
             }
             squares.push_back(make_unique<UnownableProperty>(name));
-        }
         } else if (type == "a") {
             string name;
             int price, imp_cost;
@@ -79,14 +64,14 @@ void Board::initSquares(string square_data) {
             for (int i = 0; i < 6; i++) {
                 int theRent;
                 iss >> theRent;
-                rent_vector.push_back(theRent)
+                rent_vector.push_back(theRent);
             }
             squares.push_back(make_unique<AcademicBuilding>(name, price, set, rent_vector, imp_cost));
         } else if (type == "g") {
             string name;
             int price;
             iss >> name;
-            iss > price;
+            iss >> price;
             squares.push_back(make_unique<Gym>(name, price));
         } else if (type == "r") {
             string name;
@@ -95,7 +80,6 @@ void Board::initSquares(string square_data) {
             iss > price;
             squares.push_back(make_unique<Residence>(name, price));
         }
-
-    squares.push_back(make_unique<UnownableProperty>);
+    }
 }
     

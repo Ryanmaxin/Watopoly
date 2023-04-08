@@ -2,7 +2,6 @@
 #define __OWNABLEPROPERTY_H__
 
 #include "square.h"
-#include "player.h"
 
 #include <string>
 #include <vector>
