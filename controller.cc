@@ -26,13 +26,21 @@ Player& Controller::playMonopoly() {
         //Get these fields from cin. 
         string player_name;
         char token;
+        bool first_try = true;
+        do {
+            if (first_try) {
+                first_try = false;
+            }
+            else {
+                cout << "This name or token is already in use by another player" << endl;
+            }
+            int player_number = i + 1;
+            cout << "Enter player " << player_number << " name: ";
 
-        int player_number = i + 1;
-        cout << "Enter player " << player_number << " name: ";
-
-        cin >> player_name;
-        cout << "Enter token for " << player_name << ": ";
-        cin >> token;
+            cin >> player_name;
+            cout << "Enter token for " << player_name << ": ";
+            cin >> token;
+        } while (!validPlayer(player_name,token));
 
         players.push_back(Player(player_name, token, board));
     }
@@ -113,9 +121,41 @@ bool Controller::command(string cmd, Player& p) {
         cin >> name;
         cin >> give;
         cin >> receive;
+        Player* p_ptr = nullptr;
+        for (auto player: players) {
+            //Invariant, there will only be one
+            if (player.getName() == name) {
+                p_ptr = &player;
+            }
+        }
+        if (p_ptr) {
+            Trade cr = p.offerTrade(*p_ptr, give, receive);
+            cout << cr.context << endl;
+            if (cr.is_valid) {
+                while (true) {
+                    cout << name << ", would you like to accept the following offer: " << endl;
+                    cout << "GIVE: " << receive << endl;
+                    cout << "RECEIVE: " << give << endl;
+                    cout << "Choices are {accept}/{decline}" << endl;
+                    string choice;
+                    cin >> choice;
+                    if (choice == "accept") {
+                        cout << p_ptr->acceptOffer(p,cr) << endl;
+                    }
+                    else if (choice == "decline") {
+                        cout << p.getName() << ": " << name << " declined the trade";
+                    }
+                    else {
+                        cout << name << ": Must resolve current trade(resolve with {accept}/{decline})" << endl;
+                    }
+                }
+            };
+        }
+        else {
+            cout << p.getName() << ": There is no player by the name of \"" << name << "\"" << endl;
+        }
+
         
-        string message = p.offerTrade(name, give, receive);
-        cout << message << endl;
     }
     else if (cmd == "mortgage") {
         string property;
@@ -136,7 +176,11 @@ bool Controller::command(string cmd, Player& p) {
         string theproperty, theimprovement;
         cin >> theproperty >> theimprovement;
         if (theimprovement == "buy" || theimprovement == "sell") {
-            string message = p.improve(theproperty, theimprovement);
+            string message = p.improve(theproperty, true);
+            cout << message << endl;
+        }
+        else if (theimprovement == "sell") {
+            string message = p.improve(theproperty, false);
             cout << message << endl;
         } else cout << p.getName() << ": Invalid improve, must use {buy}/{sell}" << endl;
     }
@@ -332,7 +376,7 @@ void Controller::commenceAuction(Player& p, int current_player_id, OwnableProper
         if (count >= 2) {
             //Auction continues...
             if (!withdrawn[i]) {
-                cout << players[i].getName() << ": Options are {raise}/{withdraw}" << endl;
+                cout << players[i].getName() << ": Choices are {raise}/{withdraw}" << endl;
                 while (true) {
                     string choice;
                     cin >> choice;
