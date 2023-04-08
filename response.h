@@ -15,9 +15,9 @@ struct MoveResponse {
 };
 
 struct ChoiceResponse {
-    bool checkstatus;
+    bool is_valid;
     string context;
-    ChoiceResponse(bool ch, string c): checkstatus{ch},context{c} {};
+    ChoiceResponse(bool v, string c): is_valid{v},context{c} {};
 };
 
 #endif

@@ -16,7 +16,7 @@ class Dice {
     int rollDie2();
     public:
         Dice();
-        int rollDice();
+        int roll();
         bool isDoubles();
         bool threeDoubles();
         std::pair<int,int> getFaceValues();

@@ -12,8 +12,8 @@ OwnableProperty{name,p},dice{} {}
 
 int Gym::getTuition() {
     int num_gyms = getOwner()->numberOfOwnedGyms();
-    if (num_gyms == 2) return (10*dice.rollDice());
-    else return (4*dice.rollDice());
+    if (num_gyms == 2) return (10*dice.roll());
+    else return (4*dice.roll());
 }
 
 string Gym::specificContext(Player& player) {

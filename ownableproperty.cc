@@ -28,18 +28,24 @@ MoveResponse OwnableProperty::actionOnLand(Player& player) {
     ostringstream oss;
     Action action;
     if (owner) {
-        int tuition = getTuition();
-        oss << specificContext(player) << "\n";
-        if (player.getBalance() < tuition) {
-            action = Action::CantPayTuition;
-            oss << player.getName() << ": Can't afford $" << tuition << " owed to " << owner->getName() << " for landing on " << name << "(have $" << player.getBalance() << ")";
-            oss << endl << player.getName() << "choices: {raisefunds} {bankruptcy} ";
-        }
-        else {
+        if (owner == &player) {
             action = Action::NoAction;
-            oss << player.getName() << ": Paid $" << tuition << " to " << owner->getName() << " for landing on " << name;
-            player.addBalance(-1 * tuition);
-            owner->addBalance(tuition);
+            oss << player.getName() << ": Landed on your own property";
+            }
+        else {
+            int tuition = getTuition();
+            oss << specificContext(player) << "\n";
+            if (player.getBalance() < tuition) {
+                action = Action::CantPayTuition;
+                oss << player.getName() << ": Can't afford $" << tuition << " owed to " << owner->getName() << " for landing on " << name << "(have $" << player.getBalance() << ")";
+                oss << endl << player.getName() << "choices: {raisefunds} {bankruptcy} ";
+            }
+            else {
+                action = Action::NoAction;
+                oss << player.getName() << ": Paid $" << tuition << " to " << owner->getName() << " for landing on " << name;
+                player.addBalance(-1 * tuition);
+                owner->addBalance(tuition);
+            }
         }
     } 
     else {
