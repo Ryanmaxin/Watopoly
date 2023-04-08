@@ -113,9 +113,41 @@ bool Controller::command(string cmd, Player& p) {
         cin >> name;
         cin >> give;
         cin >> receive;
+        Player* p_ptr = nullptr;
+        for (auto player: players) {
+            //Invariant, there will only be one
+            if (player.getName() == name) {
+                p_ptr = &player;
+            }
+        }
+        if (p_ptr) {
+            Trade cr = p.offerTrade(*p_ptr, give, receive);
+            cout << cr.context << endl;
+            if (cr.is_valid) {
+                while (true) {
+                    cout << name << ", would you like to accept the following offer: " << endl;
+                    cout << "GIVE: " << receive << endl;
+                    cout << "RECEIVE: " << give << endl;
+                    cout << "Choices are {accept}/{decline}" << endl;
+                    string choice;
+                    cin >> choice;
+                    if (choice == "accept") {
+                        cout << p_ptr->acceptOffer(p,cr) << endl;
+                    }
+                    else if (choice == "decline") {
+                        cout << p.getName() << ": " << name << " declined the trade";
+                    }
+                    else {
+                        cout << name << ": Must resolve current trade(resolve with {accept}/{decline})" << endl;
+                    }
+                }
+            };
+        }
+        else {
+            cout << p.getName() << ": There is no player by the name of \"" << name << "\"" << endl;
+        }
+
         
-        string message = p.offerTrade(name, give, receive);
-        cout << message << endl;
     }
     else if (cmd == "mortgage") {
         string property;
@@ -332,7 +364,7 @@ void Controller::commenceAuction(Player& p, int current_player_id, OwnableProper
         if (count >= 2) {
             //Auction continues...
             if (!withdrawn[i]) {
-                cout << players[i].getName() << ": Options are {raise}/{withdraw}" << endl;
+                cout << players[i].getName() << ": Choices are {raise}/{withdraw}" << endl;
                 while (true) {
                     string choice;
                     cin >> choice;

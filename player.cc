@@ -7,6 +7,7 @@
 #include <iostream>
 
 using std::ostringstream;
+using std::istringstream;
 using std::cout;
 using std::endl;
 using std::ostream;
@@ -45,7 +46,7 @@ void Player::teleport(int square_index) {
 void Player::transferProperty(OwnableProperty* property, Player* receiving) {
     property->setOwner(receiving);
     receiving->owned_properties.push_back(property);
-    for (int i; i < owned_properties.size(); ++i) {
+    for (int i = 0; i < owned_properties.size(); ++i) {
         if (owned_properties[i] == property) {
             owned_properties.erase(owned_properties.begin() + i);
         }
@@ -164,13 +165,12 @@ string Player::Mortgage(string property) {
         oss << name << ": You do not own" << op->getName();
     }
     else {
-        oss << name << ": " << op->getName() << " is not a valid ownable property";
+        oss << name << ": " << property << " is not a valid ownable property";
     }
     return oss.str();
 }
 string Player::unMortgage(string property) {
     OwnableProperty* op = dynamic_cast<OwnableProperty*>(board.stringToProperty(property));
-    AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(op);
     ostringstream oss;
     if (op && ownsProperty(op)) {
         if (!op->isMortgaged()) {
@@ -191,7 +191,7 @@ string Player::unMortgage(string property) {
         oss << name << ": You do not own" << op->getName();
     }
     else {
-        oss << name << ": " << op->getName() << " is not a valid ownable property";
+        oss << name << ": " << property << " is not a valid ownable property";
     }
     return oss.str();
 }
@@ -286,3 +286,188 @@ ostream& operator<<(ostream& out, const Player& player) {
         //cout << "Cash: " << cash << endl;
         //cout << "Properties:" << endl;
         //for (const auto& prop : properties) {
+
+Trade Player::offerTrade(Player& send_to, string give, string receive) {
+    //assert name, give, receive
+    int g, r;
+    istringstream iss_g {give};
+    istringstream iss_r {receive};
+    ostringstream oss;
+    iss_g >> g;
+    iss_r >> r;
+
+    int gm = 0;
+    int rm = 0;
+    OwnableProperty* gp = nullptr;
+    OwnableProperty* rp = nullptr;
+    int option = -1;
+
+    bool success = false;
+    if (iss_g && iss_r) { // means both give and receive are integers
+        oss << name << ": Can't offer money in return for money";
+    } else if (iss_g && !iss_r) { // means give is an int and receive is a string
+        OwnableProperty* p = dynamic_cast<OwnableProperty*>(board.stringToProperty(receive));
+        AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(p);
+        if (p) {
+            if (!send_to.ownsProperty(p)) {
+                oss << name << ": Trying to ask for a property " << send_to.name << " doesn't own";
+            }
+            if (balance < g) {
+                oss << name << ": Trying to give away more money then you have (have $" << balance << ")";
+            }
+            else {
+                if (academic && academic->getNumberOfImprovements() > 0) {
+                    oss << name << ": " << academic->getName() << " can't be traded because it has " << academic->getNumberOfImprovements() << " improvements";
+                } 
+                else {
+                    oss << name << ": Successfully sent offer";
+                    success = true;
+                    rp = p;
+                    gm = g;
+                    option = 1;
+                }
+            }
+        }
+        else {
+            oss << name << ": Trying to ask for an invalid property";
+        }
+        
+    } else if (!iss_g && iss_r) { // means give is a string and receive is an int
+        OwnableProperty* p = dynamic_cast<OwnableProperty*>(board.stringToProperty(give));
+        AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(p);
+        if (p) {
+            if (!ownsProperty(p)) {
+                oss << name << ": Trying to give away a property you don't own";
+            }
+            if (send_to.balance < r) {
+                oss << name << ": Trying to ask for more money then " << send_to.name << " has (has $" << send_to.balance << ")";
+            }
+            else {
+                if (academic && academic->getNumberOfImprovements() > 0) {
+                    oss << name << ": " << academic->getName() << " can't be traded because it has " << academic->getNumberOfImprovements() << " improvements";
+                } 
+                else {
+                    oss << name << ": Successfully sent offer";
+                    success = true;
+                    gp = p;
+                    rm = r;
+                    option = 2;
+                }
+            }
+        }
+        else {
+            oss << name << ": Trying to give away invalid property";
+        }
+    } else { // means both give and receive are strings
+        OwnableProperty* p = dynamic_cast<OwnableProperty*>(board.stringToProperty(give));
+        OwnableProperty* p2 = dynamic_cast<OwnableProperty*>(board.stringToProperty(receive));
+        AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(p);
+        AcademicBuilding* academic2 = dynamic_cast<AcademicBuilding*>(p2);
+        
+        if (p && p2) {
+            if (!ownsProperty(p)) {
+                oss << name << ": Trying to give away a property you don't own";
+            }
+            if (!send_to.ownsProperty(p2)) {
+                oss << name << ": Trying to ask for a property " << send_to.name << " doesn't own";
+            }
+            else {
+                if (academic && academic->getNumberOfImprovements() > 0) {
+                    oss << name << ": " << academic->getName() << " can't be traded because it has " << academic->getNumberOfImprovements() << " improvements";
+                } 
+                else if (academic && academic->getNumberOfImprovements() > 0) {
+                    oss << name << ": " << academic2->getName() << " can't be traded because it has " << academic2->getNumberOfImprovements() << " improvements";
+                }          
+                else {
+                    oss << name << ": Successfully sent offer";
+                    success = true;
+                    gp = p2;
+                    rp = p;
+                    option = 3;
+                }
+            }
+        }
+        else {
+            oss << name << ": Trying to trade an invalid property";
+        }
+    }
+    return {success,oss.str(),gm,rm,gp,rp,option};
+}
+
+string Player::acceptOffer(Player& from, Trade t) {
+    ostringstream oss;
+    if (t.option == 1) {
+        OwnableProperty* give = t.receive_property;
+        int receive = t.give_money;
+        transferProperty(give,&from);
+        from.balance -= receive;
+        balance += receive;
+        oss << from.name << ": Successfully traded " << give->getName() << " to " << name << " for " << receive;
+
+    }
+    else if (t.option == 2) {
+        int give = t.receive_money;
+        OwnableProperty* receive = t.give_property;
+        from.transferProperty(receive,this);
+        from.balance += give;
+        balance -= give;
+        oss << from.name << ": Successfully traded " << give << " to " << name << " for " << receive->getName();
+    }
+    else if (t.option) {
+        OwnableProperty* give = t.receive_property;
+        OwnableProperty* receive = t.give_property;
+        from.transferProperty(receive,this);
+        transferProperty(give,&from);
+        oss << from.name << ": Successfully traded " << give->getName() << " to " << name << " for " << receive->getName();
+    }
+    else if (t.option == -1) {
+        #ifdef DEBUG
+            cout << "SOMEHOW AN INVALID TRADE WAS ACCEPTED!!" << endl;
+        #endif
+    }
+    return oss.str();
+}
+
+string Player::improve(string property, bool buy) {
+    // check for monopoly formed and enough balance to improve a property
+    ostringstream oss;
+    AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(board.stringToProperty(property));
+    if (academic) {
+        if (ownsProperty(academic)) {
+            if (buy) {
+                int imp_cost = academic->getImprovementCost();
+                Monopoly set = academic->getSet();
+                if (ownsMonopoly(set)) {
+                    if (balance < imp_cost) {
+                        oss << name << ": Can't afford $" << imp_cost << " to improve " << property << " (have $" << balance << ")";
+                    }
+                    else {
+                        oss << name << ": Successfully bought an improvement on " << property << " for $" << imp_cost;
+                    }
+                }
+                else {
+                    oss << name << ": Can't improve " << property << " because it is not part of a monopoly";
+                }
+
+            }
+            else {
+                int num_improvements = academic->getNumberOfImprovements();
+                if (num_improvements > 0) {
+                    oss << name << ": " << academic->getName() << " has no improvements to sell";
+                }
+                else {
+                    int sell_cost = academic->getImprovementCost() * 0.5;
+                    oss << name << ": Successfully sold an improvement in " << academic->getName() << " for $" << sell_cost;
+                    balance += sell_cost;
+                }
+            }
+        }   
+        else {
+            oss << name << ": You do not own" << academic->getName();
+        }
+    }
+    else {
+        oss << name << ": " << property << " is not a valid ownable property";
+    }
+    
+}

@@ -45,7 +45,6 @@ class Player {
 
         //Choices for Action::BuyOrAuction
         ChoiceResponse buy(OwnableProperty* property = nullptr);
-        // MoveResponse auction();
 
         //Choices for Action::TuitionChoice
         ChoiceResponse payTuition(int amount);
@@ -56,11 +55,15 @@ class Player {
         //Called by SLC and Go To Tims properties. Also called when player rolls doubles 3 times.
         string goToTims();
 
-        //Regular commands
-        string offerTrade(string name, string give, string receive);
-        string improve(string property, string buysell);
-        string Mortgage(string property);
+        //Regular commands (implement)
+        Trade offerTrade(Player& send_to, string give, string receive);
+        string acceptOffer(Player& from, Trade t);
+        string improve(string property, bool buy);
+        string Mortgage(string property); // assume property checker in board
         string unMortgage(string property);
+
+         
+        // ChoiceResponse offerBid(int amount);
 
         //Getter-Setter methods
         int getBalance() const;
