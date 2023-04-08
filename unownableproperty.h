@@ -7,8 +7,9 @@
 using std::string;
 
 class UnownableProperty: public Square {
+    int last_slc_roll;
     public:
         UnownableProperty(string n);
-        MoveResponse actionOnLand(Player& player) override;
+        MoveResponse actionOnLand(Player& player, bool regenerate = true) override;
 };
 #endif

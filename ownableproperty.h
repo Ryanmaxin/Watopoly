@@ -13,14 +13,18 @@ using std::vector;
 class OwnableProperty: public Square {
     protected:
         Player* owner;
+        bool is_mortaged;
         int price;
         virtual int getTuition() = 0;
     public:
         OwnableProperty(string n, int p);
 
-        MoveResponse actionOnLand(Player& player);
+        MoveResponse actionOnLand(Player& player, bool regenerate = false);
 
         virtual string specificContext(Player& player) = 0;
+
+        void setMortgage(bool val);
+        bool isMortgaged();
 
         Player* getOwner();
         void setOwner(Player* new_owner);

@@ -16,6 +16,20 @@ int AcademicBuilding::getTuition() {return rent_vector[num_improvements];}
 int AcademicBuilding::getImprovementCost() const {return improvement_cost;}
 int AcademicBuilding::getNumberOfImprovements() const {return num_improvements;}
 
+int AcademicBuilding::sellAllImprovements() {
+    int value = num_improvements * improvement_cost * 0.5;
+    num_improvements = 0;
+    return value;
+}
+
+int AcademicBuilding::sellImprovement() {
+    num_improvements -= 1;
+}
+
+int AcademicBuilding::buyImprovement() {
+    num_improvements += 1;
+}
+
 string AcademicBuilding::specificContext(Player& player) {
     ostringstream oss;
     bool hasMonopoly = player.ownsMonopoly(set);

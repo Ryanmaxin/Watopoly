@@ -45,7 +45,7 @@ void Player::teleport(int square_index) {
 
 void Player::transferProperty(OwnableProperty* property, Player* receiving) {
     property->setOwner(receiving);
-
+    receiving->owned_properties.push_back(property);
     for (int i; i < owned_properties.size(); ++i) {
         if (owned_properties[i] == property) {
             owned_properties.erase(owned_properties.begin() + i);
@@ -53,45 +53,74 @@ void Player::transferProperty(OwnableProperty* property, Player* receiving) {
     }
 }
 
-string Player::declareBankruptcy() {
+ChoiceResponse Player::declareBankruptcy() {
+    ostringstream oss;
     OwnableProperty* cp = dynamic_cast<OwnableProperty*>(current_square);
     Player* receiving;
+    bool action;
+    int tab = 0;
     if (cp == nullptr) {
-        //Declare bankruptcy to the bank
         receiving = nullptr;
+        oss << name << ": Went bankrupt, all assets transferred to the bank. All properties will auctioned";
+        removeRollUp();
+        action = true;
     }
     else {
         //Declare bankruptcy to another player
         receiving = cp->getOwner();
         receiving->balance += balance;
+        oss << name << ": Went bankrupt, all assets transferred to " << receiving->getName();
+        if (owns_roll_up) {
+            receiving->owns_roll_up = true;
+            owns_roll_up = false;
+        }
+        action = false;
     }
+
     for (auto property: owned_properties) {
-            transferProperty(property,receiving);
+        AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(cp);
+        if (academic && !cp) {
+            tab+= academic->sellAllImprovements();
+        }
+        transferProperty(property,receiving);
     }
     balance = 0;
     teleport(0);
-    return "";
+    string context = oss.str();
+    return {action,context};
 }
 
-MoveResponse Player::buy() {
+ChoiceResponse Player::buy(OwnableProperty* property) {
+    if (property == nullptr) property = dynamic_cast<OwnableProperty*>(current_square);
     ostringstream oss;
-    Action action;
-    OwnableProperty* ownable = dynamic_cast<OwnableProperty*>(current_square);
-    int price = ownable->getPrice();
+    bool action;
+    int price = property->getPrice();
     if (balance < price) {
         oss << name << ": Can't afford property price of " << price << " (Have " << balance << ")";
-        action = Action::CantAfford;
+        action = false;
     } else {
-        owned_properties.push_back(ownable);
+        owned_properties.push_back(property);
         balance = balance - price;
-        AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(ownable);
-        Monopoly set = academic->getSet();
         oss << name << ": Successfully purchased " << price << " (Have " << balance << ")";
-        action = Action::NoAction;
+        action = true;
     }
     std::string context = oss.str();
     return {action,context};
 
+}
+
+ChoiceResponse Player::settleDebts() {
+    MoveResponse res = current_square->actionOnLand(*this, false);
+    bool success;
+    ostringstream oss;
+    if (res.action == Action::CantPayTuition) {
+        success = false;
+    }
+    else {
+        success = true;
+    }
+    string context = oss.str();
+    return {success,context};
 }
 
 string Player::goToTims() {
@@ -99,20 +128,73 @@ string Player::goToTims() {
     in_tims_line = true;
 }
 
-MoveResponse Player::payTuition(int amount) {
+ChoiceResponse Player::payTuition(int amount) {
     ostringstream oss;
-    Action action;
+    bool action = false;
     if (balance < amount) {
         oss << name << ": Can't afford tuition price of " << amount << "(Have " << balance << ")";
-        action = Action::CantPayTuition;
+        action = false;
     }
     else {
-        oss << name << ": Paid tuition of $300 ";
+        oss << name << ": Paid tuition of $" << amount << endl;
         balance - 300;
-        action = Action::NoAction;
+        action = true;
     }
     string context = oss.str();
     return {action,context};
+}
+
+string Player::Mortgage(string property) {
+    OwnableProperty* op = dynamic_cast<OwnableProperty*>(board.stringToProperty(property));
+    AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(op);
+    ostringstream oss;
+    if (op && ownsProperty(op)) {
+        if (op->isMortgaged()) {
+            oss << name << ": " << op->getName() << " already mortgaged";
+        }
+        else if (academic && academic->getNumberOfImprovements() > 0) {
+            oss << name << ": " << op->getName() << " can't be mortgaged because it has " << academic->getNumberOfImprovements() << " improvements";
+        }
+        else {
+            op->setMortgage(true);
+            balance += op->getPrice() * 0.5;
+            oss << name << ": " << op->getName() << " mortgaged, received $" << op->getPrice() * 0.5;
+        }
+    }
+    else if (!ownsProperty(op)){
+        oss << name << ": You do not own" << op->getName();
+    }
+    else {
+        oss << name << ": " << op->getName() << " is not a valid ownable property";
+    }
+    return oss.str();
+}
+string Player::unMortgage(string property) {
+    OwnableProperty* op = dynamic_cast<OwnableProperty*>(board.stringToProperty(property));
+    AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(op);
+    ostringstream oss;
+    if (op && ownsProperty(op)) {
+        if (!op->isMortgaged()) {
+            oss << name << ": " << op->getName() << " is not mortgaged";
+        }
+        else {
+            if (balance < op->getPrice() * 0.6) {
+                oss << name << ": Can't afford the" << op->getPrice() * 0.6 << "to unmortgage " << op->getName() << " (have $" << balance << ")";
+            }
+            else {
+                op->setMortgage(false);
+                balance -= op->getPrice() * 0.6;
+                oss << name << ": Successfully unmortgaged " << op->getName() << " for $" << op->getPrice() * 0.6;
+            }
+        }
+    }
+    else if (!ownsProperty(op)){
+        oss << name << ": You do not own" << op->getName();
+    }
+    else {
+        oss << name << ": " << op->getName() << " is not a valid ownable property";
+    }
+    return oss.str();
 }
 
 int Player::getNetWorth() const {
