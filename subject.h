@@ -2,7 +2,6 @@
 #define _SUBJECT_H_
 
 #include <vector>
-#include "observer.h"
 
 using namespace std;
 
