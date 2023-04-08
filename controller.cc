@@ -40,7 +40,7 @@ Player& Controller::playMonopoly() {
             cin >> token;
         } while (!validPlayer(player_name,token));
 
-        players.push_back(Player(player_name, token, board));
+        players.push_back(Player(player_name, token, &board));
     }
 
     //--------------------------------------
@@ -110,10 +110,6 @@ void Controller::nextTurn() {
 }
 
 bool Controller::command(string cmd, Player& p) {
-    bool isvalidtrade = false;
-    string cmd;
-    getline(cin, cmd);
-    cin >> cmd;
     if (cmd == "trade") {
         string name, give, receive;
         cin >> name;

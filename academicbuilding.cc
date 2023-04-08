@@ -8,7 +8,7 @@ using std::ostringstream;
 using std::string;
 
 AcademicBuilding::AcademicBuilding(string name, int p, Monopoly s, vector<int> rv, int ic): 
-OwnableProperty{name,p},set{s},rent_vector{rv},num_improvements{0}, improvement_cost{ic} {};
+OwnableProperty{name,p},set{s},num_improvements{0},improvement_cost{ic},rent_vector{rv} {};
 
 Monopoly AcademicBuilding::getSet() {return set;}
 
@@ -24,11 +24,13 @@ int AcademicBuilding::sellAllImprovements() {
 }
 
 int AcademicBuilding::sellImprovement() {
-    num_improvements -= 1;
+    int ret = num_improvements - 1;
+    return ret;
 }
 
 int AcademicBuilding::buyImprovement() {
-    num_improvements += 1;
+    int ret = num_improvements + 1;
+    return ret;
 }
 
 string AcademicBuilding::specificContext(Player& player) {

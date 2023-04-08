@@ -26,14 +26,14 @@ class Player {
     bool in_tims_line;
     int num_turns_in_tims_line;
 
-    Board& board;
+    Board* board;
     Square* current_square;
     vector<OwnableProperty*> owned_properties;
     
     void transferProperty(OwnableProperty* property, Player* receiving);
     
     public:
-        Player(string name, char token, Board& attached_to, int bal = 1500, bool rur = false, int pos = 0, bool in_jail = false, int num_turns_in_jail = 0);
+        Player(string name, char token, Board* attached_to, int bal = 1500, bool rur = false, int pos = 0, bool in_jail = false, int num_turns_in_jail = 0);
 
         MoveResponse move(int num_spaces);
         void teleport(int square_index);

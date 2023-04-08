@@ -31,7 +31,7 @@ bool OwnableProperty::isMortgaged() {
     return is_mortaged;
 }
 
-MoveResponse OwnableProperty::actionOnLand(Player& player, bool regenerate = true) {
+MoveResponse OwnableProperty::actionOnLand(Player& player, bool regenerate) {
     ostringstream oss;
     Action action;
     if (owner) {

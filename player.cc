@@ -9,15 +9,15 @@ using std::cout;
 using std::endl;
 using std::ostream;
 
-Player::Player(string name, char token, Board& attached_to, int bal = 0, bool rur = false, int pos = 0, bool in_jail = false, int num_turns_in_jail = 0):
+Player::Player(string name, char token, Board* attached_to, int bal, bool rur, int pos, bool in_jail, int num_turns_in_jail):
 name{name},token{token},board{attached_to},balance{bal},owns_roll_up{rur},position{pos},in_tims_line{false},num_turns_in_tims_line{num_turns_in_tims_line} {
-    current_square = attached_to.getSquare(position);
+    current_square = attached_to->getSquare(position);
 }
 
 MoveResponse Player::move(int num_spaces) {
     if (!(in_tims_line)) {
         position = (position + num_spaces)%39;
-        current_square = board.getSquare(position);
+        current_square = board->getSquare(position);
         MoveResponse res = current_square->actionOnLand(*this);
         return res;
     }
@@ -37,7 +37,7 @@ void Player::teleport(int square_index) {
         #endif
     }
     position = square_index;
-    current_square = board.getSquare(position);
+    current_square = board->getSquare(position);
 }
 
 void Player::transferProperty(OwnableProperty* property, Player* receiving) {
@@ -142,7 +142,7 @@ ChoiceResponse Player::payTuition(int amount) {
 }
 
 string Player::Mortgage(string property) {
-    OwnableProperty* op = dynamic_cast<OwnableProperty*>(board.stringToProperty(property));
+    OwnableProperty* op = dynamic_cast<OwnableProperty*>(board->stringToProperty(property));
     AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(op);
     ostringstream oss;
     if (op && ownsProperty(op)) {
@@ -167,7 +167,7 @@ string Player::Mortgage(string property) {
     return oss.str();
 }
 string Player::unMortgage(string property) {
-    OwnableProperty* op = dynamic_cast<OwnableProperty*>(board.stringToProperty(property));
+    OwnableProperty* op = dynamic_cast<OwnableProperty*>(board->stringToProperty(property));
     ostringstream oss;
     if (op && ownsProperty(op)) {
         if (!op->isMortgaged()) {
@@ -303,7 +303,7 @@ Trade Player::offerTrade(Player& send_to, string give, string receive) {
     if (iss_g && iss_r) { // means both give and receive are integers
         oss << name << ": Can't offer money in return for money";
     } else if (iss_g && !iss_r) { // means give is an int and receive is a string
-        OwnableProperty* p = dynamic_cast<OwnableProperty*>(board.stringToProperty(receive));
+        OwnableProperty* p = dynamic_cast<OwnableProperty*>(board->stringToProperty(receive));
         AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(p);
         if (p) {
             if (!send_to.ownsProperty(p)) {
@@ -330,7 +330,7 @@ Trade Player::offerTrade(Player& send_to, string give, string receive) {
         }
         
     } else if (!iss_g && iss_r) { // means give is a string and receive is an int
-        OwnableProperty* p = dynamic_cast<OwnableProperty*>(board.stringToProperty(give));
+        OwnableProperty* p = dynamic_cast<OwnableProperty*>(board->stringToProperty(give));
         AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(p);
         if (p) {
             if (!ownsProperty(p)) {
@@ -356,8 +356,8 @@ Trade Player::offerTrade(Player& send_to, string give, string receive) {
             oss << name << ": Trying to give away invalid property";
         }
     } else { // means both give and receive are strings
-        OwnableProperty* p = dynamic_cast<OwnableProperty*>(board.stringToProperty(give));
-        OwnableProperty* p2 = dynamic_cast<OwnableProperty*>(board.stringToProperty(receive));
+        OwnableProperty* p = dynamic_cast<OwnableProperty*>(board->stringToProperty(give));
+        OwnableProperty* p2 = dynamic_cast<OwnableProperty*>(board->stringToProperty(receive));
         AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(p);
         AcademicBuilding* academic2 = dynamic_cast<AcademicBuilding*>(p2);
         
@@ -428,7 +428,7 @@ string Player::acceptOffer(Player& from, Trade t) {
 string Player::improve(string property, bool buy) {
     // check for monopoly formed and enough balance to improve a property
     ostringstream oss;
-    AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(board.stringToProperty(property));
+    AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(board->stringToProperty(property));
     if (academic) {
         if (ownsProperty(academic)) {
             if (buy) {

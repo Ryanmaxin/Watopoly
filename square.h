@@ -4,7 +4,7 @@
 #include <string>
 
 class Player;
-class MoveResponse;
+struct MoveResponse;
 
 using std::string;
 
