@@ -2,6 +2,7 @@
 #define __DICE_H__
 
 #include <string>
+#include <vector>
 
 using std::string;
 
@@ -11,6 +12,7 @@ class Dice {
     int doubles_rolled;
     int rollDie1();
     int rollDie2();
+    int rollInternal(std::vector<int> const & v );
     public:
         Dice();
         int roll();
