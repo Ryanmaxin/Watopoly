@@ -15,4 +15,5 @@ class Square {
         virtual MoveResponse actionOnLand(Player& player, bool regenerate = true) = 0;
         string getName();
 };
+
 #endif

@@ -6,6 +6,4 @@ using std::string;
 
 Square::Square(string n): name{n} {}
 
-string Square::getName() {
-    return name;
-}
+string Square::getName() { return name; }

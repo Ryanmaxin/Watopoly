@@ -11,6 +11,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <fstream>
+#include <sstream>
 
 using std::vector;
 using std::string;
@@ -19,6 +21,8 @@ using std::make_unique;
 using std::pair;
 using std::cout;
 using std::endl;
+using std::ifstream;
+using std::istringstream;
 
 void Board::init(string square_data) {
     //Clear previous state.
@@ -43,48 +47,55 @@ Square* Board::stringToProperty(string property) {
     return nullptr;
 }
 
-void Board::initSquares() {
-    
+void Board::initSquares(string square_data) {
+    ifstream f { square_data };
+    string s;
+    for (int i = 0; i < 40; ++i) {
+        string line = getline(f,s);
+        istringstream iss {line};
+        string token;
+        bool is_first = true;
+        string type;
+        
+        iss >> type;
+        if (type == "u") {
+            string name, new_token;
+            while (iss >> new_token) {
+                name += new_token
+            }
+            squares.push_back(make_unique<UnownableProperty>(name));
+        }
+        } else if (type == "a") {
+            string name;
+            int price, imp_cost;
+            Monopoly set;
+            vector<int> rent_vector;
 
-    
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<AcademicBuilding>("AL",Monopoly::Arts1));
-    // locations.push_back(make_unique<UnownableProperty>("SLC"));
-    // locations.push_back(make_unique<AcademicBuilding>("ML",Monopoly::Arts1));
-    // locations.push_back(make_unique<UnownableProperty>(""));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
-    // locations.push_back(make_unique<UnownableProperty>("COLLECT OSAP"));
+            iss >> name;
+            iss >> set;
+            iss >> price;
+            iss >> imp_cost;
+            
+            for (int i = 0; i < 6; i++) {
+                int theRent;
+                iss >> theRent;
+                rent_vector.push_back(theRent)
+            }
+            squares.push_back(make_unique<AcademicBuilding>(name, price, set, rent_vector, imp_cost));
+        } else if (type == "g") {
+            string name;
+            int price;
+            iss >> name;
+            iss > price;
+            squares.push_back(make_unique<Gym>(name, price));
+        } else if (type == "r") {
+            string name;
+            int price;
+            iss >> name;
+            iss > price;
+            squares.push_back(make_unique<Residence>(name, price));
+        }
+
+    squares.push_back(make_unique<UnownableProperty>);
 }
+    

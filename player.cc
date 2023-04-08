@@ -289,7 +289,7 @@ ostream& operator<<(ostream& out, const Player& player) {
 
 Trade Player::offerTrade(Player& send_to, string give, string receive) {
     //assert name, give, receive
-    int g, r;
+    int g, r; // for give (g), receive (r)
     istringstream iss_g {give};
     istringstream iss_r {receive};
     ostringstream oss;
