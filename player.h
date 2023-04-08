@@ -40,10 +40,10 @@ class Player {
         void teleport(int square_index);
 
         //Choices for Action::CantPayTuition
-        string declareBankruptcy();
+        ChoiceResponse declareBankruptcy();
 
         //Choices for Action::BuyOrAuction
-        ChoiceResponse buy();
+        ChoiceResponse buy(OwnableProperty* property = nullptr);
         // MoveResponse auction();
 
         //Choices for Action::TuitionChoice
@@ -54,6 +54,8 @@ class Player {
 
         //Called by SLC and Go To Tims properties. Also called when player rolls doubles 3 times.
         string goToTims();
+
+        ChoiceResponse settleDebts();
 
         //Regular commands
         string offerTrade(string name, string give, string receive);
@@ -69,6 +71,8 @@ class Player {
         int getNetWorth() const;
         string getName() const;
         Square* getCurrentSquare() const;
+        vector<OwnableProperty*> getOwnedProperties();
+        void removeRollUp();
 
         // buyProperty would deal with deducting the cost of the 
         // property from the player's balance, set the property's owner to the player, 
@@ -77,15 +81,10 @@ class Player {
         // auctionProperty deals with the auction and setting it, called in controller.cc when
         // player/user decides to auction a property instead of saying "yes"
         // for buying
-        void auctionProperty(Square* sq, std::vector<Player*> players);
 
         // this function should print like the 
         // Value of all assets (balance, printed price of buildings, and improvements)
-        void displayAssets() const;
 
-        // checkinTuition
-        bool checkinTuition() const;
-        bool doesOwnProperty(Square* property);
 
         //Stateless functions
         bool ownsProperty(Square* property) const;

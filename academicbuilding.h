@@ -20,6 +20,11 @@ class AcademicBuilding: public OwnableProperty {
         
         string specificContext(Player& p) override;
 
+        int sellAllImprovements();
+        int sellImprovement();
+        int buyImprovement();
+
+
         int getTuition() override;
         int getImprovementCost() const ;
         int getNumberOfImprovements() const;

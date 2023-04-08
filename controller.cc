@@ -47,8 +47,6 @@ Player& Controller::playMonopoly() {
 
         string cmd;
         cin >> cmd;
-        //Calling commands before rolling
-        //After player calls "roll"
         do {
             while (true) {
                 if (command(cmd, p)) {
@@ -57,6 +55,10 @@ Player& Controller::playMonopoly() {
                 else if (cmd == "roll") {
                     game_over = move(p);
                     break;
+                    if (game_over) {
+                        //Winner Winner Chicken Dinner
+                        return players[current_player_id];
+                    }
                 }
                 else if (cmd == "next") {
                     cout << p.getName() << ": Can't end turn before rolling" << endl;
@@ -72,11 +74,6 @@ Player& Controller::playMonopoly() {
             }
             cout << p.getName() << ": Rolled doubles initially, so must roll again" << endl;
         } while (dice.isDoubles());
-
-        if (game_over) {
-            //Winner Winner Chicken Dinner
-            return players[current_player_id];
-        }
 
         //Player has completely finished moving now.
         while (true) {
@@ -194,7 +191,7 @@ bool Controller::move(Player& p, int roll) {
             cin >> choice;
             if (choice == "pay") {
                 // MoveResponse res = p.getCurrentSquare()->actionOnLand(p);
-                ChoiceResponse cr = p.payTuition();
+                ChoiceResponse cr = p.settleDebts();
                 cout << cr.context << endl;
                 if (cr.is_valid) {
                     break;
@@ -203,7 +200,13 @@ bool Controller::move(Player& p, int roll) {
                     continue;
                 }
             } else if (choice == "bankruptcy") {
-                cout << p.declareBankruptcy() << endl;
+                ChoiceResponse cr = p.declareBankruptcy();
+                cout << cr.context << endl;
+                if (cr.is_valid) {
+                    for (auto property: p.getOwnedProperties()) {
+                        commenceAuction(p, current_player_id, property);
+                    }
+                }
                 players.erase(players.begin() + current_player_id);
                 if (players.size() == 1) {
                     return true;
@@ -291,7 +294,13 @@ bool Controller::move(Player& p, int roll) {
                     cout << p.getName() << ": Can't declare bankruptcy, have sufficent funds to pay minimum tuition of $" << min_cost << endl;
                 }
                 else {
-                    cout << p.declareBankruptcy() << endl;
+                    ChoiceResponse cr = p.declareBankruptcy();
+                    cout << cr.context << endl;
+                    if (cr.is_valid) {
+                        for (auto property: p.getOwnedProperties()) {
+                            commenceAuction(p, current_player_id, property);
+                        }
+                    }
                     players.erase(players.begin() + current_player_id);
                     if (players.size() == 1) {
                         return true;
@@ -329,14 +338,14 @@ void Controller::commenceAuction(Player& p, int current_player_id, OwnableProper
                     cin >> choice;
                     if (choice == "raise") {
                         int suggested_price = current_price+=20;
-                        ChoiceResponse res = players[i].offerBid(suggested_price);
-                        cout << res.context << endl;
-                        if (res.is_valid) {
-                            current_price+= suggested_price;
-                            break;
+                        if (players[i].getBalance() < suggested_price) {
+                            cout << players[i].getName() << ": Invalid. Current raise would bring price to $" << suggested_price << ", but you only have $" << players[i].getBalance() << endl;
+                            continue;
                         }
                         else {
-                            continue;
+                            cout << players[i].getName() << ": Successfully raised to $" << suggested_price << endl;
+                            current_price+= suggested_price;
+                            break;
                         }
                     }
                     else if (choice == "withdraw") {
