@@ -56,8 +56,9 @@ class Player {
         string goToTims();
 
         //Regular commands (implement)
-        string offerTrade(string o_name, string give, string receive);
-        string improve(string property, string buysell);
+        Trade offerTrade(Player& send_to, string give, string receive);
+        string acceptOffer(Player& from, Trade t);
+        string improve(string property, bool buy);
         string Mortgage(string property); // assume property checker in board
         string unMortgage(string property);
 
@@ -74,18 +75,6 @@ class Player {
         Square* getCurrentSquare() const;
         vector<OwnableProperty*> getOwnedProperties();
         void removeRollUp();
-
-        // buyProperty would deal with deducting the cost of the 
-        // property from the player's balance, set the property's owner to the player, 
-        // and add the property to the player's list of owned properties
-
-        // auctionProperty deals with the auction and setting it, called in controller.cc when
-        // player/user decides to auction a property instead of saying "yes"
-        // for buying
-
-        // this function should print like the 
-        // Value of all assets (balance, printed price of buildings, and improvements)
-
 
         //Stateless functions
         bool ownsProperty(Square* property) const;
