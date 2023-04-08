@@ -58,7 +58,7 @@ class Player {
         string goToTims();
 
         //Regular commands (implement)
-        string offerTrade(string name, string give, string receive);
+        string offerTrade(string o_name, string give, string receive);
         string improve(string property, string buysell);
         string Mortgage(string property); // assume property checker in board
         string unMortgage(string property);

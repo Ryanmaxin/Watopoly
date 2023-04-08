@@ -46,7 +46,7 @@ void Player::teleport(int square_index) {
 void Player::transferProperty(OwnableProperty* property, Player* receiving) {
     property->setOwner(receiving);
 
-    for (int i; i < owned_properties.size(); ++i) {
+    for (int i = 0; i < owned_properties.size(); ++i) {
         if (owned_properties[i] == property) {
             owned_properties.erase(owned_properties.begin() + i);
         }
@@ -227,3 +227,7 @@ string Player::offerTrade(string o_name, string give, string receive) {
     }
 }
 
+string Player::improve(string property, string buysell) {
+    // check for monopoly formed and enough balance to improve a property
+    
+}
