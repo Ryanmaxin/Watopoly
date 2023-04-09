@@ -10,13 +10,13 @@ using std::string;
 struct MoveResponse {
     Action action;
     string context;
-    MoveResponse(Action a, string c): action{a},context{c} {};
+    MoveResponse(Action a, string c);
 };
 
 struct ChoiceResponse {
     bool is_valid;
     string context;
-    ChoiceResponse(bool v, string c): is_valid{v},context{c} {};
+    ChoiceResponse(bool v, string c);
 };
 
 #endif
