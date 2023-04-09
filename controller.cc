@@ -20,13 +20,12 @@ Player& Controller::playMonopoly() {
     int num_players = 0; //Get from cin
     cout << "Enter the number of players: ";
     cin >> num_players;
-
-    while(num_players < 2 && num_players > 6) {
+    // 2 <= x <= 6
+    while((!(num_players <= 2 && num_players >= 6)) && cin) {
+        if(!(num_players <= 2 && num_players >= 6)) cout << "Please enter the number of players between 2 to 6." << endl;
         cout << "Enter the number of players: ";
         cin >> num_players;
-        if(num_players < 2 && num_players > 6) cerr << "Please enter the number of players between 2 to 6." << endl;
     }
-
     //Initialize players vector
     for (int i = 0; i < num_players; i++)
     {
