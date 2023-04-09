@@ -91,8 +91,8 @@ ChoiceResponse Player::declareBankruptcy() {
     return {action,context};
 }
 
-ChoiceResponse Player::buy(OwnableProperty* property) {
-    if (property == nullptr) property = dynamic_cast<OwnableProperty*>(current_square);
+ChoiceResponse Player::buy() {
+    OwnableProperty* property = dynamic_cast<OwnableProperty*>(current_square);
     ostringstream oss;
     bool action;
     int price = property->getPrice();
@@ -108,6 +108,11 @@ ChoiceResponse Player::buy(OwnableProperty* property) {
     std::string context = oss.str();
     return {action,context};
 
+}
+
+void Player::wonAuction(OwnableProperty* property, int price) {
+        owned_properties.push_back(property);
+        balance = balance - price;
 }
 
 ChoiceResponse Player::settleDebts() {
@@ -273,6 +278,10 @@ ostream& operator<<(ostream& out, const Player& player) {
     out << std::boolalpha << "Owns roll up rim: " << player.owns_roll_up << endl;
     for (auto property: player.owned_properties) {
         AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(property);
+        string mortgage = "";
+        if (property->isMortgaged()) {
+            mortgage = " (mortgaged)";
+        }
         if (academic) {
             out << property->getName() << ": " << academic->getNumberOfImprovements() << " improvements" << endl;
         }
@@ -467,7 +476,7 @@ string Player::improve(string property, bool buy) {
             }
         }   
         else {
-            oss << name << ": You do not own" << academic->getName();
+            oss << name << ": You do not own " << academic->getName();
         }
     }
     else {

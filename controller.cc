@@ -63,6 +63,7 @@ Player& Controller::playMonopoly() {
             while (true) {
                 string cmd;
                 cin >> cmd;
+                
                 if (command(cmd, p)) {
                     continue;
                 }
@@ -86,14 +87,15 @@ Player& Controller::playMonopoly() {
                     break;
                 }
             }
-            if (dice.isDoubles()) cout << p.getName() << ": Rolled doubles initially, so must roll again" << endl;
+            if (dice.isDoubles()) cout << p.getName() << ": Rolled doubles, so must roll again" << endl;
         } while (dice.isDoubles());
 
-        cout << endl;
+        
         //Player has completely finished moving now.
         while (true) {
             string cmd;
             cin >> cmd;
+            
             if (command(cmd, p)) {
                 continue;
             }
@@ -107,7 +109,7 @@ Player& Controller::playMonopoly() {
             else {
                 cout << p.getName() << ": Invalid command" << endl;
             }
-            cout << endl;
+            
         }
     }
 }
@@ -146,6 +148,7 @@ bool Controller::command(string cmd, Player& p) {
                     cout << "Choices are {accept}/{decline}" << endl;
                     string choice;
                     cin >> choice;
+                    
                     if (choice == "accept") {
                         cout << p_ptr->acceptOffer(p,cr) << endl;
                         break;
@@ -235,7 +238,7 @@ bool Controller::move(Player& p, int roll) {
             else {
                 cout << p.getName() << ": Invalid command" << endl;
             }
-            cout << endl;
+            
         }
     }
     else if (res.action == Action::CantPayTuition) {
@@ -243,7 +246,6 @@ bool Controller::move(Player& p, int roll) {
             string choice;
             cin >> choice;
             if (choice == "pay") {
-                // MoveResponse res = p.getCurrentSquare()->actionOnLand(p);
                 ChoiceResponse cr = p.settleDebts();
                 cout << cr.context << endl;
                 if (cr.is_valid) {
@@ -274,7 +276,7 @@ bool Controller::move(Player& p, int roll) {
             else {
                 cout << p.getName() << ": Invalid command" << endl;
             }
-            cout << endl;
+            
         }
     }
     else if (res.action == Action::InJail) {
@@ -314,7 +316,7 @@ bool Controller::move(Player& p, int roll) {
             else {
                 cout << p.getName() << ": Invalid command" << endl;
             }
-            cout << endl;
+            
         }
     }
     else if (res.action == Action::TuitionChoice) {
@@ -364,7 +366,7 @@ bool Controller::move(Player& p, int roll) {
             else {
                 cout << p.getName() << ": Invalid command" << endl;
             }
-            cout << endl;
+            
         }
     }
     return false;
@@ -372,55 +374,57 @@ bool Controller::move(Player& p, int roll) {
 
 void Controller::commenceAuction(Player& p, int current_player_id, OwnableProperty* being_auctioned) {
     if (being_auctioned == nullptr) being_auctioned = dynamic_cast<OwnableProperty*>(p.getCurrentSquare());
-    int turn = current_player_id+1;
+    int turn = 0;
     int current_price = 0;
-    cout << "Auction started for " << being_auctioned->getName() << "(value $" << being_auctioned->getPrice() << ")" << endl; 
+    cout << "Auction started for " << being_auctioned->getName() << " (value $" << being_auctioned->getPrice() << ")" << endl; 
     cout << "Bidding starts at $0 with " << players[turn].getName() << endl;
     vector<bool> withdrawn(players.size(),false);
     int counter = players.size();
-    for (int i = 0; i < counter; ++i) {
-        int count = 0;
-        for (auto player: withdrawn) {
-            if (player == true) {
-                ++count;
-            }
-        }
-        if (count >= 2) {
-            //Auction continues...
-            if (!withdrawn[i]) {
-                cout << players[i].getName() << ": Choices are {raise}/{withdraw}" << endl;
-                while (true) {
-                    string choice;
-                    cin >> choice;
-                    if (choice == "raise") {
-                        int suggested_price = current_price+=20;
-                        if (players[i].getBalance() < suggested_price) {
-                            cout << players[i].getName() << ": Invalid. Current raise would bring price to $" << suggested_price << ", but you only have $" << players[i].getBalance() << endl;
+    int count = players.size();
+    while (true) {
+        for (int i = 0; i < counter; ++i) {
+            if (count >= 2) {
+                //Auction continues...
+                if (!withdrawn[i]) {
+                    cout << players[i].getName() << ": Choices are {raise}/{withdraw}" << endl;
+                    while (true) {
+                        string choice;
+                        cin >> choice;
+                        if (choice == "raise") {
+                            int suggested_price = current_price + 20;
+                            if (players[i].getBalance() < suggested_price) {
+                                cout << players[i].getName() << ": Invalid. Current raise would bring price to $" << suggested_price << ", but you only have $" << players[i].getBalance() << endl;
+                                continue;
+                            }
+                            else {
+                                cout << players[i].getName() << ": Successfully raised to $" << suggested_price << endl;
+                                current_price = suggested_price;
+                                break;
+                            }
+                        }
+                        else if (choice == "withdraw") {
+                            count = count - 1;
+                            cout << players[i].getName() << ": Withdrew from auction, " << count << " bidders remain" << endl;
+                            withdrawn[i] = true;
+                            break;
+                        }
+                        else if (command(choice,players[i])) {
                             continue;
                         }
                         else {
-                            cout << players[i].getName() << ": Successfully raised to $" << suggested_price << endl;
-                            current_price+= suggested_price;
-                            break;
+                            cout << players[i].getName() << ": Invalid Command. Must use {raise}/{withdraw}" << endl;
                         }
-                    }
-                    else if (choice == "withdraw") {
-                        withdrawn[i] = true;
-                        break;
-                    }
-                    else if (command(choice,players[i])) {
-                        continue;
-                    }
-                    else {
-                        cout << players[i].getName() << ": Invalid Command" << endl;
                     }
                 }
             }
-        }
-        else {
-            players[i].buy(being_auctioned);
+            else {
+                cout << players[i].getName() << ": Won the auction for " << being_auctioned->getName() << " with a bid of $" << current_price << endl;
+                players[i].wonAuction(being_auctioned, current_price);
+                return;
+            }
         }
     }
+    
 
 }
 

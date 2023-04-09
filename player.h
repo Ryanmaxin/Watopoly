@@ -45,7 +45,8 @@ class Player: public Subject {
         ChoiceResponse settleDebts();
 
         //Choices for Action::BuyOrAuction
-        ChoiceResponse buy(OwnableProperty* property = nullptr);
+        ChoiceResponse buy();
+        void wonAuction(OwnableProperty* property, int price);
 
         //Choices for Action::TuitionChoice
         ChoiceResponse payTuition(int amount);
