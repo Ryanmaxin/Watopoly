@@ -16,7 +16,7 @@ void Board::init(string square_data) {
 
     //Initialize squares
     //... Some code here
-
+    initSquares(square_data);
 }
 
 Square* Board::getSquare(int index) {
@@ -40,7 +40,7 @@ void Board::initSquares(string square_data) {
         getline(f,line);
         istringstream iss {line};
         string token;
-        bool is_first = true;
+        // bool is_first = true;
         string type;
         
         iss >> type;

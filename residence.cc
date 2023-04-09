@@ -15,7 +15,7 @@ int Residence::getTuition() {
     if (num_residences == 4) return 200;
     else if (num_residences == 3) return 100;
     else if (num_residences == 2) return 50;
-    else if (num_residences == 1) return 25;
+    else return 25; //if (num_residences == 1)
 }
 
 string Residence::specificContext(Player& player) {
