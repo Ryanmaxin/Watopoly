@@ -15,31 +15,31 @@ MoveResponse UnownableProperty::actionOnLand(Player& player, bool regenerate) {
     ostringstream oss;
     Action action;
 
-    if (name == "CollectOSAP") {
+    if (name == "COLLECT OSAP") {
         player.addBalance(200);
         action = Action::NoAction;
         oss << player.getName() << ": Collected $200 from OSAP";
     }
-    else if (name == "DCTimsLine") {
+    else if (name == "DC Tims Line") {
         //Do nothing
         action = Action::NoAction;
         oss << player.getName() << ": Just visiting the DC Tims Line";
     }
-    else if (name == "GoToTims") {
+    else if (name == "GO TO TIMS") {
         player.goToTims();
         action = Action::NoAction;
         oss << player.getName() << ": Sent to DC Tims Line!";
     }
-    else if (name == "GooseNesting") {
+    else if (name == "Goose Nesting") {
         //Do nothing
         action = Action::NoAction;
         oss << player.getName() << ": Stumbled on a goose nesting!";
     }
-    else if (name == "Tuition") {
+    else if (name == "TUITION") {
         action = Action::TuitionChoice;
         oss << player.getName() << ": Landed on tuition. Pay either $300 or 10\% of net worth ($" << player.getNetWorth() << ")";
     }
-    else if (name == "CoopFee") {
+    else if (name == "COOP FEE") {
         if (player.getBalance() < 150) {
             action = Action::CantPayTuition;
             oss << player.getName() << ": Can't afford coop fee of $150 (have " << player.getBalance() << ")";
@@ -107,7 +107,7 @@ MoveResponse UnownableProperty::actionOnLand(Player& player, bool regenerate) {
         }
         else {
             player.addBalance(change);
-            oss << player.getName() << ": Paid Needles Hall fee of " << change * -1;
+            oss << player.getName() << ": Paid Needles Hall fee of " << change;
             action = Action::NoAction;
         }
     }
