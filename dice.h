@@ -18,6 +18,7 @@ class Dice {
     public:
         Dice();
         int roll();
+        int roll(int die1, int die2);
         void thetesting(bool value);
         bool isDoubles();
         bool threeDoubles();
