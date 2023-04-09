@@ -15,7 +15,7 @@ Player& Controller::playMonopoly() {
     players.clear(); //<---- probably not necessary
     board.init("default.data"); //<---- filename containing data for all squares
 
-    cout << dice.roll() << endl;
+    // cout << dice.roll() << endl;
 
     int num_players = 0; //Get from cin
 
