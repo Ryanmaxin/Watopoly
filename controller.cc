@@ -89,6 +89,7 @@ Player& Controller::playMonopoly() {
             if (dice.isDoubles()) cout << p.getName() << ": Rolled doubles initially, so must roll again" << endl;
         } while (dice.isDoubles());
 
+        cout << endl;
         //Player has completely finished moving now.
         while (true) {
             string cmd;
@@ -106,6 +107,7 @@ Player& Controller::playMonopoly() {
             else {
                 cout << p.getName() << ": Invalid command" << endl;
             }
+            cout << endl;
         }
     }
 }
@@ -233,6 +235,7 @@ bool Controller::move(Player& p, int roll) {
             else {
                 cout << p.getName() << ": Invalid command" << endl;
             }
+            cout << endl;
         }
     }
     else if (res.action == Action::CantPayTuition) {
@@ -271,6 +274,7 @@ bool Controller::move(Player& p, int roll) {
             else {
                 cout << p.getName() << ": Invalid command" << endl;
             }
+            cout << endl;
         }
     }
     else if (res.action == Action::InJail) {
@@ -310,6 +314,7 @@ bool Controller::move(Player& p, int roll) {
             else {
                 cout << p.getName() << ": Invalid command" << endl;
             }
+            cout << endl;
         }
     }
     else if (res.action == Action::TuitionChoice) {
@@ -359,6 +364,7 @@ bool Controller::move(Player& p, int roll) {
             else {
                 cout << p.getName() << ": Invalid command" << endl;
             }
+            cout << endl;
         }
     }
     return false;
@@ -369,7 +375,7 @@ void Controller::commenceAuction(Player& p, int current_player_id, OwnableProper
     int turn = current_player_id+1;
     int current_price = 0;
     cout << "Auction started for " << being_auctioned->getName() << "(value $" << being_auctioned->getPrice() << ")" << endl; 
-    cout << "Bidding starts at $0 with " << players[turn] << endl;
+    cout << "Bidding starts at $0 with " << players[turn].getName() << endl;
     vector<bool> withdrawn(players.size(),false);
     int counter = players.size();
     for (int i = 0; i < counter; ++i) {
