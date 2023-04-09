@@ -1,5 +1,6 @@
 #include <vector>
 #include "observer.h"
+
 #include "subject.h"
 
 void Subject::attach(Observer* obs) {
