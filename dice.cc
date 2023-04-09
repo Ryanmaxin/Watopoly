@@ -44,6 +44,10 @@ int Dice::roll() {
     return die1 + die2;
  }
 
+int Dice::roll(int die1, int die2) {
+    return die1 + die2;
+}
+
 bool Dice::isDoubles() {
     if (die1 == die2) return true;
     return false;
@@ -56,6 +60,21 @@ bool Dice::threeDoubles() {
 
 std::pair<int,int> Dice::getFaceValues() { return std::make_pair(die1, die2); }
 
+void Dice::setDie1(int val) {
+    if (testingmode) {
+        die1 = val;
+    }
+}
+
+void Dice::setDie2(int val) {
+    if (testingmode) {
+        die2 = val;
+    }
+}
+
+void Dice::thetesting(bool value) {
+    testingmode = value;
+}
 int Dice::getDie1() { return die1; }
 
 int Dice::getDie2() { return die2; }

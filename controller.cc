@@ -10,6 +10,8 @@ using std::endl;
 using std::string;
 using std::cin;
 using std::cerr;
+using std::ofstream;
+
 
 Player& Controller::playMonopoly() {
     players.clear(); //<---- probably not necessary
@@ -26,7 +28,7 @@ Player& Controller::playMonopoly() {
         }
         if(num_players < 2 || num_players > 6) cout << "Please enter the number of players between 2 to 6." << endl;
     }
-    
+
     //Initialize players vector
     for (int i = 0; i < num_players; i++) {
         //Get these fields from cin. 
@@ -72,11 +74,22 @@ Player& Controller::playMonopoly() {
                 string cmd;
                 cin >> cmd;
                 
-                if (command(cmd, p)) {
+                if (command(cmd, p)) { // this takes in the commands after roll
                     continue;
                 }
                 else if (cmd == "roll") {
-                    game_over = move(p);
+                        int d1 = 0;
+                        int d2 = 0;
+                        if (testingmode) {
+                            if (cin >> d1 >> d2) {
+                                setDice(d1,d2);
+                                //move(p,d1+d2);
+                                game_over = move(p, d1+d2);
+                            }
+                    } else {
+                        game_over = move(p);
+                    }
+                    // game_over = move(p, d1+d2);
                     if (game_over) {
                         //Winner Winner Chicken Dinner
                         return players[current_player_id];
@@ -150,7 +163,7 @@ bool Controller::command(string cmd, Player& p) {
             cout << cr.context << endl;
             if (cr.is_valid) {
                 while (true) {
-                    cout << name << ", would you like to accept the following offer: " << endl;
+                    cout << name << ", would you like to accept the following offer?" << endl;
                     cout << "GIVE: " << receive << endl;
                     cout << "RECEIVE: " << give << endl;
                     cout << "Choices are {accept}/{decline}" << endl;
@@ -442,4 +455,43 @@ bool Controller::validPlayer(string name, char token) {
         if (player.getToken() == token) return false;
     }
     return true;
+}
+
+void Controller::setDice(int d1, int d2) {
+    if (testingmode) {
+        dice.setDie1(d1);
+        dice.setDie2(d2);
+    }
+}
+
+void Controller::thetestingmode() {
+    testingmode = true;
+}
+
+void Controller::save(string filename) {
+    ofstream ofs (filename);
+    if (!ofs) {
+        cout << "Error: Cannot open the file " << filename << " for writing.\n";
+        return;
+    }
+    if (ofs.is_open()) {
+        ofs << players.size() << endl;
+    }
+    for (auto player: players) {
+        ofs << player.getName() << ' ' << player.getToken() << ' ' << player.getCups() << ' '
+            << player.getBalance() << ' ' << player.getPosition();
+    }
+    for (int i = 0; i < 40; ++i) {
+        Square* sq = board.getSquare(i);
+        OwnableProperty* op = dynamic_cast<OwnableProperty *>(sq);
+        if (op) {
+            ofs << sq->getName() << ' ';
+            if (op->getOwner()) ofs << op->getOwner()->getName() << ' ';
+            else ofs << "BANK" << ' ';
+        }
+        AcademicBuilding* ab = dynamic_cast<AcademicBuilding *>(sq);
+        if (ab) {
+            ofs << ab->getNumberOfImprovements() << endl;
+        } else ofs << 0 << endl;
+    }
 }
