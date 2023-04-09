@@ -5,6 +5,7 @@
 
 #include <string>
 #include <vector>
+#include <fstream>
 
 using std::string;
 using std::vector;
@@ -24,6 +25,7 @@ class Controller {
     void setDice(int d1, int d2);
     bool testingmode = false;
 
+    void save(const string filename);
     public:
         void thetestingmode();
         Player& playMonopoly();

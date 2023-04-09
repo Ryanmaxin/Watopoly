@@ -21,6 +21,8 @@ class Dice {
         void thetesting(bool value);
         bool isDoubles();
         bool threeDoubles();
+        int getDie1();
+        int getDie2();
         std::pair<int,int> getFaceValues();
         void setDie1(int value);
         void setDie2(int value);
