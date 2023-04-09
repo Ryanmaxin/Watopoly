@@ -78,13 +78,14 @@ Player& Controller::playMonopoly() {
                     continue;
                 }
                 else if (cmd == "roll") {
+                    if (testingmode) {
                     int d1 = 0;
                     int d2 = 0;
-                    if (cin >> d1 >>d2) {
+                    if (cin >> d1 >> d2) {
                         setDice(d1,d2);
-                        //move(p,d1+d2)
+                        game_over = move(p,d1+d2)
                     }
-                    game_over = move(p, d1+d2);
+                    game_over = move(p);
                     if (game_over) {
                         //Winner Winner Chicken Dinner
                         return players[current_player_id];
