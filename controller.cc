@@ -74,7 +74,7 @@ Player& Controller::playMonopoly() {
                 string cmd;
                 cin >> cmd;
                 
-                if (command(cmd, p)) {
+                if (command(cmd, p)) { // this takes in the commands after roll
                     continue;
                 }
                 else if (cmd == "roll") {
@@ -158,7 +158,7 @@ bool Controller::command(string cmd, Player& p) {
             cout << cr.context << endl;
             if (cr.is_valid) {
                 while (true) {
-                    cout << name << ", would you like to accept the following offer: " << endl;
+                    cout << name << ", would you like to accept the following offer?" << endl;
                     cout << "GIVE: " << receive << endl;
                     cout << "RECEIVE: " << give << endl;
                     cout << "Choices are {accept}/{decline}" << endl;
