@@ -9,6 +9,7 @@ using std::cout;
 using std::endl;
 using std::string;
 using std::cin;
+using std::cerr;
 
 Player& Controller::playMonopoly() {
     players.clear(); //<---- probably not necessary
@@ -16,9 +17,15 @@ Player& Controller::playMonopoly() {
 
     // View v {};
 
-    int num_players; //Get from cin
+    int num_players = 0; //Get from cin
     cout << "Enter the number of players: ";
     cin >> num_players;
+
+    while(num_players < 2 && num_players > 6) {
+        cout << "Enter the number of players: ";
+        cin >> num_players;
+        if(num_players < 2 && num_players > 6) cerr << "Please enter the number of players between 2 to 6." << endl;
+    }
 
     //Initialize players vector
     for (int i = 0; i < num_players; i++)
