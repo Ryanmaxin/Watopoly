@@ -13,7 +13,7 @@ using std::cerr;
 using std::ofstream;
 
 
-Player& Controller::playMonopoly() {
+Player& Controller::playMonopoly(bool testing_mode) {
     players.clear(); //<---- probably not necessary
     board.init("default.data"); //<---- filename containing data for all squares
 
@@ -78,14 +78,10 @@ Player& Controller::playMonopoly() {
                     continue;
                 }
                 else if (cmd == "roll") {
-                        int d1 = 0;
-                        int d2 = 0;
-                        if (testingmode) {
-                            if (cin >> d1 >> d2) {
-                                setDice(d1,d2);
-                                //move(p,d1+d2);
-                                game_over = move(p, d1+d2);
-                            }
+                    int d1,d2;
+                    if ((testing_mode) && (cin >> d1 >> d2)) {
+                        dice.setDice(d1,d2);
+                        game_over = move(p, d1+d2);
                     } else {
                         game_over = move(p);
                     }
@@ -122,6 +118,9 @@ Player& Controller::playMonopoly() {
             }
             else if (cmd == "roll") {
                 cout << p.getName() << ": Already moved this turn" << endl;
+                if (testing_mode) {
+                    getline(cin,cmd);
+                }
             }
             else if (cmd == "next") {
                 nextTurn();
@@ -455,17 +454,6 @@ bool Controller::validPlayer(string name, char token) {
         if (player.getToken() == token) return false;
     }
     return true;
-}
-
-void Controller::setDice(int d1, int d2) {
-    if (testingmode) {
-        dice.setDie1(d1);
-        dice.setDie2(d2);
-    }
-}
-
-void Controller::thetestingmode() {
-    testingmode = true;
 }
 
 void Controller::save(string filename) {

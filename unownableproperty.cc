@@ -65,10 +65,10 @@ MoveResponse UnownableProperty::actionOnLand(Player& player, bool regenerate) {
             MoveResponse res = player.move(spaces);
             action = res.action;
             if (spaces > 0) {
-                oss << player.getName() << ": Sent forwards " << spaces << "space(s) by SLC" << "\n" << res.context;
+                oss << player.getName() << ": Sent forwards " << spaces << " space(s) by SLC" << "\n" << res.context;
             }
             else {
-                oss << player.getName() << ": Sent backwards " << spaces*-1 << "space(s) by SLC" << "\n" << res.context;
+                oss << player.getName() << ": Sent backwards " << spaces*-1 << " space(s) by SLC" << "\n" << res.context;
             }
         }
         else if (SLCRoll(rng) <= 23) {
