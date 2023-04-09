@@ -62,10 +62,10 @@ Player& Controller::playMonopoly() {
         Player& p = players[current_player_id];
         cout << "Player " << p.getName() << "'s turn" << endl;
 
-        string cmd;
-        cin >> cmd;
         do {
             while (true) {
+                string cmd;
+                cin >> cmd;
                 if (command(cmd, p)) {
                     continue;
                 }
@@ -94,6 +94,8 @@ Player& Controller::playMonopoly() {
 
         //Player has completely finished moving now.
         while (true) {
+            string cmd;
+            cin >> cmd;
             if (command(cmd, p)) {
                 continue;
             }
