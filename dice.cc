@@ -40,14 +40,12 @@ int Dice::rollDie2() {
 int Dice::roll() { 
     rollDie1();
     rollDie2();
+    if (die1 == die2) ++doubles_rolled;
     return die1 + die2;
  }
 
 bool Dice::isDoubles() {
-    if (die1 == die2) {
-        ++doubles_rolled;
-        return true;
-    }
+    if (die1 == die2) return true;
     return false;
 }
 
