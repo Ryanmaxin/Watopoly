@@ -19,7 +19,7 @@ Player& Controller::playMonopoly() {
     cin >> num_players;
 
     //Initialize players vector
-    for (size_t i = 0; i < num_players; i++)
+    for (int i = 0; i < num_players; i++)
     {
         //Get these fields from cin. 
         string player_name;
@@ -104,7 +104,8 @@ Player& Controller::playMonopoly() {
 void Controller::nextTurn() {
     // when user inputs "next", this "nextTurn" function is called
     ++current_player_id;
-    if (current_player_id >= players.size()) {
+    size_t temp = current_player_id;
+    if (temp >= players.size()) {
         current_player_id = 0;
     }
 }
@@ -195,7 +196,7 @@ bool Controller::command(string cmd, Player& p) {
 
 bool Controller::move(Player& p, int roll) {
     if (roll == 0) {
-        int roll = dice.roll();
+        roll = dice.roll();
     }
     MoveResponse res = p.move(roll);
     cout << res.context << endl;
@@ -359,7 +360,8 @@ void Controller::commenceAuction(Player& p, int current_player_id, OwnableProper
     cout << "Auction started for " << being_auctioned->getName() << "(value $" << being_auctioned->getPrice() << ")" << endl; 
     cout << "Bidding starts at $0 with " << players[turn] << endl;
     vector<bool> withdrawn(players.size(),false);
-    for (int i = 0; i < players.size(); ++i) {
+    int counter = players.size();
+    for (int i = 0; i < counter; ++i) {
         int count = 0;
         for (auto player: withdrawn) {
             if (player == true) {

@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <random>
 #include <chrono>
+#include <utility>
 
 Dice::Dice() : doubles_rolled{0} {}
 
@@ -51,4 +52,4 @@ bool Dice::threeDoubles() {
     return false;
 }
 
-std::pair<int,int> getFaceValues() { return std::make_pair(die1, die2); }
+std::pair<int,int> Dice::getFaceValues() { return std::make_pair(die1, die2); }
