@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include "observer.h"
+
 using namespace std;
 
 class Subject {
