@@ -18,6 +18,8 @@ class Dice {
         int roll();
         bool isDoubles();
         bool threeDoubles();
+        int getDie1();
+        int getDie2();
         std::pair<int,int> getFaceValues();
 };
 
