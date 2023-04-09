@@ -10,7 +10,7 @@ class Residence: public OwnableProperty {
     int getTuition() override;
     public:
         Residence(string name, int p);
-        
+         ~Residence() override = default;
         string specificContext(Player& player) override;
 };
 #endif

@@ -17,6 +17,7 @@ class OwnableProperty: public Square {
         virtual int getTuition() = 0;
     public:
         OwnableProperty(string n, int p);
+        virtual ~OwnableProperty() = default;
 
         MoveResponse actionOnLand(Player& player, bool regenerate = false);
 
