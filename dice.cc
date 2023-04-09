@@ -37,7 +37,11 @@ int Dice::rollDie2() {
 	return die2;
 }
 
-int Dice::roll() { return die1 + die2; }
+int Dice::roll() { 
+    rollDie1();
+    rollDie2();
+    return die1 + die2;
+ }
 
 bool Dice::isDoubles() {
     if (die1 == die2) {
