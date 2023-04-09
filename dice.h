@@ -13,14 +13,19 @@ class Dice {
     int rollDie1();
     int rollDie2();
     int rollInternal(std::vector<int> const & v );
+    bool testingmode = false;
+
     public:
         Dice();
         int roll();
+        void thetesting(bool value);
         bool isDoubles();
         bool threeDoubles();
         int getDie1();
         int getDie2();
         std::pair<int,int> getFaceValues();
+        void setDie1(int value);
+        void setDie2(int value);
 };
 
 #endif
