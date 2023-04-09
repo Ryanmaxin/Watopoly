@@ -9,8 +9,8 @@ using std::cout;
 using std::endl;
 using std::ostream;
 
-Player::Player(string name, char token, Board* attached_to, int bal, bool rur, int pos, bool in_jail, int num_turns_in_jail):
-name{name},token{token},position{pos},balance{bal},owns_roll_up{rur},in_tims_line{false},num_turns_in_tims_line{num_turns_in_jail},board{attached_to} {
+Player::Player(string name, char token, Board* attached_to, int bal, int rur, int pos, bool in_jail, int num_turns_in_jail):
+name{name},token{token},position{pos},balance{bal},num_roll_ups{rur},in_tims_line{false},num_turns_in_tims_line{num_turns_in_jail},board{attached_to} {
     current_square = attached_to->getSquare(position);
 }
 
@@ -68,9 +68,9 @@ ChoiceResponse Player::declareBankruptcy() {
         receiving = cp->getOwner();
         receiving->balance += balance;
         oss << name << ": Went bankrupt, all assets transferred to " << receiving->getName();
-        if (owns_roll_up) {
-            receiving->owns_roll_up = true;
-            owns_roll_up = false;
+        if (num_roll_ups > 0) {
+            receiving->num_roll_ups = num_roll_ups;
+            num_roll_ups = 0;
         }
         action = false;
     }
@@ -275,7 +275,7 @@ int Player::numberOfOwnedResidences() const {
 ostream& operator<<(ostream& out, const Player& player) {
     out << "-----[Assets of " << player.name << "]-----" << endl;
     out << "Balance: $" << player.balance << endl;
-    out << std::boolalpha << "Owns roll up rim: " << player.owns_roll_up << endl;
+    out << std::boolalpha << "Number of roll up rims: " << player.num_roll_ups << endl;
     for (auto property: player.owned_properties) {
         AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(property);
         string mortgage = "";
@@ -491,7 +491,7 @@ ChoiceResponse Player::payOutOfJail(bool use_roll_up) {
     ostringstream oss;
     bool success;
     if (use_roll_up) {
-        if (owns_roll_up) {
+        if (num_roll_ups> 0) {
         oss << name << ": Used roll up rim to get out of jail";
         removeRollUp();
         success = true;
@@ -517,7 +517,7 @@ ChoiceResponse Player::payOutOfJail(bool use_roll_up) {
 }
 
 void Player::removeRollUp() {
-    owns_roll_up = false;
+    num_roll_ups -= 1;
     board->removeRollUp();
 }
 

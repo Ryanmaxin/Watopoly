@@ -44,8 +44,16 @@ Player& Controller::playMonopoly() {
             cout << "Enter player " << player_number << " name: ";
 
             cin >> player_name;
-            cout << "Enter token for " << player_name << ": ";
-            cin >> token;
+            while (true) {
+                cout << "Enter token for " << player_name << ": ";
+                cin >> token;
+                if (token != 'G' && token != 'B' && token != 'D' && token != 'P' && token != 'S'&& token != '$'&& token != 'L' && token != 'T') {
+                    cout << "Invalid token, must be one of G, B, D, P, S, $, L, T" << endl;
+                }
+                else {
+                    break;
+                }
+            }
         } while (!validPlayer(player_name,token));
 
         players.push_back(Player(player_name, token, &board));
@@ -432,9 +440,6 @@ bool Controller::validPlayer(string name, char token) {
     for (auto player: players) {
         if (player.getName() == name) return false;
         if (player.getToken() == token) return false;
-        // if (player.getToken() != 'G' && player.getToken() != 'B' && player.getToken() != 'D' && player.getToken() != 'P' && player.getToken() != 'S'&& player.getToken() != '$'&& player.getToken() != 'L' && player.getToken() != 'T') {
-        //     return false;
-        // }
     }
     return true;
 }

@@ -23,7 +23,7 @@ class Player: public Subject {
 
     int position;
     int balance;
-    bool owns_roll_up;
+    int num_roll_ups;
 
     bool in_tims_line;
     int num_turns_in_tims_line;
@@ -35,7 +35,7 @@ class Player: public Subject {
     void transferProperty(OwnableProperty* property, Player* receiving);
     
     public:
-        Player(string name, char token, Board* attached_to, int bal = 1500, bool rur = false, int pos = 0, bool in_jail = false, int num_turns_in_jail = 0);
+        Player(string name, char token, Board* attached_to, int bal = 1500, int rur = 0, int pos = 0, bool in_jail = false, int num_turns_in_jail = 0);
 
         MoveResponse move(int num_spaces);
         void teleport(int square_index);
