@@ -1,16 +1,15 @@
 #include "controller.h"
 #include "player.h"
 
-int main(int charc, char *chara[]) {
+int main(int argc, char **argv) {
     //May need to add more if we restart game, etc
 
     Controller c;
-    c.playMonopoly();
-
-    if (charc > 1) {
-        string char_a = chara[1];
-        if (char_a == "-testing") {
+    if (argc == 2) {
+        string str = argv[1];
+        if (str == "-testing") {
             c.thetestingmode();
         }
     }
+    c.playMonopoly();
 }

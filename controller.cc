@@ -102,7 +102,6 @@ Player& Controller::playMonopoly() {
                 else {
                     cout << p.getName() << ": Invalid command" << endl;
                 }
-
                 if (dice.threeDoubles()) {
                     cout << p.goToTims() << endl;
                     break;
@@ -226,6 +225,9 @@ bool Controller::command(string cmd, Player& p) {
     }
     else if (cmd == "save") {
         //To implement
+        string filename;
+        cin >> filename;
+        save(filename);
     }
     else return false;
     return true;
@@ -391,6 +393,10 @@ bool Controller::move(Player& p, int roll) {
         }
     }
     return false;
+}
+
+void Controller::load(string filename) {
+
 }
 
 void Controller::commenceAuction(Player& p, int current_player_id, OwnableProperty* being_auctioned) {
