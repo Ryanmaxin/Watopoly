@@ -118,9 +118,8 @@ Player& Controller::playMonopoly(bool testing_mode) {
             }
             else if (cmd == "roll") {
                 cout << p.getName() << ": Already moved this turn" << endl;
-                if (testing_mode) {
-                    getline(cin,cmd);
-                }
+                int d1,d2;
+                if (cin >> d1 >> d2);
             }
             else if (cmd == "next") {
                 nextTurn();
