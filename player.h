@@ -74,6 +74,7 @@ class Player: public Subject {
         void addBalance(int money);
         //The sum of current balance + price of all owned properties + price of all owned improvements
         int getNetWorth() const;
+        int getPosition() const;
         string getName() const;
         char getToken() const;
         Square* getCurrentSquare() const;

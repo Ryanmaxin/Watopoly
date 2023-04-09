@@ -13,7 +13,6 @@ using std::vector;
 class Controller {
     Board board;
     vector<Player> players;
-    // vector<AcademicBuilding> acad_build;
     Dice dice;
     int current_player_id;
     bool game_over = false;

@@ -12,9 +12,6 @@ using std::cin;
 using std::cerr;
 using std::ofstream;
 
-Controller::Controller() {
-    acad_build.push_back()
-}
 
 Player& Controller::playMonopoly() {
     players.clear(); //<---- probably not necessary
@@ -456,18 +453,18 @@ void Controller::save(string filename) {
         return;
     }
     if (ofs.is_open()) {
-        ofs << player.getsize() << endl;
+        ofs << players.size() << endl;
     }
-    for (auto: players) {
+    for (auto player: players) {
         ofs << player.getName() << ' ' << player.getToken() << ' ' << player.getCups() << ' '
             << player.getBalance() << ' ' << player.getPosition();
     }
     for (int i = 0; i < 40; ++i) {
-        Square sq = board.getSquare(i);
+        Square* sq = board.getSquare(i);
         OwnableProperty* op = dynamic_cast<OwnableProperty *>(sq);
         if (op) {
-            ofs << sq.getName() << ' ';
-            if (op->getOwner()) ofs << op->getOwner.name << ' ';
+            ofs << sq->getName() << ' ';
+            if (op->getOwner()) ofs << op->getOwner()->getName() << ' ';
             else ofs << "BANK" << ' ';
         }
         AcademicBuilding* ab = dynamic_cast<AcademicBuilding *>(sq);

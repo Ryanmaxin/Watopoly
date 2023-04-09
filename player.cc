@@ -532,3 +532,7 @@ Square* Player::getCurrentSquare() const {
 int Player::getCups() const {
     return num_roll_ups;
 }
+
+int Player::getPosition() const {
+    return position;
+}
