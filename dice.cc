@@ -55,3 +55,7 @@ bool Dice::threeDoubles() {
 }
 
 std::pair<int,int> Dice::getFaceValues() { return std::make_pair(die1, die2); }
+
+int Dice::getDie1() { return die1; }
+
+int Dice::getDie2() { return die2; }
