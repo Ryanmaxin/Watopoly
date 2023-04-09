@@ -44,6 +44,10 @@ int Dice::roll() {
     return die1 + die2;
  }
 
+int Dice::roll(int die1, int die2) {
+    return die1 + die2;
+}
+
 bool Dice::isDoubles() {
     if (die1 == die2) return true;
     return false;
