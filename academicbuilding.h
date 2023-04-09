@@ -17,6 +17,7 @@ class AcademicBuilding: public OwnableProperty {
     vector<int> rent_vector;
     public:
         AcademicBuilding(string name, int p, Monopoly s, vector<int> rv, int ic);
+        ~AcademicBuilding() override = default;
         
         string specificContext(Player& p) override;
 

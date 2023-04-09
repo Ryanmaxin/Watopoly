@@ -76,14 +76,14 @@ MoveResponse UnownableProperty::actionOnLand(Player& player, bool regenerate) {
             oss << player.getName() << ": Sent to DC Tims Line by SLC" << "\n" << res;
             action = Action::NoAction;
         }
-        else if (SLCRoll(rng) <= 24) {
+        else { //if (SLCRoll(rng) <= 24)
             player.teleport(COLLECT_OSAP);
             player.addBalance(200);
             oss << player.getName() << ": Sent to Collect OSAP by SLC" << "\n" << player.getName() << ": Collected $200 from OSAP";
             action = Action::NoAction;
         }
     }
-    else if (name == "NeedlesHall") {
+    else { //if (name == "NeedlesHall")
         int change = 0;
         if (regenerate) {
             std::random_device dev;

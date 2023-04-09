@@ -5,6 +5,8 @@
 
 #include "subject.h"
 
+class Subject;
+
 class Observer {
 public:
     virtual void notify(Subject &who_from) = 0;
