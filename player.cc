@@ -316,7 +316,7 @@ Trade Player::offerTrade(Player& send_to, string give, string receive) {
             if (!send_to.ownsProperty(p)) {
                 oss << name << ": Trying to ask for a property " << send_to.name << " doesn't own";
             }
-            if (balance < g) {
+            else if (balance < g) {
                 oss << name << ": Trying to give away more money then you have (have $" << balance << ")";
             }
             else {
@@ -343,7 +343,7 @@ Trade Player::offerTrade(Player& send_to, string give, string receive) {
             if (!ownsProperty(p)) {
                 oss << name << ": Trying to give away a property you don't own";
             }
-            if (send_to.balance < r) {
+            else if (send_to.balance < r) {
                 oss << name << ": Trying to ask for more money then " << send_to.name << " has (has $" << send_to.balance << ")";
             }
             else {
@@ -372,7 +372,7 @@ Trade Player::offerTrade(Player& send_to, string give, string receive) {
             if (!ownsProperty(p)) {
                 oss << name << ": Trying to give away a property you don't own";
             }
-            if (!send_to.ownsProperty(p2)) {
+            else if (!send_to.ownsProperty(p2)) {
                 oss << name << ": Trying to ask for a property " << send_to.name << " doesn't own";
             }
             else {

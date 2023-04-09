@@ -15,14 +15,18 @@ Player& Controller::playMonopoly() {
     players.clear(); //<---- probably not necessary
     board.init("default.data"); //<---- filename containing data for all squares
 
-    // View v {};
+    cout << dice.roll() << endl;
 
     int num_players = 0; //Get from cin
 
-    while(num_players < 2 || num_players > 7) {
+    while(num_players < 2 || num_players > 6) {
         cout << "Enter the number of players: ";
         cin >> num_players;
-        if(num_players < 2 || num_players > 7) cout << "Please enter the number of players between 2 to 6." << endl;
+        if (!cin) {
+            cin.clear();
+            cin.ignore(1000000,'\n');
+        }
+        if(num_players < 2 || num_players > 6) cout << "Please enter the number of players between 2 to 6." << endl;
     }
 
     //Initialize players vector
