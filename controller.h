@@ -5,6 +5,7 @@
 
 #include <string>
 #include <vector>
+#include <fstream>
 
 using std::string;
 using std::vector;
@@ -21,7 +22,7 @@ class Controller {
     bool move(Player& p, int roll = 0);
     void load(string filename);
     bool validPlayer(string name, char token);
-    
+    void save(const string filename);
     public:
         Player& playMonopoly();
 };

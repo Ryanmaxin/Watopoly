@@ -10,6 +10,7 @@ using std::endl;
 using std::string;
 using std::cin;
 using std::cerr;
+using std::ofstream;
 
 Player& Controller::playMonopoly() {
     players.clear(); //<---- probably not necessary
@@ -26,7 +27,7 @@ Player& Controller::playMonopoly() {
         }
         if(num_players < 2 || num_players > 6) cout << "Please enter the number of players between 2 to 6." << endl;
     }
-    
+
     //Initialize players vector
     for (int i = 0; i < num_players; i++) {
         //Get these fields from cin. 
@@ -442,4 +443,19 @@ bool Controller::validPlayer(string name, char token) {
         if (player.getToken() == token) return false;
     }
     return true;
+}
+
+void Controller::save(string filename) {
+    ofstream ofs (filename);
+    if (!ofs) {
+        cout << "Error: Cannot open the file " << filename << " for writing.\n";
+        return;
+    }
+    if (ofs.is_open()) {
+        ofs << player.getsize() << endl;
+    }
+    for (auto: players) {
+        ofs << player.getName() << ' ' << player.getToken() << ' ' << ;
+
+    }
 }
