@@ -10,6 +10,8 @@
 #include "response.h"
 #include "trade.h"
 
+#include "subject.h"
+
 using std::map;
 using std::string;
 using std::vector;
