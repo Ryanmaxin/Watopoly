@@ -420,7 +420,7 @@ void Controller::commenceAuction(Player& p, int current_player_id, OwnableProper
                             continue;
                         }
                         else {
-                            cout << players[i].getName() << ": Invalid Command. Must use {raise}/{withdraw}" << endl;
+                            cout << players[i].getName() << ": Invalid Command." << endl;
                         }
                     }
                 }
