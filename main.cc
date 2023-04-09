@@ -10,8 +10,7 @@ int main(int charc, char *chara[]) {
     if (charc > 1) {
         string char_a = chara[1];
         if (char_a == "-testing") {
-            c->testingmode();
+            c.thetestingmode();
         }
     }
-
 }
