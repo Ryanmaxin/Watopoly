@@ -57,3 +57,19 @@ bool Dice::threeDoubles() {
 }
 
 std::pair<int,int> Dice::getFaceValues() { return std::make_pair(die1, die2); }
+
+void Dice::setDie1(int val) {
+    if (testingmode) {
+        die1 = val;
+    }
+}
+
+void Dice::setDie2(int val) {
+    if (testingmode) {
+        die2 = val;
+    }
+}
+
+void Dice::thetesting(bool value) {
+    testingmode = value;
+}
