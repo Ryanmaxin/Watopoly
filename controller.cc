@@ -83,7 +83,8 @@ Player& Controller::playMonopoly() {
                     int d2 = 0;
                     if (cin >> d1 >> d2) {
                         setDice(d1,d2);
-                        game_over = move(p,d1+d2)
+                        game_over = move(p,d1+d2);
+                    }
                     }
                     game_over = move(p);
                     if (game_over) {
