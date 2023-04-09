@@ -69,6 +69,7 @@ class Player: public Subject {
 
         //Getter-Setter methods
         int getBalance() const;
+        int getCups() const;
         void setBalance(int new_balance);
         void addBalance(int money);
         //The sum of current balance + price of all owned properties + price of all owned improvements

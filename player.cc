@@ -528,3 +528,7 @@ vector<OwnableProperty*>& Player::getOwnedProperties() {
 Square* Player::getCurrentSquare() const {
     return current_square;
 }
+
+int Player::getCups() const {
+    return num_roll_ups;
+}
