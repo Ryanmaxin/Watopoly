@@ -3,20 +3,13 @@
 #include "subject.h"
 
 void Subject::attach(Observer* obs) {
-  the_observers.push_back(obs);
+    view = obs;
 }
 
-void Subject::detach(Observer* obs) {
-  for (auto i = the_observers.begin(); i != the_observers.end(); ++i) {
-    if (*i == obs) {
-      the_observers.erase(i);
-      return;
-    }
-  }
+void Subject::detach() {
+    view = nullptr;
 }
 
-void Subject::notifyObservers(Player &p) {
-  for (auto obs : the_observers) {
-    obs->notify(p);
-  }
+void Subject::notifyView() {
+    view->notify(*this);
 }

@@ -13,6 +13,7 @@ class Square {
         string name;
     public:
         Square(string n);
+        virtual ~Square() = default;
         virtual MoveResponse actionOnLand(Player& player, bool regenerate = true) = 0;
         string getName();
 };
