@@ -50,3 +50,5 @@ bool Dice::threeDoubles() {
     if (doubles_rolled == 3) return true;
     return false;
 }
+
+std::pair<int,int> getFaceValues() { return std::make_pair(die1, die2); }
