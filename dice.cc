@@ -7,6 +7,7 @@
 #include <algorithm>
 #include <random>
 #include <chrono>
+#include <utility>
 
 Dice::Dice() : doubles_rolled{0} {}
 

@@ -43,7 +43,8 @@ void Player::teleport(int square_index) {
 void Player::transferProperty(OwnableProperty* property, Player* receiving) {
     property->setOwner(receiving);
     receiving->owned_properties.push_back(property);
-    for (int i = 0; i < owned_properties.size(); ++i) {
+    int counter = owned_properties.size();
+    for (int i = 0; i < counter; ++i) {
         if (owned_properties[i] == property) {
             owned_properties.erase(owned_properties.begin() + i);
         }
