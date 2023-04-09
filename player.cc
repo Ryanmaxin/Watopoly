@@ -15,11 +15,17 @@ name{name},token{token},position{pos},balance{bal},num_roll_ups{rur},in_tims_lin
 }
 
 MoveResponse Player::move(int num_spaces) {
+    ostringstream oss;
     if (!(in_tims_line)) {
+        if ((position + num_spaces) > 40) { //Passed go
+            balance += 200;
+            oss << name << ": Passed Collect OSAP, received $200 " << endl;
+        }
         position = (position + num_spaces)%39;
         current_square = board->getSquare(position);
         MoveResponse res = current_square->actionOnLand(*this);
-        return res;
+        oss << res.context;
+        return {res.action,oss.str()};
     }
     else {
         //Player has 3 choices: pay $50, roll for doubles or use a roll up the rim

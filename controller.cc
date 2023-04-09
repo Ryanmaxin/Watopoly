@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 #include <string>
+#include <sstream>
 
 using std::vector;
 using std::cout;
@@ -11,6 +12,8 @@ using std::string;
 using std::cin;
 using std::cerr;
 using std::ofstream;
+using std::ostringstream;
+using std::istringstream;
 
 
 Player& Controller::playMonopoly(bool testing_mode) {
@@ -79,16 +82,18 @@ Player& Controller::playMonopoly(bool testing_mode) {
                 }
                 else if (cmd == "roll") {
                     int d1,d2;
+                    
                     if ((testing_mode) && (cin >> d1 >> d2)) {
                         dice.setDice(d1,d2);
                         game_over = move(p, d1+d2);
                     } else {
                         game_over = move(p);
                     }
-                    // game_over = move(p, d1+d2);
                     if (game_over) {
                         //Winner Winner Chicken Dinner
-                        return players[current_player_id];
+                        Player& winner = players[current_player_id];
+                        cout << winner.getName() << " won the game!" << endl;
+                        return winner;
                     }
                     break;
                 }
@@ -98,14 +103,9 @@ Player& Controller::playMonopoly(bool testing_mode) {
                 else {
                     cout << p.getName() << ": Invalid command" << endl;
                 }
-
-                if (dice.threeDoubles()) {
-                    cout << p.goToTims() << endl;
-                    break;
-                }
             }
-            if (dice.isDoubles()) cout << p.getName() << ": Rolled doubles, so must roll again" << endl;
-        } while (dice.isDoubles());
+            if (dice.isDoubles() && !dice.threeDoubles()) cout << p.getName() << ": Rolled doubles, so must roll again" << endl;
+        } while (dice.isDoubles() && !dice.threeDoubles());
 
         
         //Player has completely finished moving now.
@@ -232,6 +232,11 @@ bool Controller::command(string cmd, Player& p) {
 bool Controller::move(Player& p, int roll) {
     if (roll == 0) {
         roll = dice.roll();
+    }
+    if (dice.threeDoubles()) {
+        cout << p.goToTims() << endl;
+        cout << p.getName() << ": Sent to DC Tims Line for rolling 3 doubles" << endl;
+        return false;
     }
     MoveResponse res = p.move(roll);
     cout << res.context << endl;
