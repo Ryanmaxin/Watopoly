@@ -34,6 +34,8 @@ class Board {
         Square* stringToProperty(string property);
         //You will have to do validation checking if player has enough money, etc
         Monopoly stringToMonopoly(string monopoly);
+
+        void removeRollUp();
 };
 
 #endif
