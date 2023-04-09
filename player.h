@@ -73,7 +73,7 @@ class Player {
         string getName() const;
         char getToken() const;
         Square* getCurrentSquare() const;
-        vector<OwnableProperty*> getOwnedProperties();
+        vector<OwnableProperty*>& getOwnedProperties();
         void removeRollUp();
 
         //Stateless functions

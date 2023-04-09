@@ -476,3 +476,45 @@ string Player::improve(string property, bool buy) {
 }
 
 char Player::getToken() const { return token; }
+
+ChoiceResponse Player::payOutOfJail(bool use_roll_up) {
+    ostringstream oss;
+    bool success;
+    if (use_roll_up) {
+        if (owns_roll_up) {
+        oss << name << ": Used roll up rim to get out of jail";
+        removeRollUp();
+        success = true;
+        }
+        else {
+            oss << name << ": Don't own a roll up rim ";
+            success = false;
+        }
+    }
+    else {
+        if (balance < 50) {
+            oss << name << ": Can't pay $50 bail to leave jail";
+            success = false;
+        }
+        else {
+            oss << name << ": Paid $50 bail to leave jail";
+            removeRollUp();
+            success = true;
+        }
+    }
+    
+    return {success, oss.str()};
+}
+
+void Player::removeRollUp() {
+    owns_roll_up = false;
+    board->removeRollUp();
+}
+
+vector<OwnableProperty*>& Player::getOwnedProperties() {
+    return owned_properties;
+}
+
+Square* Player::getCurrentSquare() const {
+    return current_square;
+}

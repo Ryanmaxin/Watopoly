@@ -94,3 +94,7 @@ Monopoly Board::stringToMonopoly(string monopoly) {
     else if (monopoly == "Sci2") return Monopoly::Sci2;
     else return Monopoly::Math;
 }
+
+void Board::removeRollUp() {
+    current_roll_up_rims -= 1;
+}
