@@ -15,8 +15,6 @@ Player& Controller::playMonopoly() {
     players.clear(); //<---- probably not necessary
     board.init("default.data"); //<---- filename containing data for all squares
 
-    cout << dice.roll() << endl;
-
     int num_players = 0; //Get from cin
 
     while(num_players < 2 || num_players > 6) {
@@ -70,11 +68,11 @@ Player& Controller::playMonopoly() {
                 }
                 else if (cmd == "roll") {
                     game_over = move(p);
-                    break;
                     if (game_over) {
                         //Winner Winner Chicken Dinner
                         return players[current_player_id];
                     }
+                    break;
                 }
                 else if (cmd == "next") {
                     cout << p.getName() << ": Can't end turn before rolling" << endl;
@@ -88,7 +86,7 @@ Player& Controller::playMonopoly() {
                     break;
                 }
             }
-            cout << p.getName() << ": Rolled doubles initially, so must roll again" << endl;
+            if (dice.isDoubles()) cout << p.getName() << ": Rolled doubles initially, so must roll again" << endl;
         } while (dice.isDoubles());
 
         //Player has completely finished moving now.
@@ -148,9 +146,11 @@ bool Controller::command(string cmd, Player& p) {
                     cin >> choice;
                     if (choice == "accept") {
                         cout << p_ptr->acceptOffer(p,cr) << endl;
+                        break;
                     }
                     else if (choice == "decline") {
-                        cout << p.getName() << ": " << name << " declined the trade";
+                        cout << p.getName() << ": " << name << " declined the trade" << endl;
+                        break;
                     }
                     else {
                         cout << name << ": Must resolve current trade(resolve with {accept}/{decline})" << endl;

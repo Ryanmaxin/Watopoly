@@ -277,10 +277,10 @@ ostream& operator<<(ostream& out, const Player& player) {
             out << property->getName() << ": " << academic->getNumberOfImprovements() << " improvements" << endl;
         }
         else {
-            out << property->getName();
+            out << property->getName() << endl;
         }
     }
-    out << "Total net worth: " << player.getNetWorth() << endl;
+    out << "Total net worth: $" << player.getNetWorth() << endl;
     return out;
 }
 

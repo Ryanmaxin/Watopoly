@@ -49,7 +49,7 @@ MoveResponse OwnableProperty::actionOnLand(Player& player, bool regenerate) {
             if (player.getBalance() < tuition) {
                 action = Action::CantPayTuition;
                 oss << player.getName() << ": Can't afford $" << tuition << " owed to " << owner->getName() << " for landing on " << name << "(have $" << player.getBalance() << ")";
-                oss << endl << player.getName() << "choices: {raisefunds} {bankruptcy} ";
+                oss << endl << player.getName() << "choices: {raisefunds}/{bankruptcy} ";
             }
             else {
                 action = Action::NoAction;
@@ -61,16 +61,10 @@ MoveResponse OwnableProperty::actionOnLand(Player& player, bool regenerate) {
     } 
     else {
 
-        
         int price = getPrice();
-        // if (player.getBalance() < price) {
-        //     action = Action::CantAfford;
-        //     oss << player.getName() << ": Can't afford $" << price << " to buy " << name << "(have $" << player.getBalance() << ")";
-        //     oss << endl << player.getName() << "choices: {raisefunds} {auction} ";
-        // }
         action = Action::BuyOrAuction;
         oss << player.getName() << ": " << name << " available for purchase for " << price << "(have $" << player.getBalance() << ")";
-        oss << endl << player.getName() << "choices: {buy} {auction} ";
+        oss << endl << player.getName() << ": choices: {buy}/{auction} ";
     }
     
     string context = oss.str();
