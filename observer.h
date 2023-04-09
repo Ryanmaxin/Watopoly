@@ -3,11 +3,11 @@
 
 #include <vector>
 
-class Player;
+#include "subject.h"
 
 class Observer {
 public:
-    virtual void notify(Player &p) = 0;
+    virtual void notify(Subject &who_from) = 0;
     virtual ~Observer() = default;
 };
 

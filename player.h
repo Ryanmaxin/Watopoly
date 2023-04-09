@@ -17,7 +17,7 @@ using std::string;
 using std::vector;
 using std::ostream;
 
-class Player {
+class Player: public Subject {
     string name;
     char token;
 

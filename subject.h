@@ -10,10 +10,10 @@ using namespace std;
 class Subject {
 public:
     void attach(Observer* obs);
-    void detach(Observer* obs);
-    void notifyObservers(Player &p);
+    void detach();
+    void notifyView();
 private:
-    vector<Observer*> the_observers;
+    Observer* view;
 };
 
 #endif
