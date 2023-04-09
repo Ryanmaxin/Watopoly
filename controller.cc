@@ -18,13 +18,11 @@ Player& Controller::playMonopoly() {
     // View v {};
 
     int num_players = 0; //Get from cin
-    cout << "Enter the number of players: ";
-    cin >> num_players;
 
-    while(num_players < 2 && num_players > 6) {
+    while(num_players < 2 || num_players > 7) {
         cout << "Enter the number of players: ";
         cin >> num_players;
-        if(num_players < 2 && num_players > 6) cerr << "Please enter the number of players between 2 to 6." << endl;
+        if(num_players < 2 || num_players > 7) cout << "Please enter the number of players between 2 to 6." << endl;
     }
 
     //Initialize players vector
@@ -153,7 +151,7 @@ bool Controller::command(string cmd, Player& p) {
                         cout << name << ": Must resolve current trade(resolve with {accept}/{decline})" << endl;
                     }
                 }
-            };
+            }
         }
         else {
             cout << p.getName() << ": There is no player by the name of \"" << name << "\"" << endl;
@@ -176,7 +174,6 @@ bool Controller::command(string cmd, Player& p) {
         cout << res << endl;
     }
     else if (cmd == "improve") {
-        //else if (res.action == Action::ImproveProperty) {
         string theproperty, theimprovement;
         cin >> theproperty >> theimprovement;
         if (theimprovement == "buy" || theimprovement == "sell") {
@@ -420,6 +417,9 @@ bool Controller::validPlayer(string name, char token) {
     for (auto player: players) {
         if (player.getName() == name) return false;
         if (player.getToken() == token) return false;
+        // if (player.getToken() != 'G' && player.getToken() != 'B' && player.getToken() != 'D' && player.getToken() != 'P' && player.getToken() != 'S'&& player.getToken() != '$'&& player.getToken() != 'L' && player.getToken() != 'T') {
+        //     return false;
+        // }
     }
     return true;
 }
