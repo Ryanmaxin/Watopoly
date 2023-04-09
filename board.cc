@@ -37,7 +37,7 @@ void Board::initSquares(string square_data) {
     ifstream f { square_data };
     string line;
     for (int i = 0; i < 40; ++i) {
-        getline(f,line);
+        getline(f, line);
         istringstream iss {line};
         string token;
         // bool is_first = true;
