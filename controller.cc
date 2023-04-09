@@ -26,9 +26,9 @@ Player& Controller::playMonopoly() {
         }
         if(num_players < 2 || num_players > 6) cout << "Please enter the number of players between 2 to 6." << endl;
     }
+    
     //Initialize players vector
-    for (int i = 0; i < num_players; i++)
-    {
+    for (int i = 0; i < num_players; i++) {
         //Get these fields from cin. 
         string player_name;
         char token;
