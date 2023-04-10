@@ -1,5 +1,5 @@
 #include "square.h"
-
+#include "enumerations.h"
 #include <string>
 
 using std::string;
