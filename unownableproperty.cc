@@ -15,34 +15,36 @@ MoveResponse UnownableProperty::actionOnLand(Player& player, bool regenerate) {
     ostringstream oss;
     Action action;
 
-    if (name == "CollectOSAP") {
+    if (name == "COLLECT OSAP") {
         player.addBalance(200);
         action = Action::NoAction;
-        oss << player.getName() << ": Collected $200 from OSAP";
+        oss << player.getName() << ": Collected $200 from landing on OSAP";
     }
-    else if (name == "DCTimsLine") {
+    else if (name == "DC Tims Line") {
         //Do nothing
         action = Action::NoAction;
         oss << player.getName() << ": Just visiting the DC Tims Line";
     }
-    else if (name == "GoToTims") {
+    else if (name == "GO TO TIMS") {
         player.goToTims();
         action = Action::NoAction;
         oss << player.getName() << ": Sent to DC Tims Line!";
     }
-    else if (name == "GooseNesting") {
+    else if (name == "Goose Nesting") {
         //Do nothing
         action = Action::NoAction;
         oss << player.getName() << ": Stumbled on a goose nesting!";
     }
-    else if (name == "Tuition") {
+    else if (name == "TUITION") {
         action = Action::TuitionChoice;
         oss << player.getName() << ": Landed on tuition. Pay either $300 or 10\% of net worth ($" << player.getNetWorth() << ")";
+        oss << endl << player.getName() << ": choices: {flat}/{percentage} ";
     }
-    else if (name == "CoopFee") {
+    else if (name == "COOP FEE") {
         if (player.getBalance() < 150) {
             action = Action::CantPayTuition;
             oss << player.getName() << ": Can't afford coop fee of $150 (have " << player.getBalance() << ")";
+            oss << endl << player.getName() << ": choices: {pay}/{bankruptcy} ";
         }
         else {
             player.addBalance(-150);
@@ -54,6 +56,14 @@ MoveResponse UnownableProperty::actionOnLand(Player& player, bool regenerate) {
         std::random_device dev;
         std::mt19937 rng(dev());
         std::uniform_int_distribution<std::mt19937::result_type> SLCRoll(1,24); // distribution in range [1, 24]
+        std::uniform_int_distribution<std::mt19937::result_type> RollUp(1,100); // distribution in range [1, 24]
+        // if (RollUp(rng) == 1) {
+            if (player.getBoard()->validRollUp()) {
+                player.addRollUp();
+                oss << player.getName() << ": Found a Tim Hortons Roll up the Rim Cup! You now have " << player.getCups() << endl;
+            }
+            
+        // }
         int spaces = 0;
         if (SLCRoll(rng) <=22) {
             if (SLCRoll(rng) <= 3) spaces = -3;
@@ -89,6 +99,14 @@ MoveResponse UnownableProperty::actionOnLand(Player& player, bool regenerate) {
             std::random_device dev;
             std::mt19937 rng(dev());
             std::uniform_int_distribution<std::mt19937::result_type> SLCRoll(1,18); // distribution in range [1, 18]
+            std::uniform_int_distribution<std::mt19937::result_type> RollUp(1,100); // distribution in range [1, 24]
+        // if (RollUp(rng) == 1) {
+            if (player.getBoard()->validRollUp()) {
+                player.addRollUp();
+                oss << player.getName() << ": Found a Tim Hortons Roll up the Rim Cup! You now have " << player.getCups() << endl;
+            }
+            
+        // }
             if (SLCRoll(rng) == 1) change = -200;
             else if (SLCRoll(rng) <= 3) change = -100;
             else if (SLCRoll(rng) <= 6) change = -50;
@@ -107,7 +125,7 @@ MoveResponse UnownableProperty::actionOnLand(Player& player, bool regenerate) {
         }
         else {
             player.addBalance(change);
-            oss << player.getName() << ": Paid Needles Hall fee of " << change * -1;
+            oss << player.getName() << ": Paid Needles Hall fee of " << change;
             action = Action::NoAction;
         }
     }

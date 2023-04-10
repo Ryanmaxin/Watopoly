@@ -47,7 +47,9 @@ class Player: public Subject {
         ChoiceResponse payTuition(int amount);
 
         //Choices for Action::InJail
-        ChoiceResponse payOutOfJail(bool use_roll_up);
+        ChoiceResponse payOutOfDCLine(bool use_roll_up);
+        bool isInTimsLine();
+        bool inLine();
 
         //Called by SLC and Go To Tims properties. Also called when player rolls doubles 3 times.
         string goToTims();
@@ -59,7 +61,23 @@ class Player: public Subject {
         string Mortgage(string property); // assume property checker in board
         string unMortgage(string property);
 
+<<<<<<< HEAD
         // Getter Methods
+=======
+         
+        // ChoiceResponse offerBid(int amount);
+
+        //Getter-Setter methods
+        int getNumTurnsInDCTims() const;
+        int isInTimsLine() const;
+        int getBalance() const;
+        int getCups() const;
+        void setBalance(int new_balance);
+        void addBalance(int money);
+        //The sum of current balance + price of all owned properties + price of all owned improvements
+        int getNetWorth() const;
+        int getPosition() const;
+>>>>>>> a0063ba6ca4ae1ed31be1760c9c85dab23c8a5c0
         string getName() const;
         char getToken() const;
         int getPosition() const;
@@ -77,6 +95,8 @@ class Player: public Subject {
         Square* getCurrentSquare() const;
         vector<OwnableProperty*>& getOwnedProperties();
         void removeRollUp();
+        void addRollUp();
+        Board* getBoard();
 
         void addBalance(int money);
 

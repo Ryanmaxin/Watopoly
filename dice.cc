@@ -34,6 +34,8 @@ int Dice::roll() {
  }
 
 int Dice::setDice(int d1, int d2) {
+    die1 = d1;
+    die2 = d2;
     if (d1 == d2) {
         doubles_rolled += 1;
     }

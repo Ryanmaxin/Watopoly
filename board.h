@@ -35,6 +35,9 @@ class Board {
         Monopoly stringToMonopoly(string monopoly);
 
         void removeRollUp();
+        void addRollUp();
+
+        bool validRollUp();
 };
 
 #endif
