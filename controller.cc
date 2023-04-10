@@ -74,7 +74,7 @@ Player& Controller::playMonopoly() {
         bool went_bankrupt = false;
         bool third = true;
         if (p.inLine()) {
-            cout << p.getName() << ": In DC Tims Line (turn" << p.getNumTurnsInDCTims() << ")" << endl;
+            cout << p.getName() << ": In DC Tims Line (turn " << p.getNumTurnsInDCTims() << ")" << endl;
             cout << p.getName() << ": choices: {rollfordoubles}/{userollup}/{pay} " << endl;
         }
         do {
@@ -135,6 +135,7 @@ Player& Controller::playMonopoly() {
                     }
                     else {
                         cout << p.getName() << ": Failed to roll doubles"<< endl;
+                        break;
                     }
                 }
                 else if (cmd == "bankruptcy") {
@@ -175,8 +176,8 @@ Player& Controller::playMonopoly() {
                     goto bankrupt;
                 }
             }
-            if (dice.isDoubles() && !dice.threeDoubles()) cout << p.getName() << ": Rolled doubles, so must roll again" << endl;
-        } while (dice.isDoubles() && !dice.threeDoubles());
+            if (dice.isDoubles() && !dice.threeDoubles() && !p.isInTimsLine()) cout << p.getName() << ": Rolled doubles, so must roll again" << endl;
+        } while (dice.isDoubles() && !dice.threeDoubles() && !p.isInTimsLine());
 
         
         //Player has completely finished moving now.
@@ -188,7 +189,7 @@ Player& Controller::playMonopoly() {
                 continue;
             }
             else if (cmd == "roll") {
-                cout << p.getName() << ": Already moved this turn" << endl;
+                cout << p.getName() << ": Already rolled this turn" << endl;
                 int d1,d2;
                 if (cin >> d1 >> d2);
             }
@@ -311,13 +312,7 @@ bool Controller::move(Player& p, int roll) {
     if (roll == -1) {
         roll = dice.roll();
     }
-    cout << p.getName() << ": Rolled " << roll;
-    if (dice.isDoubles()) {
-        cout << " with doubles" << endl;
-    }
-    else {
-        cout << "without doubles" << endl;
-    }
+    cout << p.getName() << ": Rolled " << dice.getFaceValues().first << " and " << dice.getFaceValues().second << endl;
     if (dice.threeDoubles()) {
         cout << p.goToTims() << endl;
         cout << p.getName() << ": Sent to DC Tims Line for rolling 3 doubles" << endl;
