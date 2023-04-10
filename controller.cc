@@ -446,7 +446,7 @@ void Controller::load(string filename) {
     cin >> n;
     // gives us the first line indicating the number of players
     // set them to players.size
-    players.size = n;
+    //players.size() = n;
 
     // run a for loop size times to get the player info
     for (int i = 0; i < n; ++i) {
@@ -467,7 +467,8 @@ void Controller::load(string filename) {
         players[i].setBalance(money);
         int pos;
         iss >> pos;
-        players[i].setPosition(pos);
+        //players[i].setPosition(pos);
+        players[i].teleport(pos);
     }
     // you loop through 40 times to update the status of the property
     // we will have all the properties set up by default
@@ -486,7 +487,7 @@ void Controller::load(string filename) {
                 // Owner can be BANK or a person
                 // if a owner is a person, set it to the name
                 // so if owner is a bank, then set owner as a bank or do nothing
-                if (owner != BANK) op->getOwner()->setName(owner);
+                if (owner != "BANK") op->getOwner()->setName(owner);
             }
         }
     }
