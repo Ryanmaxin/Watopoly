@@ -19,7 +19,7 @@ using std::istringstream;
 Player& Controller::playMonopoly() {
     players.clear(); //<---- probably not necessary
     board.init("default.data"); //<---- filename containing data for all squares
-    td.init();
+    // td.init();
     
 
     int num_players = 0; //Get from cin
