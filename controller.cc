@@ -327,9 +327,9 @@ bool Controller::move(Player& p, int roll) {
         cout << p.getName() << ": Sent to DC Tims Line for rolling 3 doubles" << endl;
         return false;
     }
+    MoveResponse res = p.move(roll);
     p.notifyView();
     cout << td << endl;
-    MoveResponse res = p.move(roll);
     cout << res.context << endl;
     if (res.action == Action::BuyOrAuction) {
         while (true) {
