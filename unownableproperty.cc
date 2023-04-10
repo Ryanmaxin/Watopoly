@@ -18,7 +18,7 @@ MoveResponse UnownableProperty::actionOnLand(Player& player, bool regenerate) {
     if (name == "COLLECT OSAP") {
         player.addBalance(200);
         action = Action::NoAction;
-        oss << player.getName() << ": Collected $200 from OSAP";
+        oss << player.getName() << ": Collected $200 from landing on OSAP";
     }
     else if (name == "DC Tims Line") {
         //Do nothing
@@ -38,11 +38,13 @@ MoveResponse UnownableProperty::actionOnLand(Player& player, bool regenerate) {
     else if (name == "TUITION") {
         action = Action::TuitionChoice;
         oss << player.getName() << ": Landed on tuition. Pay either $300 or 10\% of net worth ($" << player.getNetWorth() << ")";
+        oss << endl << player.getName() << ": choices: {flat}/{percentage} ";
     }
     else if (name == "COOP FEE") {
         if (player.getBalance() < 150) {
             action = Action::CantPayTuition;
             oss << player.getName() << ": Can't afford coop fee of $150 (have " << player.getBalance() << ")";
+            oss << endl << player.getName() << ": choices: {pay}/{bankruptcy} ";
         }
         else {
             player.addBalance(-150);
