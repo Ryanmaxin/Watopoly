@@ -9,7 +9,7 @@ using std::endl;
 int main(int argc, char *argv[]) {
     //May need to add more if we restart game, etc
     Controller c;
-    if (charc > 1) {
+    if (argc > 1) {
         string argstr = argv[1];
         if (argstr == "-testing") {
             c.setTestingMode(true);
