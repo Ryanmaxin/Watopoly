@@ -61,7 +61,7 @@ BankruptcyResponse Player::declareBankruptcy() {
     // int tab = 0;
     if (cp == nullptr) {
         receiving = nullptr;
-        oss << name << ": Went bankrupt, all assets transferred to the bank. All properties will auctioned";
+        oss << name << ": Went bankrupt, all assets transferred to the bank. All properties will be auctioned";
         removeRollUp();
     }
     else {
@@ -90,7 +90,7 @@ BankruptcyResponse Player::declareBankruptcy() {
     //     receiving->balance += tab;
     // }
     balance = 0;
-    teleport(0);
+    position = -1; // Means bankrupt
     string context = oss.str();
     return {receiving,copy,context};
 }
@@ -131,6 +131,7 @@ ChoiceResponse Player::settleDebts() {
     else {
         success = true;
     }
+    oss << res.context;
     string context = oss.str();
     return {success,context};
 }
@@ -147,7 +148,7 @@ ChoiceResponse Player::payTuition(int amount) {
     ostringstream oss;
     bool action = false;
     if (balance < amount) {
-        oss << name << ": Can't afford tuition price of " << amount << "(Have " << balance << ")";
+        oss << name << ": Can't afford tuition price of " << amount << " (Have " << balance << ")";
         action = false;
     }
     else {
@@ -441,7 +442,7 @@ string Player::acceptOffer(Player& from, Trade t) {
         transferProperty(give,&from);
         from.balance -= receive;
         balance += receive;
-        oss << from.name << ": Successfully traded " << give->getName() << " to " << name << " for " << receive;
+        oss << name << ": Successfully traded " << give->getName() << " to " << from.name << " for " << receive;
 
     }
     else if (t.option == 2) {
@@ -450,14 +451,14 @@ string Player::acceptOffer(Player& from, Trade t) {
         from.transferProperty(receive,this);
         from.balance += give;
         balance -= give;
-        oss << from.name << ": Successfully traded " << give << " to " << name << " for " << receive->getName();
+        oss << name << ": Successfully traded " << give << " to " << from.name << " for " << receive->getName();
     }
     else if (t.option) {
         OwnableProperty* give = t.receive_property;
         OwnableProperty* receive = t.give_property;
         from.transferProperty(receive,this);
         transferProperty(give,&from);
-        oss << from.name << ": Successfully traded " << give->getName() << " to " << name << " for " << receive->getName();
+        oss << name << ": Successfully traded " << give->getName() << " to " << from.name << " for " << receive->getName();
     }
     else if (t.option == -1) {
         #ifdef DEBUG

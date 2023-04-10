@@ -21,7 +21,6 @@ Player& Controller::playMonopoly() {
     board.init(&td,"default.data"); //<---- filename containing data for all squares
     td.init(board);
     
-
     int num_players = 0; //Get from cin
 
     while(num_players < 2 || num_players > 6) {
@@ -121,7 +120,6 @@ Player& Controller::playMonopoly() {
                     bool use_rollup = false;
                     if (cmd == "userollup") use_rollup = true;
                     ChoiceResponse cr = p.payOutOfDCLine(use_rollup);
-                    cout << cr.context << endl;
                     if (cr.is_valid) {
                         if (p.getNumTurnsInDCTims() >= 3) {
                             went_bankrupt = move(p,dice.getFaceValues().first + dice.getFaceValues().second);
@@ -129,8 +127,10 @@ Player& Controller::playMonopoly() {
                         else {
                             went_bankrupt = move(p);
                         }
+                        cout << cr.context << endl;
                         break;
                     }   
+                    cout << cr.context << endl;
                 }
                 else if ((p.isInTimsLine()) && cmd == "rollfordoubles" && (p.getNumTurnsInDCTims() < 3 || third)) {
                     int roll = dice.roll();
@@ -154,7 +154,6 @@ Player& Controller::playMonopoly() {
                     }
                     else {
                         bankruptcyOccurence(p);
-                        players.erase(players.begin() + current_player_id);
                         went_bankrupt = true;
                         
                     }
@@ -297,6 +296,7 @@ bool Controller::command(string cmd, Player& p) {
             string message = p.improve(theproperty, false);
             cout << message << endl;
         } else cout << p.getName() << ": Invalid improve, must use {buy}/{sell}" << endl;
+        cout << td << endl;
     }
     else if (cmd == "assets") {
         cout << p << endl;
@@ -367,15 +367,9 @@ bool Controller::move(Player& p, int roll) {
             if (choice == "pay") {
                 ChoiceResponse cr = p.settleDebts();
                 cout << cr.context << endl;
-                if (cr.is_valid) {
-                    break;
-                }
-                else {
-                    continue;
-                }
+                if (cr.is_valid) break;
             } else if (choice == "bankruptcy") {
                 bankruptcyOccurence(p);
-                players.erase(players.begin() + current_player_id);
                 return true;
             }
             else if (command(choice, p)) {
@@ -422,7 +416,6 @@ bool Controller::move(Player& p, int roll) {
                 }
                 else {
                     bankruptcyOccurence(p);
-                    players.erase(players.begin() + current_player_id);
                     return true;
                 }
             }
@@ -549,8 +542,8 @@ bool Controller::validPlayer(string name, char token) {
     for (auto player: players) {
         if (player.getName() == name) return false;
         if (player.getToken() == token) return false;
-        if (name == "BANK") return false;
     }
+    if (name == "BANK") return false;
     return true;
 }
 
@@ -589,8 +582,11 @@ void Controller::setTestingMode(bool s) {
 
 void Controller::bankruptcyOccurence(Player& p) {
     BankruptcyResponse br = p.declareBankruptcy();
+    p.notifyView();
     cout << br.context << endl;
-    if (br.receiving) {
+    players.erase(players.begin() + current_player_id);
+    Player* r = br.receiving;
+    if (r == nullptr) {
         for (auto property: br.properties) {
             commenceAuction(p, current_player_id, property);
         }
@@ -598,28 +594,31 @@ void Controller::bankruptcyOccurence(Player& p) {
     else {
         for (auto property: br.properties) {
             if (property->isMortgaged()) {
-                cout << br.receiving << ": You received the mortgaged property " << property->getName() << ", you can unmortgage now for 60% cost or pay 10% and keep it mortgaged" << endl;
-                cout << br.receiving << "choices: {unmortgage}/{keep}";
+                cout << r->getName() << ": You received the mortgaged property " << property->getName() << ", you can unmortgage now for 60% cost or pay 10% and keep it mortgaged" << endl;
+                cout << r->getName() << ": choices: {unmortgage}/{keep}" << endl;
                 while (true) {
                     string choice;
                     cin >> choice;
-                    if (command(choice, p)) { // this takes in the commands after roll
+                    if (command(choice, *r)) { // this takes in the commands after roll
                         continue;
                     }
                     else if (choice == "unmortgage") {
-                        ChoiceResponse cr = p.mortgageChoice(property,true);
+                        ChoiceResponse cr = r->mortgageChoice(property,true);
                         cout << cr.context << endl;
                         if (cr.is_valid) break;
                         else continue;
                     }
                     else if (choice == "keep") {
-                        ChoiceResponse cr = p.mortgageChoice(property,false);
+                        ChoiceResponse cr = r->mortgageChoice(property,false);
                         cout << cr.context << endl;
                         if (cr.is_valid) break;
                         else continue;
                     }
+                    else if (choice == "next") {
+                        cout << p.getName() << ": Must resolve current action before ending turn (resolve with {unmortgage}/{keep})" << endl;
+                    }
                     else {
-                        cout << p.getName() << ": Invalid command" << endl;
+                        cout << r->getName() << ": Invalid command" << endl;
                     }
                 }
             }
