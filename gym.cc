@@ -25,6 +25,6 @@ string Gym::specificContext(Player& player) {
     int multiplier = 4;
     if (num_gyms == 2) multiplier = 10;
         oss << player.getName() << ": On " << name << " you rolled (" << face_values.first << "," << face_values.second << "). " << getOwner()->getName() << 
-        " owns " << num_gyms << " gym(s), making total tuition " << face_values.first+face_values.second << " x " << multiplier << " = $" << face_values.first+face_values.second*multiplier;
+        " owns " << num_gyms << " gym(s), making total tuition (" << face_values.first<< " + " << face_values.second << ") x " << multiplier << " = $" << (face_values.first+face_values.second)*multiplier;
     return oss.str();
 }
