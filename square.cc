@@ -4,8 +4,6 @@
 
 using std::string;
 
-Square::Square(string n, int i): name{n,i} {}
+Square::Square(string n): name{n} {}
 
 string Square::getName() { return name; }
-
-int Square::getId() {return id;}

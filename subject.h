@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "observer.h"
+class Observer;
 
 using namespace std;
 
@@ -13,7 +13,6 @@ public:
     void detach();
     void notifyView();
     virtual ~Subject() = default;
-    SubjectType virtual getType() = 0;
 private:
     Observer* view;
 };

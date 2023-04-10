@@ -18,7 +18,7 @@ const int DC_TIMS_LINE = 10;
 const int COLLECT_OSAP = 0;
 const int MAX_ROLL_UPS = 4;
 const int MAX_IMPROVEMENTS = 5;
-const int SIDELENGTH = 10;
-const int SQUAREHEIGHT = 5;
+const int SIDELENGTH = 11;
+const int SQUAREHEIGHT = 6;
 
 #endif

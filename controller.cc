@@ -70,8 +70,8 @@ Player& Controller::playMonopoly() {
     //--------------------------------------
     //Game starts being actually played here
     current_player_id = 0;
-    cout << td << endl;
     while (true) {
+        cout << td << endl;
         //Each loop is a players turn
         Player& p = players[current_player_id];
         cout << "Player " << p.getName() << "'s turn" << endl;
@@ -180,6 +180,8 @@ Player& Controller::playMonopoly() {
                     goto bankrupt;
                 }
             }
+            p.notifyView();
+            cout << td << endl;
             if (dice.isDoubles() && !dice.threeDoubles() && !p.isInTimsLine()) cout << p.getName() << ": Rolled doubles, so must roll again" << endl;
         } while (dice.isDoubles() && !dice.threeDoubles() && !p.isInTimsLine());
 
@@ -195,7 +197,7 @@ Player& Controller::playMonopoly() {
             else if (cmd == "roll") {
                 cout << p.getName() << ": Already rolled this turn" << endl;
                 int d1,d2;
-                if (cin >> d1 >> d2);
+                cin >> d1 >> d2;
             }
             else if (cmd == "next") {
                 nextTurn();
@@ -206,6 +208,8 @@ Player& Controller::playMonopoly() {
             }
             
         }
+        p.notifyView();
+        cout << td << endl;
         bankrupt:;
     }
 }

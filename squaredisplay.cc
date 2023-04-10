@@ -1,9 +1,10 @@
 #include "squaredisplay.h"
 #include <sstream>
-
+#include "academicbuilding.h"
 using std::istringstream;
 
 SquareDisplay::SquareDisplay(int pos, string n, SquareType st) {
+    type = st;
     string name = n;
     istringstream iss {name};
     iss >> name1;
@@ -66,6 +67,7 @@ ostream& SquareDisplay::printRow(ostream& out, int row, bool is_last) {
         out << "|-------"<< end;
         break;
     }
+    return out;
 }
 
 void SquareDisplay::add(char token, int i) {

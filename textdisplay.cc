@@ -1,5 +1,6 @@
 #include "textdisplay.h"
 
+#include <iostream>
 using namespace std;
 
 void TextDisplay::init(Board& b) {
@@ -8,7 +9,7 @@ void TextDisplay::init(Board& b) {
         string name = curr->getName();
         SquareType type;
         if (dynamic_cast<AcademicBuilding*>(curr)) {
-        type = SquareType::A;
+            type = SquareType::A;
         }
         else if (dynamic_cast<Gym*>(curr)) {
             type = SquareType::G;
@@ -16,7 +17,7 @@ void TextDisplay::init(Board& b) {
         else if (dynamic_cast<UnownableProperty*>(curr)) {
             type = SquareType::U;
         }
-        else if (dynamic_cast<Residence*>(curr)) {
+        else {
             type = SquareType::R;
         }
         sd.push_back({i,name,type});
@@ -27,19 +28,20 @@ void TextDisplay::init(Board& b) {
 std::ostream &operator<<(std::ostream &out, TextDisplay &td) {
     for (int k=0;k < SIDELENGTH; ++k) {
         int offset = 1;
-        if (k==9) offset = 0;
+        if (k==10) offset = 0;
         for (int j=0; j < SQUAREHEIGHT-offset; ++j) {
             for (int i = 0; i < SIDELENGTH; ++i) {
                 bool is_last_h = false;
-                if (i == 9 || i == 0 && k != 0 && k != 9) is_last_h = true;
+                if ((i == 0) && (k != 0 && k != 10)) is_last_h = true;
+                if (i == 10) is_last_h = true;
                 if (k == 0) {
                     (td.sd[i+20]).printRow(out,j,is_last_h);
                 }
-                else if (k == 9) {
+                else if (k == 10) {
                     (td.sd[10-i]).printRow(out,j,is_last_h);
                 }
                 else {
-                        if (k == 1 && (i != 0 && i != 9) && j == 0) {
+                        if (k == 1 && (i != 0 && i != 10) && j == 0) {
                             (td.sd[0]).printRow(out,j,is_last_h);
                         }
                         else {
@@ -47,21 +49,22 @@ std::ostream &operator<<(std::ostream &out, TextDisplay &td) {
                                 if (k==1 && j == 0) (td.sd[20-k]).printRow(out,j,false);
                                 else (td.sd[20-k]).printRow(out,j,is_last_h);
                             }
-                            else if (i == 9) {
+                            else if (i == 10) {
                                 (td.sd[30+k]).printRow(out,j,is_last_h);
                             }
                             else {
-                                    if (i == 8) cout << "       ";
-                                    else cout << "        ";
+                                    if (i == 9) out << "       ";
+                                    else out << "        ";
                             }
                         }
                     
                 }
 
             }
-            cout << endl;
+            out << endl;
         }
     }
+    return out;
 }
 
 void TextDisplay::notify(Subject *whoFrom) {
@@ -77,7 +80,7 @@ void TextDisplay::notify(Subject *whoFrom) {
         for (auto square: sd) {
             square.remove(index);
         }
-        sd[p->getPosition()].add(token,index);
+        sd[token].add(token,index);
     }
 } 
 

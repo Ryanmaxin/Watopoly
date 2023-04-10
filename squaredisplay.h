@@ -4,7 +4,6 @@
 #include "observer.h"
 #include "square.h"
 #include "enumerations.h"
-#include "controller.h"
 
 #include <string>
 
