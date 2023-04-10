@@ -77,10 +77,10 @@ void TextDisplay::notify(Subject *whoFrom) {
     else {
         char token = p->getToken();
         int index = token_index[token];
-        for (auto square: sd) {
+        for (auto &square: sd) {
             square.remove(index);
         }
-        sd[token].add(token,index);
+        sd[p->getPosition()].add(token,index);
     }
 } 
 

@@ -5,6 +5,8 @@
 
 #include "enumerations.h"
 
+class Player;
+
 using std::string;
 
 struct MoveResponse {
@@ -17,6 +19,13 @@ struct ChoiceResponse {
     bool is_valid;
     string context;
     ChoiceResponse(bool v, string c);
+};
+
+struct BankruptcyResponse {
+    Player* receiving;
+    vector<OwnableProperty*> properties;
+    string context;
+    BankruptcyResponse(Player* r, vector<OwnableProperty*> p, string c);
 };
 
 #endif

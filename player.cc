@@ -54,7 +54,7 @@ void Player::transferProperty(OwnableProperty* property, Player* receiving) {
     }
 }
 
-ChoiceResponse Player::declareBankruptcy() {
+BankruptcyResponse Player::declareBankruptcy() {
     ostringstream oss;
     OwnableProperty* cp = dynamic_cast<OwnableProperty*>(current_square);
     Player* receiving;
@@ -77,22 +77,25 @@ ChoiceResponse Player::declareBankruptcy() {
         }
         action = false;
     }
-
+    vector<OwnableProperty*> copy = owned_properties;
     for (auto property: owned_properties) {
         AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(cp);
         if (academic && !cp) {
-            tab+= academic->sellAllImprovements();
+            // tab+= academic->sellAllImprovements();
+            property->setMortgage(false);
             academic->notifyView();
         }
-        transferProperty(property,receiving);
+        if (cp) {
+            transferProperty(property,receiving);
+        }
     }
-    if (tab != 0) {
-        receiving->balance += tab;
-    }
+    // if (tab != 0) {
+    //     receiving->balance += tab;
+    // }
     balance = 0;
     teleport(0);
     string context = oss.str();
-    return {action,context};
+    return {receiving,copy,context};
 }
 
 ChoiceResponse Player::buy() {
@@ -117,6 +120,7 @@ ChoiceResponse Player::buy() {
 
 void Player::wonAuction(OwnableProperty* property, int price) {
         owned_properties.push_back(property);
+        property->setOwner(this);
         balance = balance - price;
 }
 
@@ -592,4 +596,36 @@ bool Player::isInTimsLine() {
 
 Board* Player::getBoard() {
     return board;
+}
+
+ChoiceResponse Player::mortgageChoice(OwnableProperty* op, bool pay_now) {
+    ostringstream oss;
+    bool success = false;
+    int price;
+    string con;
+    if (pay_now) {
+        price = op->getPrice() * 0.6;
+        con = " to unmortgage ";
+    }
+    else {
+        price = op->getPrice() * 0.1;
+        con = " interest on ";
+    }
+     
+    if (balance < price) {
+        oss << name << ": Can't afford the $" << price << con << op->getName() << " (have $" << balance << ")";
+    }
+    else {
+        if (pay_now) {
+            op->setMortgage(false);
+            oss << name << ": Successfully unmortgaged " << op->getName() << " for $" << price;
+        }
+        else {
+            oss << name << ": Successfully paid interest on " << op->getName() << " for $" << price;
+        }
+        balance -= price;
+        success = true;
+        
+    }
+    return {success, oss.str()};
 }
