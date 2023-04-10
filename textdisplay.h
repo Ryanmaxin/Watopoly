@@ -1,20 +1,23 @@
-#ifndef __TEXTDISPLAY_H__
-#define __TEXTDISPLAY_H__
+#ifndef VIEW_H
+#define VIEW_H
 
 #include <vector>
 #include <iostream>
 
-#include "view.h"
+#include "observer.h"
+#include "player.h"
 
 using namespace std; 
 
-class TextDisplay: public View  {
+class TextDisplay: public Observer  {
+
     public:
         void notify(Subject &whoNotified) override;
+        void init();
+
         // void display() const;
         // void update(Player& p);
 
-    private:
         // Board& theboard;
         // vector<Player*> theplayers;
 
