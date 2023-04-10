@@ -67,11 +67,11 @@ Player& Controller::playMonopoly() {
         td.indexToken(token,i);
         players[i].notifyView();
     }
+    cout << td << endl;
     //--------------------------------------
     //Game starts being actually played here
     current_player_id = 0;
     while (true) {
-        cout << td << endl;
         //Each loop is a players turn
         Player& p = players[current_player_id];
         cout << "Player " << p.getName() << "'s turn" << endl;
