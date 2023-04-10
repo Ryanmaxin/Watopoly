@@ -69,11 +69,11 @@ Player& Controller::playMonopoly() {
                     }
                 }
             } while (!validPlayer(player_name,token));
-            }
             players.push_back(Player(player_name, token, &board));
             players[i].attach(&td);
             td.indexToken(token,i);
             players[i].notifyView();
+        }
     }
     cout << td << endl;
     //--------------------------------------
@@ -493,24 +493,26 @@ void Controller::load(string filename) {
     }
     // you loop through 40 times to update the status of the property
     // we will have all the properties set up by default
-    //
     for (int i = 0; i < 40; ++i) {
-        string s;
-        getline(f, s);
-        istringstream iss {s};
-        string property, owner;
-        iss >> property >> owner;
-        if (property == board.getSquare(i)->getName()) {
             Square* sq = board.getSquare(i);
             OwnableProperty* op = dynamic_cast<OwnableProperty*>(sq);
             if (op) {
-                // OwnableProperty owner improvements
-                // Owner can be BANK or a person
+                string s;
+                getline(f, s);
+                istringstream iss {s};
+                string property, owner;
+                iss >> property >> owner;
+                for(auto & player: players) {
+                    if (owner == player.getName()) {
+                        op->setOwner(&player);
+                        player.getOwnedProperties().push_back(op);
+                    }
+                }
                 // if a owner is a person, set it to the name
                 // so if owner is a bank, then set owner as a bank or do nothing
-                if (owner != "BANK") op->getOwner()->setName(owner);
+                // if (owner != "BANK") op->getOwner()->setName(owner);
             }
-        }
+        //}
     }
     cout << "File loaded successfully, you may continue playing." << endl;
 }
@@ -592,13 +594,13 @@ void Controller::save(string filename) {
     for (auto player: players) {
         ofs << player.getName() << ' ' << player.getToken() << ' ' << player.getCups() << ' '
             << player.getBalance() << ' ' << player.getPosition();
-            if (player.getPosition() == DC_TIMS_LINE) {
-                cout << ' ' << player.isInTimsLine();
-                if (player.isInTimsLine()) {
-                    cout << ' ' << player.getNumTurnsInDCTims();
-                }
+        if (player.getPosition() == DC_TIMS_LINE) {
+            ofs << ' ' << player.isInTimsLine();
+            if (player.isInTimsLine()) {
+                ofs << ' ' << player.getNumTurnsInDCTims();
             }
-            cout << endl;
+        }
+        ofs << endl;
     }
     for (int i = 0; i < 40; ++i) {
         Square* sq = board.getSquare(i);

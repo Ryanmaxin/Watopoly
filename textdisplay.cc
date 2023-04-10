@@ -57,7 +57,6 @@ std::ostream &operator<<(std::ostream &out, TextDisplay &td) {
                                     else out << "        ";
                             }
                         }
-                    
                 }
 
             }
