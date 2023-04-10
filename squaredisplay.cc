@@ -3,34 +3,8 @@
 
 using std::istringstream;
 
-SquareDisplay::SquareDisplay(Square* s,int pos) {
-    // if (pos == 0) type = SquareType::BR;
-    // else if (pos <= 9) type = SquareType::B;
-    // else if (pos == 10) type = SquareType::BL;
-    // else if (pos <= 19) type = SquareType::L;
-    // else if (pos == 20) type = SquareType::TL;
-    // else if (pos <= 29) type = SquareType::T;
-    // else if (pos == 30) type = SquareType::TR;
-    // else if (pos <= 39) type = SquareType::R;
-    
-    underlying = s;
-
-    if (dynamic_cast<AcademicBuilding*>(s)) {
-        type = SquareType::A;
-    }
-    else if (dynamic_cast<Gym*>(s)) {
-        type = SquareType::G;
-    }
-    else if (dynamic_cast<UnownableProperty*>(s)) {
-        type = SquareType::U;
-    }
-    else if (dynamic_cast<Residence*>(s)) {
-        type = SquareType::R;
-    }
-    
-
-
-    string name = s->getName();
+SquareDisplay::SquareDisplay(int pos, string n, SquareType st) {
+    string name = n;
     istringstream iss {name};
     iss >> name1;
     string n2,n3;
@@ -48,9 +22,10 @@ SquareDisplay::SquareDisplay(Square* s,int pos) {
     name1.append(7 - name1.length(), ' ');
     name2.append(7 - name2.length(), ' ');
 
-    num_improvements = 0;
     improvements = "";
-    improvements.append(7 - name2.length(), ' ');
+    improvements.append(7 - improvements.length(), ' ');
+    player_row = "";
+    player_row.append(7 - player_row.length(), ' ');
 }
 
 ostream& SquareDisplay::printRow(ostream& out, int row, bool is_last) {
@@ -90,5 +65,30 @@ ostream& SquareDisplay::printRow(ostream& out, int row, bool is_last) {
     case 5:
         out << "|-------"<< end;
         break;
+    }
+}
+
+void SquareDisplay::add(char token, int i) {
+    player_row[i] = token;
+}
+void SquareDisplay::remove(int i) {
+    player_row[i] = ' ';
+}
+
+void SquareDisplay::notify(Subject *whoNotified) {
+    AcademicBuilding* a = dynamic_cast<AcademicBuilding*>(whoNotified);
+    if (!a) {
+        #ifndef DEBUG
+        cout << "Not an AcademicBuilding somehow?" << endl;
+        #endif
+    }
+    else {
+        improvements = "";
+        improvements.append(7 - improvements.length(), ' ');
+
+        int num_improvements = a->getNumberOfImprovements();
+        for (int i = 0; i <num_improvements; ++i) {
+            improvements[i] = 'I';
+        }
     }
 }

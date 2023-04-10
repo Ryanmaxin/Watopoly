@@ -16,14 +16,15 @@ class SquareDisplay: public Observer {
     string name1;
     string name2;
 
-    Square* underlying;
-
-    int num_improvements;
-
     string improvements;
     string player_row;
     public:
-        SquareDisplay(Square* s, int pos);
+        SquareDisplay(int pos, string name, SquareType st);
+
+        void add(char token, int i);
+        void remove(int i);
+
+        void notify(Subject *whoNotified) override;
         
         ostream& printRow(ostream& out ,int row,bool is_last);
 };

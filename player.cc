@@ -234,15 +234,15 @@ string Player::getName() const {
     return name;
 }
 
-void Player::setName(string the_name) const {
+void Player::setName(string the_name)  {
     name = the_name;
 }
 
-void Player::setToken(char the_token) const {
+void Player::setToken(char the_token)  {
     token = the_token;
 }
 
-void Player::setCups(int the_cups) const {
+void Player::setCups(int the_cups)  {
     num_roll_ups = the_cups;
 }
 

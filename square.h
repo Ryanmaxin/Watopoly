@@ -2,6 +2,7 @@
 #define __SQUARES_H__
 
 #include <string>
+#include "subject.h"
 
 class Player;
 struct MoveResponse;

@@ -62,14 +62,15 @@ Player& Controller::playMonopoly() {
                 }
             }
         } while (!validPlayer(player_name,token));
-
         players.push_back(Player(player_name, token, &board));
         players[i].attach(&td);
+        td.indexToken(token,i);
+        players[i].notifyView();
     }
-
     //--------------------------------------
     //Game starts being actually played here
     current_player_id = 0;
+    cout << td << endl;
     while (true) {
         //Each loop is a players turn
         Player& p = players[current_player_id];

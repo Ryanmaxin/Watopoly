@@ -5,7 +5,22 @@ using namespace std;
 void TextDisplay::init(Board& b) {
     for (int i = 0; i < 40; ++i) {
         Square* curr = b.getSquare(i);
-        sd.push_back({curr,i});
+        string name = curr->getName();
+        SquareType type;
+        if (dynamic_cast<AcademicBuilding*>(curr)) {
+        type = SquareType::A;
+        }
+        else if (dynamic_cast<Gym*>(curr)) {
+            type = SquareType::G;
+        }
+        else if (dynamic_cast<UnownableProperty*>(curr)) {
+            type = SquareType::U;
+        }
+        else if (dynamic_cast<Residence*>(curr)) {
+            type = SquareType::R;
+        }
+        sd.push_back({i,name,type});
+        curr->attach(&sd[i]);
     }
 }
 
@@ -47,4 +62,25 @@ std::ostream &operator<<(std::ostream &out, TextDisplay &td) {
             cout << endl;
         }
     }
+}
+
+void TextDisplay::notify(Subject *whoFrom) {
+    Player* p = dynamic_cast<Player*>(whoFrom);
+    if (!p) {
+        #ifndef DEBUG
+        cout << "Not a player somehow?" << endl;
+        #endif
+    }
+    else {
+        char token = p->getToken();
+        int index = token_index[token];
+        for (auto square: sd) {
+            square.remove(index);
+        }
+        sd[p->getPosition()].add(token,index);
+    }
+} 
+
+void TextDisplay::indexToken(char token,int i) {
+    token_index[token] = i;
 }

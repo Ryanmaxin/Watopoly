@@ -13,6 +13,7 @@ enum class Monopoly { Arts1, Arts2, Eng, Health, Env, Sci1, Sci2, Math };
 
 enum class SquareType {U,A,G,R}; // For the text display
 
+
 const int DC_TIMS_LINE = 10;
 const int COLLECT_OSAP = 0;
 const int MAX_ROLL_UPS = 4;

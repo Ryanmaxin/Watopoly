@@ -11,5 +11,5 @@ void Subject::detach() {
 }
 
 void Subject::notifyView() {
-    view->notify(*this);
+    view->notify(this);
 }
