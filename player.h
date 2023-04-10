@@ -31,7 +31,7 @@ class Player: public Subject {
     void transferProperty(OwnableProperty* property, Player* receiving);
     
     public:
-        Player(string name, char token, Board* attached_to, int bal = 1500, int rur = 0, int pos = 0, bool in_jail = false, int num_turns_in_jail = 0);
+        Player(string name, char token, Board* attached_to, int bal = 1500, int rur = 0, int pos = 0, bool in_DCTL = false, int num_turns_in_DCTL = 0);
 
         MoveResponse move(int num_spaces);
         void teleport(int square_index);
