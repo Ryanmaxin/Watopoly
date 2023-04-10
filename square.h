@@ -8,7 +8,7 @@ struct MoveResponse;
 
 using std::string;
 
-class Square {
+class Square: public Subject {
     protected:
         string name;
     public:

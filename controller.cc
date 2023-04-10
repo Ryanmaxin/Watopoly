@@ -18,8 +18,8 @@ using std::istringstream;
 
 Player& Controller::playMonopoly() {
     players.clear(); //<---- probably not necessary
-    board.init("default.data"); //<---- filename containing data for all squares
-    td.init();
+    board.init(&td,"default.data"); //<---- filename containing data for all squares
+    td.init(board);
     
 
     int num_players = 0; //Get from cin
@@ -64,7 +64,7 @@ Player& Controller::playMonopoly() {
         } while (!validPlayer(player_name,token));
 
         players.push_back(Player(player_name, token, &board));
-        // players[i].attach()
+        players[i].attach(&td);
     }
 
     //--------------------------------------

@@ -10,13 +10,13 @@ using std::endl;
 using std::ifstream;
 using std::istringstream;
 
-void Board::init(string square_data) {
+void Board::init(Observer* ob, string square_data) {
     //Clear previous state.
     squares.clear();
 
     //Initialize squares
     //... Some code here
-    initSquares(square_data);
+    initSquares(square_data,ob);
 }
 
 Square* Board::getSquare(int index) {
@@ -33,7 +33,7 @@ Square* Board::stringToProperty(string property) {
     return nullptr;
 }
 
-void Board::initSquares(string square_data) {
+void Board::initSquares(string square_data, Observer* ob) {
     ifstream f { square_data };
     string line;
     for (int i = 0; i < 40; ++i) {
@@ -80,6 +80,7 @@ void Board::initSquares(string square_data) {
             iss >> price;
             squares.push_back(make_unique<Residence>(name, price));
         }
+        squares[i].get()->attach(ob);
     }
 }
 
