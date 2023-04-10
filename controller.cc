@@ -226,13 +226,14 @@ bool Controller::command(string cmd, Player& p) {
         cin >> give;
         cin >> receive;
         Player* p_ptr = nullptr;
-        for (auto player: players) {
+        for (Player& player: players) {
             //Invariant, there will only be one
             if (player.getName() == name) {
                 p_ptr = &player;
+                break;
             }
         }
-        if (p_ptr) {
+        if (p_ptr != nullptr) {
             if (p_ptr->getName() == p.getName()) {
                 cout << name << ": Can't trade yourself!" << endl;
             }
