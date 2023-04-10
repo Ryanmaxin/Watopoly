@@ -2,6 +2,7 @@
 #define __CONTROLLER_H__
 
 #include "player.h"
+// #include "textdisplay."
 
 #include <string>
 #include <vector>
@@ -12,6 +13,7 @@ using std::vector;
 
 class Controller {
     Board board;
+    // TextDisplay td;
     vector<Player> players;
     Dice dice;
     int current_player_id;
