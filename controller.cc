@@ -584,7 +584,7 @@ void Controller::save(string filename) {
             } else ofs << 0 << endl;
         }
     }
-    cout << "File " << filename << "saved successfully." << endl;
+    cout << "File " << filename << " saved successfully." << endl;
 }
 
 void Controller::setTestingMode(bool s) {
