@@ -168,11 +168,6 @@ Player& Controller::playMonopoly() {
                 else {
                     cout << p.getName() << ": Invalid command" << endl;
                 }
-<<<<<<< HEAD
-                if (dice.threeDoubles()) {
-                    cout << p.goToTims() << endl;
-                    break;
-=======
             }
             if (went_bankrupt) {
                 if (players.size() == 1) {
@@ -182,7 +177,6 @@ Player& Controller::playMonopoly() {
                 }
                 else {
                     goto bankrupt;
->>>>>>> a0063ba6ca4ae1ed31be1760c9c85dab23c8a5c0
                 }
             }
             if (dice.isDoubles() && !dice.threeDoubles() && !p.isInTimsLine()) cout << p.getName() << ": Rolled doubles, so must roll again" << endl;
