@@ -72,8 +72,9 @@ Player& Controller::playMonopoly() {
         Player& p = players[current_player_id];
         cout << "Player " << p.getName() << "'s turn" << endl;
         bool went_bankrupt = false;
+        bool third = true;
         if (p.inLine()) {
-            cout << p.getName() << ": In DC Tims Line" << p.getNumTurnsInDCTims() << endl;
+            cout << p.getName() << ": In DC Tims Line (turn" << p.getNumTurnsInDCTims() << ")" << endl;
             cout << p.getName() << ": choices: {rollfordoubles}/{userollup}/{pay} " << endl;
         }
         do {
@@ -120,18 +121,21 @@ Player& Controller::playMonopoly() {
                     if (cr.is_valid) {
                         went_bankrupt = move(p);
                     }   
-                    else continue;
                 }
-                else if ((p.isInTimsLine()) && cmd == "rollfordoubles" && p.getNumTurnsInDCTims() < 3) {
+                else if ((p.isInTimsLine()) && cmd == "rollfordoubles" && (p.getNumTurnsInDCTims() < 3 || third)) {
                     int roll = dice.roll();
                     if (dice.isDoubles()) {
+                        cout << p.getName() << "Successfully rolled doubles" << endl;
                         went_bankrupt = move(p, roll);
                     }
                     else if (p.getNumTurnsInDCTims() >= 3) {
-                        cout << p.getName() << ": Third turn in DC Tims Line, must pay to leave now" << endl;
+                        cout << p.getName() << ": Failed to roll doubles for third turn, must pay to leave now" << endl;
+                        third = false;
                         continue;
                     }
-                    else break;
+                    else {
+                        cout << p.getName() << ": Failed to roll doubles"<< endl;
+                    }
                 }
                 else if (cmd == "bankruptcy") {
                     if (p.getBalance() >= 50) {
@@ -149,6 +153,13 @@ Player& Controller::playMonopoly() {
                         went_bankrupt = true;
                         
                     }
+                }
+                else if (testing_mode && cmd == "teleport") {
+                    int loc;
+                    cin >> loc;
+                    p.teleport(loc);
+                    went_bankrupt = move(p,0);
+                    break;
                 }
                 else {
                     cout << p.getName() << ": Invalid command" << endl;
@@ -292,18 +303,20 @@ bool Controller::command(string cmd, Player& p) {
     else if (cmd == "save") {
         //To implement
     }
-    else if (testing_mode && cmd == "teleport") {
-        int loc;
-        cin >> loc;
-        p.teleport(loc);
-    }
     else return false;
     return true;
 }
 
 bool Controller::move(Player& p, int roll) {
-    if (roll == 0) {
+    if (roll == -1) {
         roll = dice.roll();
+    }
+    cout << p.getName() << ": Rolled " << roll;
+    if (dice.isDoubles()) {
+        cout << " with doubles" << endl;
+    }
+    else {
+        cout << "without doubles" << endl;
     }
     if (dice.threeDoubles()) {
         cout << p.goToTims() << endl;
