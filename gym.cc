@@ -8,7 +8,7 @@ using std::string;
 using std::ostringstream;
 
 Gym::Gym(string name, int p): 
-OwnableProperty{name,p},dice{} {}
+OwnableProperty{name, p},dice{} {}
 
 int Gym::getTuition() {
     int num_gyms = owner->numberOfOwnedGyms();

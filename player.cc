@@ -82,6 +82,7 @@ ChoiceResponse Player::declareBankruptcy() {
         AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(cp);
         if (academic && !cp) {
             tab+= academic->sellAllImprovements();
+            academic->notifyView();
         }
         transferProperty(property,receiving);
     }
@@ -485,6 +486,7 @@ string Player::improve(string property, bool buy) {
                     else {
                         balance -= imp_cost;
                         academic->buyImprovement();
+                        academic->notifyView();
                         oss << name << ": Successfully bought an improvement on " << property << " for $" << imp_cost;
                     }
                 }
@@ -499,6 +501,8 @@ string Player::improve(string property, bool buy) {
                 }
                 else {
                     int sell_cost = imp_cost * 0.5;
+                    academic->sellImprovement();
+                    academic->notifyView();
                     oss << name << ": Successfully sold an improvement in " << academic->getName() << " for $" << sell_cost;
                     balance += sell_cost;
                 }

@@ -2,13 +2,14 @@
 #define __SQUARES_H__
 
 #include <string>
+#include "subject.h"
 
 class Player;
 struct MoveResponse;
 
 using std::string;
 
-class Square {
+class Square: public Subject {
     protected:
         string name;
     public:

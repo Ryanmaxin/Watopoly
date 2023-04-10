@@ -18,8 +18,8 @@ using std::istringstream;
 
 Player& Controller::playMonopoly() {
     players.clear(); //<---- probably not necessary
-    board.init("default.data"); //<---- filename containing data for all squares
-    // td.init();
+    board.init(&td,"default.data"); //<---- filename containing data for all squares
+    td.init(board);
     
 
     int num_players = 0; //Get from cin
@@ -62,15 +62,16 @@ Player& Controller::playMonopoly() {
                 }
             }
         } while (!validPlayer(player_name,token));
-
         players.push_back(Player(player_name, token, &board));
-        // players[i].attach()
+        players[i].attach(&td);
+        td.indexToken(token,i);
+        players[i].notifyView();
     }
-
     //--------------------------------------
     //Game starts being actually played here
     current_player_id = 0;
     while (true) {
+        cout << td << endl;
         //Each loop is a players turn
         Player& p = players[current_player_id];
         cout << "Player " << p.getName() << "'s turn" << endl;
@@ -179,6 +180,8 @@ Player& Controller::playMonopoly() {
                     goto bankrupt;
                 }
             }
+            p.notifyView();
+            cout << td << endl;
             if (dice.isDoubles() && !dice.threeDoubles() && !p.isInTimsLine()) cout << p.getName() << ": Rolled doubles, so must roll again" << endl;
         } while (dice.isDoubles() && !dice.threeDoubles() && !p.isInTimsLine());
 
@@ -194,7 +197,7 @@ Player& Controller::playMonopoly() {
             else if (cmd == "roll") {
                 cout << p.getName() << ": Already rolled this turn" << endl;
                 int d1,d2;
-                if (cin >> d1 >> d2);
+                cin >> d1 >> d2;
             }
             else if (cmd == "next") {
                 nextTurn();
@@ -205,6 +208,8 @@ Player& Controller::playMonopoly() {
             }
             
         }
+        p.notifyView();
+        cout << td << endl;
         bankrupt:;
     }
 }
