@@ -19,7 +19,7 @@ class Controller {
     void commenceAuction(Player& p, int current_player_id, OwnableProperty* being_auctioned = nullptr);
     void nextTurn();
     bool command(string cmd, Player& p);
-    bool move(Player& p, int roll = 0);
+    bool move(Player& p, int roll = -1);
     void load(string filename);
     bool validPlayer(string name, char token);
 

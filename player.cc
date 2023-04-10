@@ -22,7 +22,7 @@ MoveResponse Player::move(int num_spaces) {
         balance += 200;
         oss << name << ": Passed Collect OSAP, received $200 " << endl;
     }
-    position = (position + num_spaces)%39;
+    position = (position + num_spaces)%40;
     current_square = board->getSquare(position);
     MoveResponse res = current_square->actionOnLand(*this);
     oss << res.context;
@@ -282,14 +282,18 @@ ostream& operator<<(ostream& out, const Player& player) {
     for (auto property: player.owned_properties) {
         AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(property);
         string mortgage = "";
+        string monopoly = "";
         if (property->isMortgaged()) {
             mortgage = " (mortgaged)";
         }
         if (academic) {
-            out << property->getName() << ": " << academic->getNumberOfImprovements() << " improvements" << endl;
+            if (player.ownsMonopoly(academic->getSet())) {
+                monopoly = " (monopoly)";
+            }
+            out << property->getName() << ": " << academic->getNumberOfImprovements() << " improvements" << mortgage << monopoly << endl;
         }
         else {
-            out << property->getName() << endl;
+            out << property->getName() << mortgage << endl;
         }
     }
     out << "Total net worth: $" << player.getNetWorth() << endl;
