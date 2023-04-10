@@ -121,11 +121,16 @@ MoveResponse UnownableProperty::actionOnLand(Player& player, bool regenerate) {
         }
         if (player.getBalance() < (change * -1)) {
             action = Action::CantPayTuition;
-            oss << player.getName() << ": Can't afford Needles Hall fee of " << change * -1 << "(have $" << player.getBalance() << ")";
+            oss << player.getName() << ": Can't afford Needles Hall fee of $" << change * -1 << "(have $" << player.getBalance() << ")";
         }
         else {
             player.addBalance(change);
-            oss << player.getName() << ": Paid Needles Hall fee of " << change;
+            if (change > 0) {
+                oss << player.getName() << ": Received $" << change << " from Needles Hall";
+            }
+            else {
+                oss << player.getName() << ": Paid Needles Hall fee of $" << change*-1;
+            }
             action = Action::NoAction;
         }
     }
