@@ -12,6 +12,7 @@
 #include "gym.h"
 #include "residence.h"
 #include "unownableproperty.h"
+#include "observer.h"
 
 using std::vector;
 using std::unique_ptr;
@@ -22,11 +23,11 @@ class Board {
     vector<unique_ptr<Square>> squares;
     // vector<unique_ptr<Player>> players;
     int current_roll_up_rims = 0;
-    void initSquares(string square_data);
+    void initSquares(string square_data, Observer* ob);
     public:
         //Init sets up the board. Every time you start a game this should be called.
         //Should be called from within Controller.
-        void init(string square_data = "default.data");
+        void init(Observer* ob,string square_data = "default.data");
         Square* getSquare(int index);
 
         //Returns a pointer to the property, if it exists

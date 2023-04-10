@@ -12,7 +12,7 @@ class Gym: public OwnableProperty {
     Dice dice;
     int getTuition() override;
     public:
-        Gym(string name, int p);
+        Gym(string name,int p);
         ~Gym() override = default;
         string specificContext(Player& player) override;
 };

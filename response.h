@@ -2,10 +2,15 @@
 #define __RESPONSE_H__
 
 #include <string>
+#include <vector>
 
 #include "enumerations.h"
 
+class Player;
+class OwnableProperty;
+
 using std::string;
+using std::vector;
 
 struct MoveResponse {
     Action action;
@@ -17,6 +22,13 @@ struct ChoiceResponse {
     bool is_valid;
     string context;
     ChoiceResponse(bool v, string c);
+};
+
+struct BankruptcyResponse {
+    Player* receiving;
+    vector<OwnableProperty*> properties;
+    string context;
+    BankruptcyResponse(Player* r, vector<OwnableProperty*> p, string c);
 };
 
 #endif

@@ -37,7 +37,8 @@ class Player: public Subject {
         void teleport(int square_index);
 
         //Choices for Action::CantPayTuition
-        ChoiceResponse declareBankruptcy();
+        BankruptcyResponse declareBankruptcy();
+        ChoiceResponse mortgageChoice(OwnableProperty* op, bool pay_now);
         ChoiceResponse settleDebts();
 
         //Choices for Action::BuyOrAuction

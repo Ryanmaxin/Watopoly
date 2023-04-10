@@ -1,6 +1,7 @@
 #include <vector>
 
 #include "subject.h"
+#include "observer.h"
 
 void Subject::attach(Observer* obs) {
     view = obs;
@@ -11,5 +12,5 @@ void Subject::detach() {
 }
 
 void Subject::notifyView() {
-    view->notify(*this);
+    view->notify(this);
 }

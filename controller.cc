@@ -19,7 +19,8 @@ using std::istringstream;
 
 Player& Controller::playMonopoly() {
     players.clear(); //<---- probably not necessary
-    board.init("default.data"); //<---- filename containing data for all squares
+    // board.init("default.data"); //<---- filename containing data for all squares
+    board.init(&td,"default.data"); //<---- filename containing data for all squares
     td.init(board);
     
     int num_players = 0; //Get from cin
@@ -52,6 +53,7 @@ Player& Controller::playMonopoly() {
                 else {
                     cout << "This name or token is already in use by another player" << endl;
                 }
+
                 int player_number = i + 1;
                 cout << "Enter player " << player_number << " name: ";
 
@@ -67,12 +69,13 @@ Player& Controller::playMonopoly() {
                     }
                 }
             } while (!validPlayer(player_name,token));
-
+            }
             players.push_back(Player(player_name, token, &board));
-            // players[i].attach()
-        }
+            players[i].attach(&td);
+            td.indexToken(token,i);
+            players[i].notifyView();
     }
-
+    cout << td << endl;
     //--------------------------------------
     //Game starts being actually played here
     current_player_id = 0;
@@ -134,7 +137,13 @@ Player& Controller::playMonopoly() {
                     ChoiceResponse cr = p.payOutOfDCLine(use_rollup);
                     cout << cr.context << endl;
                     if (cr.is_valid) {
-                        went_bankrupt = move(p);
+                        if (p.getNumTurnsInDCTims() >= 3) {
+                            went_bankrupt = move(p,dice.getFaceValues().first + dice.getFaceValues().second);
+                        }
+                        else {
+                            went_bankrupt = move(p);
+                        }
+                        break;
                     }   
                 }
                 else if ((p.isInTimsLine()) && cmd == "rollfordoubles" && (p.getNumTurnsInDCTims() < 3 || third)) {
@@ -158,13 +167,7 @@ Player& Controller::playMonopoly() {
                         cout << p.getName() << ": Can't declare bankruptcy, have sufficent funds to pay $50 bail" << endl;
                     }
                     else {
-                        ChoiceResponse cr = p.declareBankruptcy();
-                        cout << cr.context << endl;
-                        if (cr.is_valid) {
-                            for (auto property: p.getOwnedProperties()) {
-                                commenceAuction(p, current_player_id, property);
-                            }
-                        }
+                        bankruptcyOccurence(p);
                         players.erase(players.begin() + current_player_id);
                         went_bankrupt = true;
                         
@@ -205,8 +208,6 @@ Player& Controller::playMonopoly() {
             }
             else if (cmd == "roll") {
                 cout << p.getName() << ": Already rolled this turn" << endl;
-                int d1,d2;
-                if (cin >> d1 >> d2);
             }
             else if (cmd == "next") {
                 nextTurn();
@@ -232,6 +233,8 @@ void Controller::nextTurn() {
 }
 
 bool Controller::command(string cmd, Player& p) {
+    p.notifyView();
+    cout << td << endl;
     if (cmd == "trade") {
         string name, give, receive;
         cin >> name;
@@ -300,7 +303,7 @@ bool Controller::command(string cmd, Player& p) {
     else if (cmd == "improve") {
         string theproperty, theimprovement;
         cin >> theproperty >> theimprovement;
-        if (theimprovement == "buy" || theimprovement == "sell") {
+        if (theimprovement == "buy") {
             string message = p.improve(theproperty, true);
             cout << message << endl;
         }
@@ -323,6 +326,11 @@ bool Controller::command(string cmd, Player& p) {
         cin >> filename;
         save(filename);
     }
+    else if (testing_mode && cmd == "setdosh") {
+        int loc;
+        cin >> loc;
+        p.setBalance(loc);
+    }
     else return false;
     return true;
 }
@@ -333,11 +341,13 @@ bool Controller::move(Player& p, int roll) {
     }
     cout << p.getName() << ": Rolled " << dice.getFaceValues().first << " and " << dice.getFaceValues().second << endl;
     if (dice.threeDoubles()) {
-        cout << p.goToTims() << endl;
+        p.goToTims();
         cout << p.getName() << ": Sent to DC Tims Line for rolling 3 doubles" << endl;
         return false;
     }
     MoveResponse res = p.move(roll);
+    p.notifyView();
+    cout << td << endl;
     cout << res.context << endl;
     if (res.action == Action::BuyOrAuction) {
         while (true) {
@@ -378,14 +388,7 @@ bool Controller::move(Player& p, int roll) {
                     continue;
                 }
             } else if (choice == "bankruptcy") {
-                ChoiceResponse cr = p.declareBankruptcy();
-                cout << cr.context << endl;
-                if (cr.is_valid) {
-                    for (auto property: p.getOwnedProperties()) {
-                        commenceAuction(p, current_player_id, property);
-                    }
-                }
-                cout << p.getName() << ": " << endl;
+                bankruptcyOccurence(p);
                 players.erase(players.begin() + current_player_id);
                 return true;
             }
@@ -432,13 +435,7 @@ bool Controller::move(Player& p, int roll) {
                     cout << p.getName() << ": Can't declare bankruptcy, have sufficent funds to pay minimum tuition of $" << min_cost << endl;
                 }
                 else {
-                    ChoiceResponse cr = p.declareBankruptcy();
-                    cout << cr.context << endl;
-                    if (cr.is_valid) {
-                        for (auto property: p.getOwnedProperties()) {
-                            commenceAuction(p, current_player_id, property);
-                        }
-                    }
+                    bankruptcyOccurence(p);
                     players.erase(players.begin() + current_player_id);
                     return true;
                 }
@@ -578,6 +575,7 @@ bool Controller::validPlayer(string name, char token) {
     for (auto player: players) {
         if (player.getName() == name) return false;
         if (player.getToken() == token) return false;
+        if (name == "BANK") return false;
     }
     return true;
 }
@@ -628,4 +626,43 @@ void Controller::setIsLoaded(bool b) {
 
 void Controller::setLoadedFile(string file) {
     loaded_file = file;
+}
+void Controller::bankruptcyOccurence(Player& p) {
+    BankruptcyResponse br = p.declareBankruptcy();
+    cout << br.context << endl;
+    if (br.receiving) {
+        for (auto property: br.properties) {
+            commenceAuction(p, current_player_id, property);
+        }
+    }
+    else {
+        for (auto property: br.properties) {
+            if (property->isMortgaged()) {
+                cout << br.receiving << ": You received the mortgaged property " << property->getName() << ", you can unmortgage now for 60% cost or pay 10% and keep it mortgaged" << endl;
+                cout << br.receiving << "choices: {unmortgage}/{keep}";
+                while (true) {
+                    string choice;
+                    cin >> choice;
+                    if (command(choice, p)) { // this takes in the commands after roll
+                        continue;
+                    }
+                    else if (choice == "unmortgage") {
+                        ChoiceResponse cr = p.mortgageChoice(property,true);
+                        cout << cr.context << endl;
+                        if (cr.is_valid) break;
+                        else continue;
+                    }
+                    else if (choice == "keep") {
+                        ChoiceResponse cr = p.mortgageChoice(property,false);
+                        cout << cr.context << endl;
+                        if (cr.is_valid) break;
+                        else continue;
+                    }
+                    else {
+                        cout << p.getName() << ": Invalid command" << endl;
+                    }
+                }
+            }
+        }
+    }
 }
