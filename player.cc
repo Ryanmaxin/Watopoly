@@ -39,6 +39,10 @@ void Player::teleport(int square_index) {
     current_square = board->getSquare(position);
 }
 
+// void Player::setPosition(int the_position) {
+//     position = the_position;
+// }
+
 void Player::transferProperty(OwnableProperty* property, Player* receiving) {
     property->setOwner(receiving);
     receiving->owned_properties.push_back(property);
@@ -234,17 +238,19 @@ string Player::getName() const {
     return name;
 }
 
-void Player::setName(string the_name)  {
+void Player::setName(string the_name) {
     name = the_name;
 }
 
-void Player::setToken(char the_token)  {
+void Player::setToken(char the_token) {
     token = the_token;
 }
 
-void Player::setCups(int the_cups)  {
+void Player::setCups(int the_cups) {
     num_roll_ups = the_cups;
 }
+
+
 
 bool Player::ownsProperty(Square* property) const {
     for (auto owned_property: owned_properties) {
