@@ -17,7 +17,13 @@ int main(int argc, char *argv[]) {
             cout << "Testing mode enabled" << endl;
             #endif
         }
+        // using if to indicate possibility of the merge of two test and load commands together
+        if (str == "-load") {
+            // file is the third argument
+            c.setIsLoaded(true);
+            string file = argv[2];
+            c.setLoadedFile(file);
+        }
     }
-
     c.playMonopoly();
 }

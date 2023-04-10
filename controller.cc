@@ -24,47 +24,53 @@ Player& Controller::playMonopoly() {
 
     int num_players = 0; //Get from cin
 
-    while(num_players < 2 || num_players > 6) {
-        cout << "Enter the number of players: ";
-        cin >> num_players;
-        if (!cin) {
-            cin.clear();
-            cin.ignore(1000000,'\n');
+    if (is_loaded) {
+        #ifdef DEBUG
+        cout << "Inside is_loaded";
+        #endif
+        load(loaded_file);
+    } else {
+        while(num_players < 2 || num_players > 6) {
+            cout << "Enter the number of players: ";
+            cin >> num_players;
+            if (!cin) {
+                cin.clear();
+                cin.ignore(1000000,'\n');
+            }
+            if(num_players < 2 || num_players > 6) cout << "Please enter the number of players between 2 to 6." << endl;
         }
-        if(num_players < 2 || num_players > 6) cout << "Please enter the number of players between 2 to 6." << endl;
-    }
-
     //Initialize players vector
-    for (int i = 0; i < num_players; i++) {
-        //Get these fields from cin. 
-        string player_name;
-        char token;
-        bool first_try = true;
-        do {
-            if (first_try) {
-                first_try = false;
-            }
-            else {
-                cout << "This name or token is already in use by another player" << endl;
-            }
-            int player_number = i + 1;
-            cout << "Enter player " << player_number << " name: ";
-
-            cin >> player_name;
-            while (true) {
-                cout << "Enter token for " << player_name << ": ";
-                cin >> token;
-                if (token != 'G' && token != 'B' && token != 'D' && token != 'P' && token != 'S'&& token != '$'&& token != 'L' && token != 'T') {
-                    cout << "Invalid token, must be one of G, B, D, P, S, $, L, T" << endl;
+        for (int i = 0; i < num_players; i++) {
+            //Get these fields from cin. 
+            string player_name;
+            char token;
+            bool first_try = true;
+            do {
+                if (first_try) {
+                    first_try = false;
                 }
                 else {
-                    break;
+                    cout << "This name or token is already in use by another player" << endl;
                 }
-            }
-        } while (!validPlayer(player_name,token));
+                int player_number = i + 1;
+                cout << "Enter player " << player_number << " name: ";
 
-        players.push_back(Player(player_name, token, &board));
-        // players[i].attach()
+                cin >> player_name;
+                while (true) {
+                    cout << "Enter token for " << player_name << ": ";
+                    cin >> token;
+                    if (token != 'G' && token != 'B' && token != 'D' && token != 'P' && token != 'S'&& token != '$'&& token != 'L' && token != 'T') {
+                        cout << "Invalid token, must be one of G, B, D, P, S, $, L, T" << endl;
+                    }
+                    else {
+                        break;
+                    }
+                }
+            } while (!validPlayer(player_name,token));
+
+            players.push_back(Player(player_name, token, &board));
+            // players[i].attach()
+        }
     }
 
     //--------------------------------------
@@ -84,6 +90,9 @@ Player& Controller::playMonopoly() {
             while (true) {
                 string cmd;
                 cin >> cmd;
+                // if (is_loaded) {
+                //     went_bankrupt = move(p);
+                // }
                 if (command(cmd, p)) { // this takes in the commands after roll
                     continue;
                 }
@@ -103,7 +112,10 @@ Player& Controller::playMonopoly() {
                             dice.setDice(d1,d2);
                         } while (!iss);
                         went_bankrupt = move(p, d1+d2);
-                    } else {
+                    } // else if (is_loaded) {
+                    //     went_bankrupt = move(p);
+                    // }
+                    else {
                         went_bankrupt = move(p);
                     }
                     break;
@@ -589,4 +601,12 @@ void Controller::save(string filename) {
 
 void Controller::setTestingMode(bool s) {
     testing_mode = s;
+}
+
+void Controller::setIsLoaded(bool b) {
+    is_loaded = b;
+}
+
+void Controller::setLoadedFile(string file) {
+    loaded_file = file;
 }
