@@ -9,7 +9,7 @@
 
 using namespace std; 
 
-class View: public Observer  {
+class TextDisplay: public Observer  {
     public:
         void notify(Subject &whoNotified) override;
         // void display() const;
