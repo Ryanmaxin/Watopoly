@@ -58,13 +58,11 @@ BankruptcyResponse Player::declareBankruptcy() {
     ostringstream oss;
     OwnableProperty* cp = dynamic_cast<OwnableProperty*>(current_square);
     Player* receiving;
-    bool action;
-    int tab = 0;
+    // int tab = 0;
     if (cp == nullptr) {
         receiving = nullptr;
         oss << name << ": Went bankrupt, all assets transferred to the bank. All properties will auctioned";
         removeRollUp();
-        action = true;
     }
     else {
         //Declare bankruptcy to another player
@@ -75,7 +73,6 @@ BankruptcyResponse Player::declareBankruptcy() {
             receiving->num_roll_ups = num_roll_ups;
             num_roll_ups = 0;
         }
-        action = false;
     }
     vector<OwnableProperty*> copy = owned_properties;
     for (auto property: owned_properties) {
