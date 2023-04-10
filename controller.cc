@@ -129,6 +129,7 @@ Player& Controller::playMonopoly() {
                         else {
                             went_bankrupt = move(p);
                         }
+                        break;
                     }   
                 }
                 else if ((p.isInTimsLine()) && cmd == "rollfordoubles" && (p.getNumTurnsInDCTims() < 3 || third)) {
@@ -193,8 +194,6 @@ Player& Controller::playMonopoly() {
             }
             else if (cmd == "roll") {
                 cout << p.getName() << ": Already rolled this turn" << endl;
-                int d1,d2;
-                cin >> d1 >> d2;
             }
             else if (cmd == "next") {
                 nextTurn();
@@ -328,7 +327,7 @@ bool Controller::move(Player& p, int roll) {
     }
     cout << p.getName() << ": Rolled " << dice.getFaceValues().first << " and " << dice.getFaceValues().second << endl;
     if (dice.threeDoubles()) {
-        cout << p.goToTims() << endl;
+        p.goToTims();
         cout << p.getName() << ": Sent to DC Tims Line for rolling 3 doubles" << endl;
         return false;
     }
