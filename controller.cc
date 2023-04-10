@@ -11,6 +11,7 @@ using std::endl;
 using std::string;
 using std::cin;
 using std::cerr;
+using std::ifstream;
 using std::ofstream;
 using std::ostringstream;
 using std::istringstream;
@@ -19,9 +20,8 @@ using std::istringstream;
 Player& Controller::playMonopoly() {
     players.clear(); //<---- probably not necessary
     board.init("default.data"); //<---- filename containing data for all squares
-    // td.init();
+    td.init(board);
     
-
     int num_players = 0; //Get from cin
 
     if (is_loaded) {
@@ -39,7 +39,7 @@ Player& Controller::playMonopoly() {
             }
             if(num_players < 2 || num_players > 6) cout << "Please enter the number of players between 2 to 6." << endl;
         }
-    //Initialize players vector
+        //Initialize players vector
         for (int i = 0; i < num_players; i++) {
             //Get these fields from cin. 
             string player_name;
@@ -453,42 +453,53 @@ bool Controller::move(Player& p, int roll) {
 }
 
 void Controller::load(string filename) {
-    // loads m12 inside the game
-    // use getline to fetch the first line
+    ifstream f {filename};
+    string str;
+    getline(f, str);
+    istringstream iss_t {str};
     int n;
-    cin >> n;
-    // gives us the first line indicating the number of players
+    iss_t >> n;
     // set them to players.size
     //players.size() = n;
 
     // run a for loop size times to get the player info
     for (int i = 0; i < n; ++i) {
         string s;
-        getline(cin, s);
+        getline(f, s);
         istringstream iss {s};
         string name;
         iss >> name;
-        players[i].setName(name);
         char token;
         iss >> token;
-        players[i].setToken(token);
         int cups;
         iss >> cups;
-        players[i].setCups(cups);
         int money;
         iss >> money;
-        players[i].setBalance(money);
         int pos;
         iss >> pos;
-        //players[i].setPosition(pos);
-        players[i].teleport(pos);
+        // Player p {na}
+        int on_DCTL, num;
+        iss >> on_DCTL;
+        if (iss) {
+            if (on_DCTL) {
+                iss >> num;
+            }
+        } else {
+            on_DCTL = 0;
+            num = 0;
+        }
+        bool b = on_DCTL;
+        players.push_back({name, token, &board, money, cups, pos, b, num});
+        players[i].attach(&td);
+        td.indexToken(token,i);
+        players[i].notifyView();
     }
     // you loop through 40 times to update the status of the property
     // we will have all the properties set up by default
     //
     for (int i = 0; i < 40; ++i) {
         string s;
-        getline(cin, s);
+        getline(f, s);
         istringstream iss {s};
         string property, owner;
         iss >> property >> owner;
@@ -504,6 +515,7 @@ void Controller::load(string filename) {
             }
         }
     }
+    cout << "File loaded successfully, you may continue playing." << endl;
 }
 
 void Controller::commenceAuction(Player& p, int current_player_id, OwnableProperty* being_auctioned) {
@@ -581,7 +593,14 @@ void Controller::save(string filename) {
     }
     for (auto player: players) {
         ofs << player.getName() << ' ' << player.getToken() << ' ' << player.getCups() << ' '
-            << player.getBalance() << ' ' << player.getPosition() << endl;
+            << player.getBalance() << ' ' << player.getPosition();
+            if (player.getPosition() == DC_TIMS_LINE) {
+                cout << ' ' << player.isInTimsLine();
+                if (player.isInTimsLine()) {
+                    cout << ' ' << player.getNumTurnsInDCTims();
+                }
+            }
+            cout << endl;
     }
     for (int i = 0; i < 40; ++i) {
         Square* sq = board.getSquare(i);
