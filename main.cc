@@ -10,8 +10,8 @@ int main(int argc, char *argv[]) {
     //May need to add more if we restart game, etc
     Controller c;
     if (argc > 1) {
-        string argstr = argv[1];
-        if (argstr == "-testing") {
+        string str = argv[1];
+        if (str == "-testing") {
             c.setTestingMode(true);
             #ifdef DEBUG
             cout << "Testing mode enabled" << endl;
