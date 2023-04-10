@@ -16,24 +16,17 @@ name{name},token{token},position{pos},balance{bal},num_roll_ups{rur},in_tims_lin
 
 MoveResponse Player::move(int num_spaces) {
     ostringstream oss;
-    if (!(in_tims_line)) {
-        if ((position + num_spaces) > 40) { //Passed go
-            balance += 200;
-            oss << name << ": Passed Collect OSAP, received $200 " << endl;
-        }
-        position = (position + num_spaces)%39;
-        current_square = board->getSquare(position);
-        MoveResponse res = current_square->actionOnLand(*this);
-        oss << res.context;
-        return {res.action,oss.str()};
+    num_turns_in_tims_line = 0;
+    in_tims_line = false;
+    if ((position + num_spaces) > 40) { //Passed go
+        balance += 200;
+        oss << name << ": Passed Collect OSAP, received $200 " << endl;
     }
-    else {
-        //Player has 3 choices: pay $50, roll for doubles or use a roll up the rim
-        ostringstream oss;
-        oss << "In Tims line (" << num_turns_in_tims_line << "turn(s)";
-        std::string context = oss.str();
-        return {Action::InJail, context};
-    }
+    position = (position + num_spaces)%39;
+    current_square = board->getSquare(position);
+    MoveResponse res = current_square->actionOnLand(*this);
+    oss << res.context;
+    return {res.action,oss.str()};
 }
 
 void Player::teleport(int square_index) {
@@ -151,7 +144,7 @@ ChoiceResponse Player::payTuition(int amount) {
         action = false;
     }
     else {
-        oss << name << ": Paid tuition of $" << amount << endl;
+        oss << name << ": Paid tuition of $" << amount;
         balance -= 300;
         action = true;
     }
@@ -497,7 +490,7 @@ string Player::improve(string property, bool buy) {
 
 char Player::getToken() const { return token; }
 
-ChoiceResponse Player::payOutOfJail(bool use_roll_up) {
+ChoiceResponse Player::payOutOfDCLine(bool use_roll_up) {
     ostringstream oss;
     bool success;
     if (use_roll_up) {
@@ -530,6 +523,10 @@ void Player::removeRollUp() {
     num_roll_ups -= 1;
     board->removeRollUp();
 }
+void Player::addRollUp() {
+    num_roll_ups += 1;
+    board->addRollUp();
+}
 
 vector<OwnableProperty*>& Player::getOwnedProperties() {
     return owned_properties;
@@ -545,4 +542,24 @@ int Player::getCups() const {
 
 int Player::getPosition() const {
     return position;
+}
+
+int Player::getNumTurnsInDCTims() const {
+    return num_turns_in_tims_line;
+}
+
+bool Player::inLine() {
+    if (in_tims_line) {
+        num_turns_in_tims_line += 1;
+        return true;
+    }
+    else return false;
+}
+
+bool Player::isInTimsLine() {
+    return in_tims_line;
+}
+
+Board* Player::getBoard() {
+    return board;
 }

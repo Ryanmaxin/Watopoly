@@ -52,7 +52,9 @@ class Player: public Subject {
         ChoiceResponse payTuition(int amount);
 
         //Choices for Action::InJail
-        ChoiceResponse payOutOfJail(bool use_roll_up);
+        ChoiceResponse payOutOfDCLine(bool use_roll_up);
+        bool isInTimsLine();
+        bool inLine();
 
         //Called by SLC and Go To Tims properties. Also called when player rolls doubles 3 times.
         string goToTims();
@@ -68,6 +70,8 @@ class Player: public Subject {
         // ChoiceResponse offerBid(int amount);
 
         //Getter-Setter methods
+        int getNumTurnsInDCTims() const;
+        int isInTimsLine() const;
         int getBalance() const;
         int getCups() const;
         void setBalance(int new_balance);
@@ -80,6 +84,8 @@ class Player: public Subject {
         Square* getCurrentSquare() const;
         vector<OwnableProperty*>& getOwnedProperties();
         void removeRollUp();
+        void addRollUp();
+        Board* getBoard();
 
         //Stateless functions
         bool ownsProperty(Square* property) const;

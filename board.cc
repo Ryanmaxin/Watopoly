@@ -45,10 +45,9 @@ void Board::initSquares(string square_data) {
         
         iss >> type;
         if (type == "u") {
-            string name, new_token;
-            while (iss >> new_token) {
-                name += new_token;
-            }
+            string name;
+            getline(iss,name);
+            name.erase(0,1);
             squares.push_back(make_unique<UnownableProperty>(name));
         } else if (type == "a") {
             string name, set_str;
@@ -97,4 +96,23 @@ Monopoly Board::stringToMonopoly(string monopoly) {
 
 void Board::removeRollUp() {
     current_roll_up_rims -= 1;
+}
+
+void Board::addRollUp() {
+    current_roll_up_rims += 1;
+}
+
+bool Board::validRollUp() {
+    if (current_roll_up_rims == 4) {
+        return false;
+    }
+    else if (current_roll_up_rims < 4) {
+        return true;
+    }
+    else {
+        #ifdef DEBUG
+            cout << "Invalid number of Rollups!!!" << endl;
+        #endif
+        return false;
+    }
 }

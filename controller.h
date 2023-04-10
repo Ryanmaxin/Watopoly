@@ -15,7 +15,7 @@ class Controller {
     vector<Player> players;
     Dice dice;
     int current_player_id;
-    bool game_over = false;
+    bool testing_mode = false;
     void commenceAuction(Player& p, int current_player_id, OwnableProperty* being_auctioned = nullptr);
     void nextTurn();
     bool command(string cmd, Player& p);
@@ -25,7 +25,8 @@ class Controller {
 
     void save(const string filename);
     public:
-        Player& playMonopoly(bool testing_mode);
+        Player& playMonopoly();
+        void setTestingMode(bool s);
 };
 
 #endif
