@@ -220,6 +220,8 @@ void Controller::nextTurn() {
 }
 
 bool Controller::command(string cmd, Player& p) {
+    p.notifyView();
+    cout << td << endl;
     if (cmd == "trade") {
         string name, give, receive;
         cin >> name;
@@ -288,7 +290,7 @@ bool Controller::command(string cmd, Player& p) {
     else if (cmd == "improve") {
         string theproperty, theimprovement;
         cin >> theproperty >> theimprovement;
-        if (theimprovement == "buy" || theimprovement == "sell") {
+        if (theimprovement == "buy") {
             string message = p.improve(theproperty, true);
             cout << message << endl;
         }
@@ -311,9 +313,12 @@ bool Controller::command(string cmd, Player& p) {
         cin >> filename;
         save(filename);
     }
+    else if (testing_mode && cmd == "setdosh") {
+        int loc;
+        cin >> loc;
+        p.setBalance(loc);
+    }
     else return false;
-    p.notifyView();
-    cout << td << endl;
     return true;
 }
 

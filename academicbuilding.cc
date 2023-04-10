@@ -23,14 +23,12 @@ int AcademicBuilding::sellAllImprovements() {
     return value;
 }
 
-int AcademicBuilding::sellImprovement() {
-    int ret = num_improvements - 1;
-    return ret;
+void AcademicBuilding::sellImprovement() {
+    num_improvements -= 1;
 }
 
-int AcademicBuilding::buyImprovement() {
-    int ret = num_improvements + 1;
-    return ret;
+void AcademicBuilding::buyImprovement() {
+    num_improvements += 1;
 }
 
 string AcademicBuilding::specificContext(Player& player) {

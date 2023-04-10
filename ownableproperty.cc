@@ -45,15 +45,15 @@ MoveResponse OwnableProperty::actionOnLand(Player& player, bool regenerate) {
         }
         else {
             int tuition = getTuition();
-            oss << specificContext(player) << "\n";
+            string extra = specificContext(*owner);
             if (player.getBalance() < tuition) {
                 action = Action::CantPayTuition;
-                oss << player.getName() << ": Can't afford $" << tuition << " owed to " << owner->getName() << " for landing on " << name << "(have $" << player.getBalance() << ")";
+                oss << extra << endl << player.getName() << ": Can't afford $" << tuition << " owed to " << owner->getName() << " for landing on " << name << "(have $" << player.getBalance() << ")";
                 oss << endl << player.getName() << "choices: {pay}/{bankruptcy} ";
             }
             else {
                 action = Action::NoAction;
-                oss << player.getName() << ": Paid $" << tuition << " to " << owner->getName() << " for landing on " << name;
+                oss << extra << endl << player.getName() << ": Paid $" << tuition << " to " << owner->getName() << " for landing on " << name;
                 player.addBalance(-1 * tuition);
                 owner->addBalance(tuition);
             }
