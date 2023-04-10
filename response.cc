@@ -1,5 +1,6 @@
 #include "response.h"
 #include "player.h"
+#include "ownableproperty.h"
 
 MoveResponse::MoveResponse(Action a, string c): action{a}, context{c} {};
 
