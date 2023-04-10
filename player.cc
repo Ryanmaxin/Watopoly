@@ -101,6 +101,7 @@ ChoiceResponse Player::buy() {
     } else {
         owned_properties.push_back(property);
         balance = balance - price;
+        property->setOwner(this);
         oss << name << ": Successfully purchased " << property->getName() << " (Have $" << balance << ")";
         action = true;
     }
@@ -145,7 +146,7 @@ ChoiceResponse Player::payTuition(int amount) {
     }
     else {
         oss << name << ": Paid tuition of $" << amount;
-        balance -= 300;
+        balance -= amount;
         action = true;
     }
     string context = oss.str();
@@ -243,12 +244,10 @@ bool Player::ownsMonopoly(Monopoly set) const {
     int num_in_set = 3;
     int num_found = 0;
     if (set == Monopoly::Arts1 || set == Monopoly::Math) num_in_set = 2;
-    for (int i = 0; i < num_in_set; ++i) {
-        for (auto owned_property: owned_properties) {
-            AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(owned_property);
-            if (academic && academic->getSet() == set) {
-                ++num_found;
-            }
+    for (auto owned_property: owned_properties) {
+        AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(owned_property);
+        if (academic && academic->getSet() == set) {
+            ++num_found;
         }
     }
     if (num_found == num_in_set) return true;
@@ -454,14 +453,20 @@ string Player::improve(string property, bool buy) {
     AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(board->stringToProperty(property));
     if (academic) {
         if (ownsProperty(academic)) {
+            int num_improvements = academic->getNumberOfImprovements();
+            int imp_cost = academic->getImprovementCost();
             if (buy) {
-                int imp_cost = academic->getImprovementCost();
                 Monopoly set = academic->getSet();
                 if (ownsMonopoly(set)) {
-                    if (balance < imp_cost) {
+                    if (num_improvements == 5) {
+                        oss << name << ": Can't improve " << property << " because it already has 5 improvements";
+                    }
+                    else if (balance < imp_cost) {
                         oss << name << ": Can't afford $" << imp_cost << " to improve " << property << " (have $" << balance << ")";
                     }
                     else {
+                        balance -= imp_cost;
+                        academic->buyImprovement();
                         oss << name << ": Successfully bought an improvement on " << property << " for $" << imp_cost;
                     }
                 }
@@ -471,12 +476,11 @@ string Player::improve(string property, bool buy) {
 
             }
             else {
-                int num_improvements = academic->getNumberOfImprovements();
-                if (num_improvements > 0) {
+                if (num_improvements == 0) {
                     oss << name << ": " << academic->getName() << " has no improvements to sell";
                 }
                 else {
-                    int sell_cost = academic->getImprovementCost() * 0.5;
+                    int sell_cost = imp_cost * 0.5;
                     oss << name << ": Successfully sold an improvement in " << academic->getName() << " for $" << sell_cost;
                     balance += sell_cost;
                 }
