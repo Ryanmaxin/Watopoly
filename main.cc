@@ -1,15 +1,24 @@
 #include "controller.h"
 #include "player.h"
 
-int main(int argc, char **argv) {
-    //May need to add more if we restart game, etc
+#include <iostream>
 
-    Controller c;
-    if (argc == 2) {
-        string str = argv[1];
-        if (str == "-testing") {
-            c.thetestingmode();
+using std::cout;
+using std::endl;
+
+int main(int charc, char *chara[]) {
+    //May need to add more if we restart game, etc
+    bool testing_mode = false;
+    if (charc > 1) {
+        string char_a = chara[1];
+        if (char_a == "-testing") {
+            testing_mode = true;
+            #ifdef DEBUG
+            cout << "Testing mode enabled" << endl;
+            #endif
         }
     }
-    c.playMonopoly();
+
+    Controller c;
+    c.playMonopoly(testing_mode);
 }

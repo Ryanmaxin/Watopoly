@@ -11,40 +11,35 @@
 
 Dice::Dice() : doubles_rolled{0} {}
 
-int Dice::rollInternal( std::vector<int> const & v ) {
-	//for ( int i : v ) std::cout << i << ' ';
-   return v[0];
-}
-
-// Rolls Die1 and sets the value of die1 field to the result
-int Dice::rollDie1() {
+int Dice::random1to6() {
     std::vector<int> v = { 1, 2, 3, 4, 5, 6 };
     // use a time-based seed for the default seed value
 	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
     std::default_random_engine rng{seed};
     std::shuffle( v.begin(), v.end(), rng );
-    die1 = rollInternal(v);
-	return die1;
+    int die = v[0];;
+	return die;
 }
 
-int Dice::rollDie2() {
-    std::vector<int> v = { 1, 2, 3, 4, 5, 6 };
-    // use a time-based seed for the default seed value
-	unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::default_random_engine rng{seed};
-    std::shuffle( v.begin(), v.end(), rng );
-    die2 = rollInternal(v);
-	return die2;
-}
-
-int Dice::roll() { 
-    rollDie1();
-    rollDie2();
-    if (die1 == die2) ++doubles_rolled;
+int Dice::roll() {
+    die1 = random1to6();
+    die2 = random1to6(); 
+    if (die1 == die2) {
+        doubles_rolled += 1;
+    }
+    else {
+        doubles_rolled = 0;
+    }
     return die1 + die2;
  }
 
-int Dice::roll(int die1, int die2) {
+int Dice::setDice(int d1, int d2) {
+    if (d1 == d2) {
+        doubles_rolled += 1;
+    }
+    else {
+        doubles_rolled = 0;
+    }
     return die1 + die2;
 }
 
@@ -59,22 +54,3 @@ bool Dice::threeDoubles() {
 }
 
 std::pair<int,int> Dice::getFaceValues() { return std::make_pair(die1, die2); }
-
-void Dice::setDie1(int val) {
-    if (testingmode) {
-        die1 = val;
-    }
-}
-
-void Dice::setDie2(int val) {
-    if (testingmode) {
-        die2 = val;
-    }
-}
-
-void Dice::thetesting(bool value) {
-    testingmode = value;
-}
-int Dice::getDie1() { return die1; }
-
-int Dice::getDie2() { return die2; }

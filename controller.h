@@ -22,13 +22,10 @@ class Controller {
     bool move(Player& p, int roll = 0);
     void load(string filename);
     bool validPlayer(string name, char token);
-    void setDice(int d1, int d2);
-    bool testingmode = false;
 
     void save(const string filename);
     public:
-        void thetestingmode();
-        Player& playMonopoly();
+        Player& playMonopoly(bool testing_mode);
 };
 
 #endif

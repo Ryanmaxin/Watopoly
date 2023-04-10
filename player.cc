@@ -97,12 +97,12 @@ ChoiceResponse Player::buy() {
     bool action;
     int price = property->getPrice();
     if (balance < price) {
-        oss << name << ": Can't afford property price of " << price << " (Have " << balance << ")";
+        oss << name << ": Can't afford property price of " << price << " (Have $" << balance << ")";
         action = false;
     } else {
         owned_properties.push_back(property);
         balance = balance - price;
-        oss << name << ": Successfully purchased " << price << " (Have " << balance << ")";
+        oss << name << ": Successfully purchased " << property->getName() << " (Have $" << balance << ")";
         action = true;
     }
     std::string context = oss.str();
@@ -157,21 +157,23 @@ string Player::Mortgage(string property) {
     OwnableProperty* op = dynamic_cast<OwnableProperty*>(board->stringToProperty(property));
     AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(op);
     ostringstream oss;
-    if (op && ownsProperty(op)) {
-        if (op->isMortgaged()) {
+    if (op) {
+        if (ownsProperty(op)) {
+            if (op->isMortgaged()) {
             oss << name << ": " << op->getName() << " already mortgaged";
-        }
-        else if (academic && academic->getNumberOfImprovements() > 0) {
-            oss << name << ": " << op->getName() << " can't be mortgaged because it has " << academic->getNumberOfImprovements() << " improvements";
+            }
+            else if (academic && academic->getNumberOfImprovements() > 0) {
+                oss << name << ": " << op->getName() << " can't be mortgaged because it has " << academic->getNumberOfImprovements() << " improvements";
+            }
+            else {
+                op->setMortgage(true);
+                balance += op->getPrice() * 0.5;
+                oss << name << ": " << op->getName() << " mortgaged, received $" << op->getPrice() * 0.5;
+            }
         }
         else {
-            op->setMortgage(true);
-            balance += op->getPrice() * 0.5;
-            oss << name << ": " << op->getName() << " mortgaged, received $" << op->getPrice() * 0.5;
+            oss << name << ": You do not own " << op->getName();
         }
-    }
-    else if (!ownsProperty(op)){
-        oss << name << ": You do not own" << op->getName();
     }
     else {
         oss << name << ": " << property << " is not a valid ownable property";
@@ -181,23 +183,25 @@ string Player::Mortgage(string property) {
 string Player::unMortgage(string property) {
     OwnableProperty* op = dynamic_cast<OwnableProperty*>(board->stringToProperty(property));
     ostringstream oss;
-    if (op && ownsProperty(op)) {
-        if (!op->isMortgaged()) {
+    if (op) {
+        if (ownsProperty(op)) {
+            if (!op->isMortgaged()) {
             oss << name << ": " << op->getName() << " is not mortgaged";
-        }
-        else {
-            if (balance < op->getPrice() * 0.6) {
-                oss << name << ": Can't afford the" << op->getPrice() * 0.6 << "to unmortgage " << op->getName() << " (have $" << balance << ")";
             }
             else {
-                op->setMortgage(false);
-                balance -= op->getPrice() * 0.6;
-                oss << name << ": Successfully unmortgaged " << op->getName() << " for $" << op->getPrice() * 0.6;
+                if (balance < op->getPrice() * 0.6) {
+                    oss << name << ": Can't afford the" << op->getPrice() * 0.6 << "to unmortgage " << op->getName() << " (have $" << balance << ")";
+                }
+                else {
+                    op->setMortgage(false);
+                    balance -= op->getPrice() * 0.6;
+                    oss << name << ": Successfully unmortgaged " << op->getName() << " for $" << op->getPrice() * 0.6;
+                }
             }
         }
-    }
-    else if (!ownsProperty(op)){
-        oss << name << ": You do not own" << op->getName();
+        else {
+            oss << name << ": You do not own " << op->getName();
+        }
     }
     else {
         oss << name << ": " << property << " is not a valid ownable property";
@@ -228,6 +232,18 @@ void Player::addBalance(int money) {
 
 string Player::getName() const {
     return name;
+}
+
+void Player::setName(string the_name) const {
+    name = the_name;
+}
+
+void Player::setToken(char the_token) const {
+    token = the_token;
+}
+
+void Player::setCups(int the_cups) const {
+    num_roll_ups = the_cups;
 }
 
 bool Player::ownsProperty(Square* property) const {

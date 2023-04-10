@@ -29,7 +29,6 @@ class Board {
         void init(string square_data = "default.data");
         Square* getSquare(int index);
 
-        vector<unique_ptr<Square>>& getLocations();
         //Returns a pointer to the property, if it exists
         Square* stringToProperty(string property);
         //You will have to do validation checking if player has enough money, etc

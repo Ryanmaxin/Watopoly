@@ -13,7 +13,7 @@ using std::cerr;
 using std::ofstream;
 
 
-Player& Controller::playMonopoly() {
+Player& Controller::playMonopoly(bool testing_mode) {
     players.clear(); //<---- probably not necessary
     board.init("default.data"); //<---- filename containing data for all squares
 
@@ -78,14 +78,10 @@ Player& Controller::playMonopoly() {
                     continue;
                 }
                 else if (cmd == "roll") {
-                        int d1 = 0;
-                        int d2 = 0;
-                        if (testingmode) {
-                            if (cin >> d1 >> d2) {
-                                setDice(d1,d2);
-                                //move(p,d1+d2);
-                                game_over = move(p, d1+d2);
-                            }
+                    int d1,d2;
+                    if ((testing_mode) && (cin >> d1 >> d2)) {
+                        dice.setDice(d1,d2);
+                        game_over = move(p, d1+d2);
                     } else {
                         game_over = move(p);
                     }
@@ -121,6 +117,9 @@ Player& Controller::playMonopoly() {
             }
             else if (cmd == "roll") {
                 cout << p.getName() << ": Already moved this turn" << endl;
+                if (testing_mode) {
+                    getline(cin,cmd);
+                }
             }
             else if (cmd == "next") {
                 nextTurn();
@@ -396,7 +395,56 @@ bool Controller::move(Player& p, int roll) {
 }
 
 void Controller::load(string filename) {
+    // loads m12 inside the game
+    // use getline to fetch the first line
+    int n;
+    cin >> n;
+    // gives us the first line indicating the number of players
+    // set them to players.size
+    players.size = n;
 
+    // run a for loop size times to get the player info
+    for (int i = 0; i < n; ++i) {
+        string s;
+        getline(cin, s);
+        istringstream iss {s};
+        string name;
+        iss >> name;
+        players[i].setName(name);
+        char token;
+        iss >> token;
+        players[i].setToken(token);
+        int cups;
+        iss >> cups;
+        players[i].setCups(cups);
+        int money;
+        iss >> money;
+        players[i].setBalance(money);
+        int pos;
+        iss >> pos;
+        players[i].setPosition(pos);
+    }
+    // you loop through 40 times to update the status of the property
+    // we will have all the properties set up by default
+    //
+    for (int i = 0; i < 40; ++i) {
+        string s;
+        getline(cin, s);
+        istringstream iss {s};
+        string property, owner;
+        iss >> property >> owner;
+        if (property == board.getSquare(i)->getName()) {
+            Square* sq = board.getSquare(i);
+            OwnableProperty* op = dynamic_cast<OwnableProperty*>(sq);
+            if (op) {
+                // OwnableProperty owner improvements
+                // Owner can be BANK or a person
+                // if a owner is a person, set it to the name
+                // so if owner is a bank, then set owner as a bank or do nothing
+                if (owner != BANK) op->getOwner()->setName(owner);
+            }
+        }
+    }
 }
 
 void Controller::commenceAuction(Player& p, int current_player_id, OwnableProperty* being_auctioned) {
@@ -439,7 +487,7 @@ void Controller::commenceAuction(Player& p, int current_player_id, OwnableProper
                             continue;
                         }
                         else {
-                            cout << players[i].getName() << ": Invalid Command. Must use {raise}/{withdraw}" << endl;
+                            cout << players[i].getName() << ": Invalid Command." << endl;
                         }
                     }
                 }
@@ -463,17 +511,6 @@ bool Controller::validPlayer(string name, char token) {
     return true;
 }
 
-void Controller::setDice(int d1, int d2) {
-    if (testingmode) {
-        dice.setDie1(d1);
-        dice.setDie2(d2);
-    }
-}
-
-void Controller::thetestingmode() {
-    testingmode = true;
-}
-
 void Controller::save(string filename) {
     ofstream ofs (filename);
     if (!ofs) {
@@ -485,7 +522,7 @@ void Controller::save(string filename) {
     }
     for (auto player: players) {
         ofs << player.getName() << ' ' << player.getToken() << ' ' << player.getCups() << ' '
-            << player.getBalance() << ' ' << player.getPosition();
+            << player.getBalance() << ' ' << player.getPosition() << endl;
     }
     for (int i = 0; i < 40; ++i) {
         Square* sq = board.getSquare(i);
@@ -494,10 +531,11 @@ void Controller::save(string filename) {
             ofs << sq->getName() << ' ';
             if (op->getOwner()) ofs << op->getOwner()->getName() << ' ';
             else ofs << "BANK" << ' ';
+            AcademicBuilding* ab = dynamic_cast<AcademicBuilding *>(sq);
+            if (ab) {
+                ofs << ab->getNumberOfImprovements() << endl;
+            } else ofs << 0 << endl;
         }
-        AcademicBuilding* ab = dynamic_cast<AcademicBuilding *>(sq);
-        if (ab) {
-            ofs << ab->getNumberOfImprovements() << endl;
-        } else ofs << 0 << endl;
     }
+    cout << "File " << filename << "saved successfully." << endl;
 }
