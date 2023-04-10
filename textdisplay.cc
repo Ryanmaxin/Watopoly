@@ -80,7 +80,11 @@ void TextDisplay::notify(Subject *whoFrom) {
         for (auto &square: sd) {
             square.remove(index);
         }
-        sd[p->getPosition()].add(token,index);
+        int pos = p->getPosition();
+        if (pos != -1) {
+            sd[p->getPosition()].add(token,index);
+        }
+        
     }
 } 
 
