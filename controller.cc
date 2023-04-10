@@ -19,6 +19,8 @@ using std::istringstream;
 Player& Controller::playMonopoly() {
     players.clear(); //<---- probably not necessary
     board.init("default.data"); //<---- filename containing data for all squares
+    td.init();
+    
 
     int num_players = 0; //Get from cin
 
@@ -62,6 +64,7 @@ Player& Controller::playMonopoly() {
         } while (!validPlayer(player_name,token));
 
         players.push_back(Player(player_name, token, &board));
+        // players[i].attach()
     }
 
     //--------------------------------------
@@ -165,11 +168,6 @@ Player& Controller::playMonopoly() {
                 else {
                     cout << p.getName() << ": Invalid command" << endl;
                 }
-<<<<<<< HEAD
-                if (dice.threeDoubles()) {
-                    cout << p.goToTims() << endl;
-                    break;
-=======
             }
             if (went_bankrupt) {
                 if (players.size() == 1) {
@@ -179,7 +177,6 @@ Player& Controller::playMonopoly() {
                 }
                 else {
                     goto bankrupt;
->>>>>>> a0063ba6ca4ae1ed31be1760c9c85dab23c8a5c0
                 }
             }
             if (dice.isDoubles() && !dice.threeDoubles() && !p.isInTimsLine()) cout << p.getName() << ": Rolled doubles, so must roll again" << endl;

@@ -61,9 +61,6 @@ class Player: public Subject {
         string Mortgage(string property); // assume property checker in board
         string unMortgage(string property);
 
-<<<<<<< HEAD
-        // Getter Methods
-=======
          
         // ChoiceResponse offerBid(int amount);
 
@@ -77,7 +74,6 @@ class Player: public Subject {
         //The sum of current balance + price of all owned properties + price of all owned improvements
         int getNetWorth() const;
         int getPosition() const;
->>>>>>> a0063ba6ca4ae1ed31be1760c9c85dab23c8a5c0
         string getName() const;
         char getToken() const;
         int getPosition() const;
