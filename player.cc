@@ -234,6 +234,18 @@ string Player::getName() const {
     return name;
 }
 
+void Player::setName(string the_name) const {
+    name = the_name;
+}
+
+void Player::setToken(char the_token) const {
+    token = the_token;
+}
+
+void Player::setCups(int the_cups) const {
+    num_roll_ups = the_cups;
+}
+
 bool Player::ownsProperty(Square* property) const {
     for (auto owned_property: owned_properties) {
         if (property == owned_property) return true;

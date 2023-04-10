@@ -20,13 +20,8 @@ using std::ostream;
 class Player: public Subject {
     string name;
     char token;
-
-    int position;
-    int balance;
-    int num_roll_ups;
-
+    int position, balance, num_roll_ups, num_turns_in_tims_line;
     bool in_tims_line;
-    int num_turns_in_tims_line;
 
     Board* board;
     Square* current_square;
@@ -66,6 +61,9 @@ class Player: public Subject {
         string Mortgage(string property); // assume property checker in board
         string unMortgage(string property);
 
+<<<<<<< HEAD
+        // Getter Methods
+=======
          
         // ChoiceResponse offerBid(int amount);
 
@@ -79,13 +77,28 @@ class Player: public Subject {
         //The sum of current balance + price of all owned properties + price of all owned improvements
         int getNetWorth() const;
         int getPosition() const;
+>>>>>>> a0063ba6ca4ae1ed31be1760c9c85dab23c8a5c0
         string getName() const;
         char getToken() const;
+        int getPosition() const;
+        int getBalance() const;
+        int getCups() const;
+        int getNetWorth() const; //The sum of current balance + price of all owned properties + price of all owned improvements
+        
+        //Setter methods
+        void setName(string the_name);
+        void setToken(char the_token);
+        void setPosition(int the_position);
+        void setBalance(int new_balance);
+        void setCups(int the_cups);
+        
         Square* getCurrentSquare() const;
         vector<OwnableProperty*>& getOwnedProperties();
         void removeRollUp();
         void addRollUp();
         Board* getBoard();
+
+        void addBalance(int money);
 
         //Stateless functions
         bool ownsProperty(Square* property) const;
@@ -95,6 +108,8 @@ class Player: public Subject {
         
         //Print all assets (balance, printed price of buildings, and improvements)
         friend ostream& operator<<(ostream& out, const Player& player);
+
+        // ChoiceResponse offerBid(int amount);
 };
 
 #endif
