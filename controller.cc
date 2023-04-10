@@ -165,6 +165,11 @@ Player& Controller::playMonopoly() {
                 else {
                     cout << p.getName() << ": Invalid command" << endl;
                 }
+<<<<<<< HEAD
+                if (dice.threeDoubles()) {
+                    cout << p.goToTims() << endl;
+                    break;
+=======
             }
             if (went_bankrupt) {
                 if (players.size() == 1) {
@@ -174,6 +179,7 @@ Player& Controller::playMonopoly() {
                 }
                 else {
                     goto bankrupt;
+>>>>>>> a0063ba6ca4ae1ed31be1760c9c85dab23c8a5c0
                 }
             }
             if (dice.isDoubles() && !dice.threeDoubles() && !p.isInTimsLine()) cout << p.getName() << ": Rolled doubles, so must roll again" << endl;
@@ -303,6 +309,9 @@ bool Controller::command(string cmd, Player& p) {
     }
     else if (cmd == "save") {
         //To implement
+        string filename;
+        cin >> filename;
+        save(filename);
     }
     else return false;
     return true;
@@ -433,6 +442,59 @@ bool Controller::move(Player& p, int roll) {
     return false;
 }
 
+void Controller::load(string filename) {
+    // loads m12 inside the game
+    // use getline to fetch the first line
+    int n;
+    cin >> n;
+    // gives us the first line indicating the number of players
+    // set them to players.size
+    players.size = n;
+
+    // run a for loop size times to get the player info
+    for (int i = 0; i < n; ++i) {
+        string s;
+        getline(cin, s);
+        istringstream iss {s};
+        string name;
+        iss >> name;
+        players[i].setName(name);
+        char token;
+        iss >> token;
+        players[i].setToken(token);
+        int cups;
+        iss >> cups;
+        players[i].setCups(cups);
+        int money;
+        iss >> money;
+        players[i].setBalance(money);
+        int pos;
+        iss >> pos;
+        players[i].setPosition(pos);
+    }
+    // you loop through 40 times to update the status of the property
+    // we will have all the properties set up by default
+    //
+    for (int i = 0; i < 40; ++i) {
+        string s;
+        getline(cin, s);
+        istringstream iss {s};
+        string property, owner;
+        iss >> property >> owner;
+        if (property == board.getSquare(i)->getName()) {
+            Square* sq = board.getSquare(i);
+            OwnableProperty* op = dynamic_cast<OwnableProperty*>(sq);
+            if (op) {
+                // OwnableProperty owner improvements
+                // Owner can be BANK or a person
+                // if a owner is a person, set it to the name
+                // so if owner is a bank, then set owner as a bank or do nothing
+                if (owner != BANK) op->getOwner()->setName(owner);
+            }
+        }
+    }
+}
+
 void Controller::commenceAuction(Player& p, int current_player_id, OwnableProperty* being_auctioned) {
     if (being_auctioned == nullptr) being_auctioned = dynamic_cast<OwnableProperty*>(p.getCurrentSquare());
     int turn = 0;
@@ -508,7 +570,7 @@ void Controller::save(string filename) {
     }
     for (auto player: players) {
         ofs << player.getName() << ' ' << player.getToken() << ' ' << player.getCups() << ' '
-            << player.getBalance() << ' ' << player.getPosition();
+            << player.getBalance() << ' ' << player.getPosition() << endl;
     }
     for (int i = 0; i < 40; ++i) {
         Square* sq = board.getSquare(i);
@@ -517,12 +579,13 @@ void Controller::save(string filename) {
             ofs << sq->getName() << ' ';
             if (op->getOwner()) ofs << op->getOwner()->getName() << ' ';
             else ofs << "BANK" << ' ';
+            AcademicBuilding* ab = dynamic_cast<AcademicBuilding *>(sq);
+            if (ab) {
+                ofs << ab->getNumberOfImprovements() << endl;
+            } else ofs << 0 << endl;
         }
-        AcademicBuilding* ab = dynamic_cast<AcademicBuilding *>(sq);
-        if (ab) {
-            ofs << ab->getNumberOfImprovements() << endl;
-        } else ofs << 0 << endl;
     }
+    cout << "File " << filename << "saved successfully." << endl;
 }
 
 void Controller::setTestingMode(bool s) {
