@@ -523,6 +523,10 @@ void Player::removeRollUp() {
     num_roll_ups -= 1;
     board->removeRollUp();
 }
+void Player::addRollUp() {
+    num_roll_ups += 1;
+    board->addRollUp();
+}
 
 vector<OwnableProperty*>& Player::getOwnedProperties() {
     return owned_properties;
@@ -550,4 +554,12 @@ bool Player::inLine() {
         return true;
     }
     else return false;
+}
+
+bool Player::isInTimsLine() {
+    return in_tims_line;
+}
+
+Board* Player::getBoard() {
+    return board;
 }

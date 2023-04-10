@@ -53,6 +53,7 @@ class Player: public Subject {
 
         //Choices for Action::InJail
         ChoiceResponse payOutOfDCLine(bool use_roll_up);
+        bool isInTimsLine();
         bool inLine();
 
         //Called by SLC and Go To Tims properties. Also called when player rolls doubles 3 times.
@@ -83,6 +84,8 @@ class Player: public Subject {
         Square* getCurrentSquare() const;
         vector<OwnableProperty*>& getOwnedProperties();
         void removeRollUp();
+        void addRollUp();
+        Board* getBoard();
 
         //Stateless functions
         bool ownsProperty(Square* property) const;

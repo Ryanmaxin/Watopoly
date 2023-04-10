@@ -56,6 +56,14 @@ MoveResponse UnownableProperty::actionOnLand(Player& player, bool regenerate) {
         std::random_device dev;
         std::mt19937 rng(dev());
         std::uniform_int_distribution<std::mt19937::result_type> SLCRoll(1,24); // distribution in range [1, 24]
+        std::uniform_int_distribution<std::mt19937::result_type> RollUp(1,100); // distribution in range [1, 24]
+        // if (RollUp(rng) == 1) {
+            if (player.getBoard()->validRollUp()) {
+                player.addRollUp();
+                oss << player.getName() << ": Found a Tim Hortons Roll up the Rim Cup! You now have " << player.getCups() << endl;
+            }
+            
+        // }
         int spaces = 0;
         if (SLCRoll(rng) <=22) {
             if (SLCRoll(rng) <= 3) spaces = -3;
@@ -91,6 +99,14 @@ MoveResponse UnownableProperty::actionOnLand(Player& player, bool regenerate) {
             std::random_device dev;
             std::mt19937 rng(dev());
             std::uniform_int_distribution<std::mt19937::result_type> SLCRoll(1,18); // distribution in range [1, 18]
+            std::uniform_int_distribution<std::mt19937::result_type> RollUp(1,100); // distribution in range [1, 24]
+        // if (RollUp(rng) == 1) {
+            if (player.getBoard()->validRollUp()) {
+                player.addRollUp();
+                oss << player.getName() << ": Found a Tim Hortons Roll up the Rim Cup! You now have " << player.getCups() << endl;
+            }
+            
+        // }
             if (SLCRoll(rng) == 1) change = -200;
             else if (SLCRoll(rng) <= 3) change = -100;
             else if (SLCRoll(rng) <= 6) change = -50;

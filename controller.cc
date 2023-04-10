@@ -16,7 +16,7 @@ using std::ostringstream;
 using std::istringstream;
 
 
-Player& Controller::playMonopoly(bool testing_mode) {
+Player& Controller::playMonopoly() {
     players.clear(); //<---- probably not necessary
     board.init("default.data"); //<---- filename containing data for all squares
 
@@ -71,6 +71,7 @@ Player& Controller::playMonopoly(bool testing_mode) {
         //Each loop is a players turn
         Player& p = players[current_player_id];
         cout << "Player " << p.getName() << "'s turn" << endl;
+        bool went_bankrupt = false;
         if (p.inLine()) {
             cout << p.getName() << ": In DC Tims Line" << p.getNumTurnsInDCTims() << endl;
             cout << p.getName() << ": choices: {rollfordoubles}/{userollup}/{pay} " << endl;
@@ -97,15 +98,9 @@ Player& Controller::playMonopoly(bool testing_mode) {
                             iss >> d1 >> d2;
                             dice.setDice(d1,d2);
                         } while (!iss);
-                        game_over = move(p, d1+d2);
+                        went_bankrupt = move(p, d1+d2);
                     } else {
-                        game_over = move(p);
-                    }
-                    if (game_over) {
-                        //Winner Winner Chicken Dinner
-                        Player& winner = players[current_player_id];
-                        cout << winner.getName() << " won the game!" << endl;
-                        return winner;
+                        went_bankrupt = move(p);
                     }
                     break;
                 }
@@ -123,28 +118,16 @@ Player& Controller::playMonopoly(bool testing_mode) {
                     ChoiceResponse cr = p.payOutOfDCLine(use_rollup);
                     cout << cr.context << endl;
                     if (cr.is_valid) {
-                        game_over = move(p);
-                        if (game_over) {
-                            //Winner Winner Chicken Dinner
-                            Player& winner = players[current_player_id];
-                            cout << winner.getName() << " won the game!" << endl;
-                            return winner;
-                        }
+                        went_bankrupt = move(p);
                     }   
                     else continue;
                 }
                 else if ((p.isInTimsLine()) && cmd == "rollfordoubles" && p.getNumTurnsInDCTims() < 3) {
                     int roll = dice.roll();
                     if (dice.isDoubles()) {
-                        game_over = move(p);
-                        if (game_over) {
-                            //Winner Winner Chicken Dinner
-                            Player& winner = players[0];
-                            cout << winner.getName() << " won the game!" << endl;
-                            return winner;
-                        }
+                        went_bankrupt = move(p, roll);
                     }
-                    else if (p.getNumTurnsInDCTims()) {
+                    else if (p.getNumTurnsInDCTims() >= 3) {
                         cout << p.getName() << ": Third turn in DC Tims Line, must pay to leave now" << endl;
                         continue;
                     }
@@ -163,55 +146,24 @@ Player& Controller::playMonopoly(bool testing_mode) {
                             }
                         }
                         players.erase(players.begin() + current_player_id);
-                        if (players.size() == 1) {
-                            return players[0];
-                        }
+                        went_bankrupt = true;
+                        
                     }
                 }
                 else {
                     cout << p.getName() << ": Invalid command" << endl;
                 }
             }
-        //     else if (res.action == Action::InJail) {
-        // while (true) {
-        //     string choice;
-        //     cin >> choice;
-        //     if (choice == "rollfordoubles") {
-        //         int roll = dice.roll();
-        //         if (dice.isDoubles()) {
-        //             bool was_winner = move(p, roll);
-        //             if (was_winner) return true;
-        //         }
-        //     } 
-        //     else if (choice == "userollup") {
-        //         ChoiceResponse cr = p.payOutOfJail(true);
-        //         cout << cr.context << endl;
-        //         if (cr.is_valid) {
-        //             bool was_winner = move(p);
-        //             if (was_winner) return true;
-        //         }   
-        //         else continue;
-        //     } else if (choice == "pay") {
-        //         ChoiceResponse cr = p.payOutOfJail(false);
-        //         cout << cr.context << endl;
-        //         if (cr.is_valid) {
-        //             bool was_winner = move(p);
-        //             if (was_winner) return true;
-        //         }   
-        //         else continue;
-        //     }
-        //     else if (command(choice,p)) {
-        //         continue;
-        //     }
-        //     else if (choice == "next") {
-        //         cout << p.getName() << ": Must resolve current action before ending turn (resolve with {pay}, {userollup}, or {roll} )" << endl;
-        //     }
-        //     else {
-        //         cout << p.getName() << ": Invalid command" << endl;
-        //     }
-            
-        // }
-    // }
+            if (went_bankrupt) {
+                if (players.size() == 1) {
+                    Player& winner = players[current_player_id];
+                    cout << winner.getName() << " won the game!" << endl;
+                    return winner;
+                }
+                else {
+                    goto bankrupt;
+                }
+            }
             if (dice.isDoubles() && !dice.threeDoubles()) cout << p.getName() << ": Rolled doubles, so must roll again" << endl;
         } while (dice.isDoubles() && !dice.threeDoubles());
 
@@ -238,6 +190,7 @@ Player& Controller::playMonopoly(bool testing_mode) {
             }
             
         }
+        bankrupt:;
     }
 }
 
@@ -339,6 +292,11 @@ bool Controller::command(string cmd, Player& p) {
     else if (cmd == "save") {
         //To implement
     }
+    else if (testing_mode && cmd == "teleport") {
+        int loc;
+        cin >> loc;
+        p.teleport(loc);
+    }
     else return false;
     return true;
 }
@@ -400,10 +358,9 @@ bool Controller::move(Player& p, int roll) {
                         commenceAuction(p, current_player_id, property);
                     }
                 }
+                cout << p.getName() << ": " << endl;
                 players.erase(players.begin() + current_player_id);
-                if (players.size() == 1) {
-                    return true;
-                }
+                return true;
             }
             else if (command(choice, p)) {
                 continue;
@@ -456,9 +413,7 @@ bool Controller::move(Player& p, int roll) {
                         }
                     }
                     players.erase(players.begin() + current_player_id);
-                    if (players.size() == 1) {
-                        return true;
-                    }
+                    return true;
                 }
             }
             else {
@@ -560,4 +515,8 @@ void Controller::save(string filename) {
             ofs << ab->getNumberOfImprovements() << endl;
         } else ofs << 0 << endl;
     }
+}
+
+void Controller::setTestingMode(bool s) {
+    testing_mode = s;
 }
