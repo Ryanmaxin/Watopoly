@@ -24,6 +24,7 @@ class Controller {
     bool move(Player& p, int roll = -1);
     void load(string filename);
     bool validPlayer(string name, char token);
+    void bankruptcyOccurence(Player& p);
 
     void save(const string filename);
     public:
