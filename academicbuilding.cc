@@ -20,10 +20,8 @@ int AcademicBuilding::getTuition() {
 int AcademicBuilding::getImprovementCost() const {return improvement_cost;}
 int AcademicBuilding::getNumberOfImprovements() const {return num_improvements;}
 
-int AcademicBuilding::sellAllImprovements() {
-    int value = num_improvements * improvement_cost * 0.5;
+void AcademicBuilding::sellAllImprovements() {
     num_improvements = 0;
-    return value;
 }
 
 void AcademicBuilding::sellImprovement() {

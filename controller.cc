@@ -586,12 +586,12 @@ void Controller::bankruptcyOccurence(Player& p) {
     players.erase(players.begin() + current_player_id);
     Player* r = br.receiving;
     if (r == nullptr) {
-        for (auto &property: br.properties) {
+        for (auto property: br.properties) {
             commenceAuction(p, current_player_id, property);
         }
     }
     else {
-        for (auto &property: br.properties) {
+        for (auto property: br.properties) {
             if (property->isMortgaged()) {
                 cout << r->getName() << ": You received the mortgaged property " << property->getName() << ", you can unmortgage now for 60% cost or pay 10% and keep it mortgaged" << endl;
                 cout << r->getName() << ": choices: {unmortgage}/{keep}" << endl;
