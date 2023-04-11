@@ -9,8 +9,8 @@ using std::cout;
 using std::endl;
 using std::ostream;
 
-Player::Player(string name, char token, Board* attached_to, int bal, int rur, int pos, bool in_jail, int num_turns_in_jail):
-name{name},token{token},position{pos},balance{bal},num_roll_ups{rur},in_tims_line{false},num_turns_in_tims_line{num_turns_in_jail},board{attached_to} {
+Player::Player(string name, char token, Board* attached_to, int bal, int rur, int pos, bool in_DCTL, int num_turns_in_DCTL):
+name{name},token{token},position{pos},balance{bal},num_roll_ups{rur},in_tims_line{in_DCTL},num_turns_in_tims_line{num_turns_in_DCTL},board{attached_to} {
     current_square = attached_to->getSquare(position);
 }
 
