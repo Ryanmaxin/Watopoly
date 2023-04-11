@@ -50,6 +50,7 @@ void Player::transferProperty(OwnableProperty* property, Player* receiving) {
     for (int i = 0; i < counter; ++i) {
         if (owned_properties[i] == property) {
             owned_properties.erase(owned_properties.begin() + i);
+            break;
         }
     }
 }
@@ -62,7 +63,9 @@ BankruptcyResponse Player::declareBankruptcy() {
     if (cp == nullptr) {
         receiving = nullptr;
         oss << name << ": Went bankrupt, all assets transferred to the bank. All properties will be auctioned";
-        removeRollUp();
+        for (int i = 0; i< num_roll_ups; ++i) {
+            removeRollUp();
+        }
     }
     else {
         //Declare bankruptcy to another player
@@ -76,23 +79,31 @@ BankruptcyResponse Player::declareBankruptcy() {
     }
     vector<OwnableProperty*> copy = owned_properties;
     for (auto property: owned_properties) {
-        AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(cp);
-        if (academic && !cp) {
-            // tab+= academic->sellAllImprovements();
-            property->setMortgage(false);
-            academic->notifyView();
+        AcademicBuilding* academic = dynamic_cast<AcademicBuilding*>(property);
+        if (!cp && academic) {
+            #ifdef DEBUG
+                cout << "dead to the bank" << endl;
+            #endif
+            academic->sellAllImprovements();
+            academic->setMortgage(false);
+            // academic->notifyView();
         }
         if (cp) {
-            transferProperty(property,receiving);
+            receiving->owned_properties.push_back(property);
+            property->setOwner(receiving);
         }
     }
-    // if (tab != 0) {
-    //     receiving->balance += tab;
-    // }
     balance = 0;
     position = -1; // Means bankrupt
     string context = oss.str();
-    return {receiving,copy,context};
+    if (cp) {
+        owned_properties.clear();
+        return {receiving,copy,context};
+    }
+    else {
+        return {receiving,owned_properties,context};
+    }
+    
 }
 
 ChoiceResponse Player::buy() {
@@ -543,7 +554,6 @@ ChoiceResponse Player::payOutOfDCLine(bool use_roll_up) {
         }
         else {
             oss << name << ": Paid $50 bail to leave jail";
-            removeRollUp();
             success = true;
         }
     }

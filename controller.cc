@@ -135,6 +135,7 @@ Player& Controller::playMonopoly() {
                     bool use_rollup = false;
                     if (cmd == "userollup") use_rollup = true;
                     ChoiceResponse cr = p.payOutOfDCLine(use_rollup);
+                    cout << cr.context << endl;
                     if (cr.is_valid) {
                         if (p.getNumTurnsInDCTims() >= 3) {
                             went_bankrupt = move(p,dice.getFaceValues().first + dice.getFaceValues().second);
@@ -142,15 +143,13 @@ Player& Controller::playMonopoly() {
                         else {
                             went_bankrupt = move(p);
                         }
-                        cout << cr.context << endl;
                         break;
                     }   
-                    cout << cr.context << endl;
                 }
                 else if ((p.isInTimsLine()) && cmd == "rollfordoubles" && (p.getNumTurnsInDCTims() < 3 || third)) {
                     int roll = dice.roll();
                     if (dice.isDoubles()) {
-                        cout << p.getName() << "Successfully rolled doubles" << endl;
+                        cout << p.getName() << ": Successfully rolled doubles" << endl;
                         went_bankrupt = move(p, roll);
                     }
                     else if (p.getNumTurnsInDCTims() >= 3) {
@@ -525,9 +524,9 @@ void Controller::commenceAuction(Player& p, int current_player_id, OwnableProper
     int count = players.size();
     while (true) {
         for (int i = 0; i < counter; ++i) {
-            if (count >= 2) {
+            if (!withdrawn[i]) {
                 //Auction continues...
-                if (!withdrawn[i]) {
+                if (count >= 2) {
                     cout << players[i].getName() << ": Choices are {raise}/{withdraw}" << endl;
                     while (true) {
                         string choice;
@@ -558,11 +557,11 @@ void Controller::commenceAuction(Player& p, int current_player_id, OwnableProper
                         }
                     }
                 }
-            }
-            else {
-                cout << players[i].getName() << ": Won the auction for " << being_auctioned->getName() << " with a bid of $" << current_price << endl;
-                players[i].wonAuction(being_auctioned, current_price);
+                else {
+                    cout << players[i].getName() << ": Won the auction for " << being_auctioned->getName() << " with a bid of $" << current_price << endl;
+                    players[i].wonAuction(being_auctioned, current_price);
                 return;
+            }
             }
         }
     }
@@ -645,10 +644,7 @@ void Controller::bankruptcyOccurence(Player& p) {
                 while (true) {
                     string choice;
                     cin >> choice;
-                    if (command(choice, *r)) { // this takes in the commands after roll
-                        continue;
-                    }
-                    else if (choice == "unmortgage") {
+                    if (choice == "unmortgage") {
                         ChoiceResponse cr = r->mortgageChoice(property,true);
                         cout << cr.context << endl;
                         if (cr.is_valid) break;
@@ -659,6 +655,9 @@ void Controller::bankruptcyOccurence(Player& p) {
                         cout << cr.context << endl;
                         if (cr.is_valid) break;
                         else continue;
+                    }
+                    else if (command(choice, *r)) { // this takes in the commands after roll
+                        continue;
                     }
                     else if (choice == "next") {
                         cout << p.getName() << ": Must resolve current action before ending turn (resolve with {unmortgage}/{keep})" << endl;
