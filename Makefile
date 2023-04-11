@@ -1,5 +1,5 @@
 CXX = g++
-CXXFLAGS = -std=c++14 -g -Wall -MMD -DDEBUG
+CXXFLAGS = -std=c++14 -g -Wall -MMD
 OBJECTS = academicbuilding.o board.o controller.o dice.o gym.o main.o ownableproperty.o player.o residence.o square.o unownableproperty.o response.o textdisplay.o squaredisplay.o subject.o
 DEPENDS = ${OBJECTS:.o=.d}
 EXEC = watopoly
