@@ -474,7 +474,10 @@ void Controller::load(string filename) {
         if (iss) {
             if (on_DCTL) {
                 iss >> num;
-            }
+            } 
+            // else {
+            //     // num = 0;
+            // }
         } else {
             on_DCTL = 0;
             num = 0;
