@@ -1,13 +1,30 @@
-CXX = g++
-CXXFLAGS = -std=c++14 -g -Wall -MMD
-OBJECTS = academicbuilding.o board.o controller.o dice.o gym.o main.o ownableproperty.o player.o residence.o square.o unownableproperty.o response.o textdisplay.o squaredisplay.o subject.o
-DEPENDS = ${OBJECTS:.o=.d}
-EXEC = watopoly
+CXX := g++
+CPPFLAGS := -Iinclude -MMD -MP
+CXXFLAGS := -std=c++14 -g -Wall
 
-${EXEC} : ${OBJECTS}
-	${CXX} ${CXXFLAGS} ${OBJECTS} -o ${EXEC}
+SRC_DIR := src
+BUILD_DIR := build
+TARGET := watopoly
 
--include ${DEPENDS} # reads the .d files and reruns dependencies
+SOURCES := $(wildcard $(SRC_DIR)/*.cc)
+OBJECTS := $(patsubst $(SRC_DIR)/%.cc,$(BUILD_DIR)/%.o,$(SOURCES))
+DEPENDS := $(OBJECTS:.o=.d)
 
-clean :
-	rm ${DEPENDS} ${OBJECTS} ${EXEC}
+.PHONY: all clean run
+
+all: $(TARGET)
+
+$(TARGET): $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $(OBJECTS) -o $@
+
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.cc
+	@mkdir -p $(BUILD_DIR)
+	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -c $< -o $@
+
+run: $(TARGET)
+	./$(TARGET)
+
+clean:
+	rm -rf $(BUILD_DIR) $(TARGET)
+
+-include $(DEPENDS)
