@@ -2,6 +2,7 @@
 #define VIEW_H
 
 #include <vector>
+#include <deque>
 #include <iostream>
 #include <string>
 #include <map>
@@ -13,7 +14,7 @@
 using namespace std;
 
 class TextDisplay: public Observer  {
-    vector<SquareDisplay> sd;
+    deque<SquareDisplay> sd;
     map<char,int> token_index;
     public:
         void notify(Subject *whoNotified) override;
